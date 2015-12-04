@@ -1,0 +1,12 @@
+cd /scratch/sdonato/TriggerNtupleData2015D/CMSSW_7_6_0_pre6/src/usercode/NtupleAOD/ntuple/25ns/TurnOnMET/SingleElectron/WithBtag
+python launchTurnOn.py
+cd /scratch/sdonato/TriggerNtupleData2015D/CMSSW_7_6_0_pre6/src/usercode/NtupleAOD/ntuple/25ns/TurnOnMET/SingleElectron
+python launchTurnOn.py
+
+cd /scratch/sdonato/TriggerNtupleData2015D/CMSSW_7_6_0_pre6/src/usercode/NtupleAOD/ntuple/25ns/DrawHisto
+python DrawHisto.py ../TurnOnMET/SingleElectron/WithBtag/files/efficiencies_minoffMetoffMht.root
+python DrawHisto.py ../TurnOnMET/SingleElectron/WithBtag/files/efficiencies_offMet.root
+python DrawHisto.py ../TurnOnMET/SingleElectron/files/efficiencies_minoffMetoffMht.root
+python DrawHisto.py ../TurnOnMET/SingleElectron/files/efficiencies_offMet.root
+
+cd /scratch/sdonato/TriggerNtupleData2015D/CMSSW_7_6_0_pre6/src/usercode/NtupleAOD/ntuple/25ns/TurnOnMET

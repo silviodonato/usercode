@@ -1,8 +1,13 @@
 datasets=[
-'/HLTPhysics3/Run2015D-PromptReco-v3/AOD',
+#'/JetHT/Run2015D-05Oct2015-v1/MINIAOD',
+#'/JetHT/Run2015D-PromptReco-v4/MINIAOD',
+'/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD',
+#'/SingleElectron/Run2015D-PromptReco-v4/MINIAOD',
+#'/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD',
+#'/SingleMuon/Run2015D-PromptReco-v4/MINIAOD',
 ]
 
-name = 'triggerNtupleAOD_FWLite_test_v24'
+name = 'triggerNtupleAOD_FWLite_test_v25'
 
 from WMCore.Configuration import Configuration
 config = Configuration()

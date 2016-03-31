@@ -1,8 +1,15 @@
 from math import sqrt, pi, log10, log, exp
 from array import array
 
+class EmptyClass():
+    def size(self):
+        return 0
+
 class DummyClass():
-    pass
+    def size(self):
+        return 0
+    def product(self):
+        return EmptyClass()
 
 def deltaPhi(phi1, phi2):
   PHI = abs(phi1-phi2)
@@ -43,4 +50,15 @@ def SetVariable(tree,name,option='F',lenght=1,maxLenght=100):
     if maxLenght>1: name = name + '['+lenght+']'
     tree.Branch(name,variable,name+'/'+option)
     return variable
+
+class EmptyProduct(list):
+    def size(self):
+        return 0
+
+def productWithCheck(self):
+    try:
+        return self.product()
+    except:
+        return EmptyProduct()
+
 

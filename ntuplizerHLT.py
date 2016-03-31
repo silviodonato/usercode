@@ -6,9 +6,10 @@ from array import array
 from math import sqrt, pi, log10, log, exp
 # load FWlite python libraries
 from DataFormats.FWLite import Handle, Events
-from utils import deltaR,SetVariable,DummyClass
+from utils import deltaR,SetVariable,DummyClass,productWithCheck
 from VBFutils import Sort,GetVariablesToFill
 
+Handle.productWithCheck = productWithCheck
 
 pt_min          = 20
 eta_max         = 2.4
@@ -27,7 +28,7 @@ fileOutput = "test.root"
 
 def FillJetsAndBtag(offJets,offJet_num,offJet_pt,offJet_eta,offJet_phi,offJet_mass,btags=0,offJet_csv=0):
     offJet_num[0] = 0
-    for jet in offJets.product():
+    for jet in offJets.productWithCheck():
         if jet.pt()<pt_min: continue
         if offJet_num[0]<len(offJet_pt):                
             offJet_pt[offJet_num[0]] = jet.pt()
@@ -36,11 +37,11 @@ def FillJetsAndBtag(offJets,offJet_num,offJet_pt,offJet_eta,offJet_phi,offJet_ma
             offJet_mass[offJet_num[0]] = jet.mass()
             offlineCSV = -2.
             if not btags is 0:
-                for j in range(0,btags.product().size()):
-                    jetB = btags.product().key(j).get()
+                for j in range(0,btags.productWithCheck().size()):
+                    jetB = btags.productWithCheck().key(j).get()
                     dR = deltaR(jetB.eta(),jetB.phi(),jet.eta(),jet.phi())
                     if dR<0.3:
-                        offlineCSV = max(0.,btags.product().value(j))
+                        offlineCSV = max(0.,btags.productWithCheck().value(j))
                         break
                 offJet_csv[offJet_num[0]] = offlineCSV
             offJet_num[0] += 1
@@ -190,16 +191,16 @@ def launchNtupleFromHLT(filesInput,fileOutput):
             (Detaqq_off[0],Dphibb_off[0],Mqq_off[0],Mbb_off[0]) = GetVariablesToFill(b1,b2,q1,q2)
             
             
-        if bunchCrossing>=pileUp_source.product().size() or pileUp_source.product().at(bunchCrossing).getBunchCrossing()!=0:
+        if bunchCrossing>=pileUp_source.productWithCheck().size() or pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing()!=0:
             found=False
-            for bunchCrossing in range(pileUp_source.product().size()):
-                if pileUp_source.product().at(bunchCrossing).getBunchCrossing() == 0 :
+            for bunchCrossing in range(pileUp_source.productWithCheck().size()):
+                if pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing() == 0 :
                     found=True;
                     break
             if not found:
                 Exception("Check pileupSummaryInfos!")
             print "I'm using bunchCrossing=",bunchCrossing
-        pu[0] = pileUp_source.product().at(bunchCrossing).getTrueNumInteractions()
+        pu[0] = pileUp_source.productWithCheck().at(bunchCrossing).getTrueNumInteractions()
         
         if iev%100==1: print "Event: ",iev," done."
         tree.Fill()

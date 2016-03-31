@@ -61,4 +61,19 @@ def productWithCheck(self):
     except:
         return EmptyProduct()
 
-
+def checkTriggerIndex(name,index, names):
+    if not 'firstTriggerError' in globals():
+        global firstTriggerError
+        firstTriggerError = True
+    if index>=names.size():
+        if firstTriggerError:
+            for tr in names: print tr
+            print
+            print name," not found!"
+            print
+            firstTriggerError = False
+            return False
+        else:
+            return False
+    else:
+        return True

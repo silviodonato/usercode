@@ -6,7 +6,7 @@ from array import array
 from math import sqrt, pi, log10, log, exp
 # load FWlite python libraries
 from DataFormats.FWLite import Handle, Events
-from utils import deltaR,SetVariable,DummyClass,productWithCheck
+from utils import deltaR,SetVariable,DummyClass,productWithCheck,checkTriggerIndex
 from VBFutils import Sort,GetVariablesToFill
 
 Handle.productWithCheck = productWithCheck
@@ -23,7 +23,7 @@ CHMmin          = 0
 maxJets         = 50
 bunchCrossing   = 0
 
-filesInput = ["/gpfs/ddn/srm/cms/store/user/sdonato/VBFHbb_trigger_v5/VBFHToBB_M-120_13TeV_powheg_pythia8/VBFHbbFlat/160221_162241/0000/outputFULL_2.root"]
+filesInput = ["../outputFULL_AOD_1.root"]
 fileOutput = "test.root"
 
 def FillJetsAndBtag(offJets,offJet_num,offJet_pt,offJet_eta,offJet_phi,offJet_mass,btags=0,offJet_csv=0):
@@ -50,6 +50,12 @@ def FillJetsAndBtag(offJets,offJet_num,offJet_pt,offJet_eta,offJet_phi,offJet_ma
     #    var   = SetVariable(tree,name ,type_)
     #    return var
 
+def WithFallback(product,method="pt"):
+    if product.size()>0:
+        return getattr(product[0],method)()
+    else:
+        return -10
+
 def BookVector(tree,name="vector",listMembers=[]):
     obj = DummyClass()
     obj.num   = SetVariable(tree,name+'_num' ,'I')
@@ -68,33 +74,77 @@ def launchNtupleFromHLT(filesInput,fileOutput):
     tree = ROOT.TTree("tree","tree")
 
     Signal = False
-    if len(filesInput)>0 and ('VBFHToBB' in filesInput[0]):
+    if len(filesInput)>0 and ('AOD' in filesInput[0]):
         Signal = True
     print "Signal=",Signal
 
     if len(filesInput)==0: exit
     events = Events (filesInput)
 
+    triggerBits, triggerBitLabel = Handle("edm::TriggerResults"), ("TriggerResults::AAA")
+
     pileUp_source, pileUp_label = Handle("vector<PileupSummaryInfo>"), ("addPileupInfo")
 
-    l1JetFwd_source, l1JetFwd_label = Handle("vector<l1extra::L1JetParticle>"), ("hltL1extraParticles","Forward")
-    l1JetCtr_source, l1JetCtr_label = Handle("vector<l1extra::L1JetParticle>"), ("hltL1extraParticles","Central")
-    caloJet_source, caloJet_label = Handle("vector<reco::CaloJet>"), ("hltAK4CaloJetsCorrectedIDPassed")
-    calobtag_source, calobtag_label = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("hltCombinedSecondaryVertexBJetTagsCalo") #("pfCombinedSecondaryVertexBJetTags")
+#recoMETs_hltPFMETProducer__AAA.
+#recoMETs_hltPFMHTTightID__AAA.
+#recoCaloMETs_hltMet__AAA.
 
-    pfJet_source, pfJet_label = Handle("vector<reco::PFJet>"), ("hltAK4PFJetsLooseIDCorrected")
-    pfbtag_source, pfbtag_label = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("hltCombinedSecondaryVertexBJetTagsPF") #("pfCombinedSecondaryVertexBJetTags")
+#recoMETs_hltMHTNoPU__AAA.
+
+#l1tJetBXVector_hltCaloStage2Digis_Jet_AAA.
+#l1tEtSumBXVector_hltCaloStage2Digis_EtSum_AAA.
+#l1tEGammaBXVector_hltCaloStage2Digis_EGamma_AAA.
+#l1tMuonBXVector_hltGmtStage2Digis_Muon_AAA.
+
+    generator_source, generator_label       = Handle("GenEventInfoProduct"), ("generator")
+
+    l1HT_source, l1HT_label                 = Handle("BXVector<l1t::EtSum>"), ("hltCaloStage2Digis","EtSum")
+    l1Jet_source, l1Jet_label               = Handle("BXVector<l1t::Jet>"), ("hltCaloStage2Digis","Jet")
+#    l1JetFwd_source, l1JetFwd_label         = Handle("vector<l1extra::L1JetParticle>"), ("hltL1extraParticles","Forward")
+#    l1JetCtr_source, l1JetCtr_label         = Handle("vector<l1extra::L1JetParticle>"), ("hltL1extraParticles","Central")
+
+#    l1Met_source, l1Met_label              = Handle("vector<reco::CaloJet>"), ("hltAK4CaloJetsCorrectedIDPassed")
+#    l1Mht_source, l1Mht_label              = Handle("vector<reco::CaloJet>"), ("hltAK4CaloJetsCorrectedIDPassed")
+
+    offMet_source, offMet_label             = Handle("vector<reco::PFMET>"), ("pfMET")
+
+    offMet_source, offMet_label             = Handle("vector<reco::PFMET>"), ("pfMET")
+
+    pfMet_source, pfMet_label               = Handle("vector<reco::MET>"), ("hltPFMETProducer")
+    pfMht_source, pfMht_label               = Handle("vector<reco::MET>"), ("hltPFMHTTightID")
+
+    caloMet_source, caloMet_label           = Handle("vector<reco::CaloMET>"), ("hltMet")
+    caloMht_source, caloMht_label           = Handle("vector<reco::MET>"), ("hltMht")
+    caloMhtNoPU_source, caloMhtNoPU_label   = Handle("vector<reco::MET>"), ("hltMHTNoPU")
+
+    caloJet_source, caloJet_label           = Handle("vector<reco::CaloJet>"), ("hltAK4CaloJetsCorrectedIDPassed")
+
+    calobtag_source, calobtag_label         = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("hltCombinedSecondaryVertexBJetTagsCalo") #("pfCombinedSecondaryVertexBJetTags")
+
+    pfJet_source, pfJet_label               = Handle("vector<reco::PFJet>"), ("hltAK4PFJetsLooseIDCorrected")
+    pfbtag_source, pfbtag_label             = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("hltCombinedSecondaryVertexBJetTagsPF") #("pfCombinedSecondaryVertexBJetTags")
 
     if Signal:
-        offJet_source, offJet_label = Handle("vector<reco::PFJet>"), ("ak4PFJets")
-        offbtag_source, offbtag_label = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("pfCombinedInclusiveSecondaryVertexV2BJetTags") #("pfCombinedSecondaryVertexBJetTags")
+        offJet_source, offJet_label         = Handle("vector<reco::PFJet>"), ("ak4PFJets")
+        offbtag_source, offbtag_label       = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("pfCombinedInclusiveSecondaryVertexV2BJetTags") #("pfCombinedSecondaryVertexBJetTags")
 
-    caloJet = BookVector(tree,"caloJet",['pt','eta','phi','mass','csv'])
-    pfJet = BookVector(tree,"pfJet",['pt','eta','phi','mass','csv'])
-    l1JetFwd = BookVector(tree,"l1JetFwd",['pt','eta','phi','mass'])
-    l1JetCtr = BookVector(tree,"l1JetCtr",['pt','eta','phi','mass'])
+    caloJet     = BookVector(tree,"caloJet",['pt','eta','phi','mass','csv'])
+    pfJet       = BookVector(tree,"pfJet",['pt','eta','phi','mass','csv'])
+    l1Jet       = BookVector(tree,"l1Jet",['pt','eta','phi','mass'])
+#    l1JetFwd    = BookVector(tree,"l1JetFwd",['pt','eta','phi','mass'])
+#    l1JetCtr    = BookVector(tree,"l1JetCtr",['pt','eta','phi','mass'])
+    l1HT        = SetVariable(tree,'l1HT')
+    caloMet     = SetVariable(tree,'caloMet')
+    caloMht     = SetVariable(tree,'caloMht')
+    caloMhtNoPU = SetVariable(tree,'caloMhtNoPU')
+    pfMet       = SetVariable(tree,'pfMet')
+    pfMht       = SetVariable(tree,'pfMht')
+#    l1Met       = SetVariable(tree,'l1Met')
+#    l1Met_phi       = SetVariable(tree,'l1Met_phi')
+#    l1Mht       = SetVariable(tree,'l1Mht')
     if Signal:
-        offJet = BookVector(tree,"offJet",['pt','eta','phi','mass','csv'])
+        offJet  = BookVector(tree,"offJet",['pt','eta','phi','mass','csv'])
+        offMet  = SetVariable(tree,'offMet')
 
     Detaqq_eta  = SetVariable(tree,'Detaqq_eta')
     Dphibb_eta  = SetVariable(tree,'Dphibb_eta')
@@ -116,6 +166,8 @@ def launchNtupleFromHLT(filesInput,fileOutput):
     run         = SetVariable(tree,'run')
     
     pu          = SetVariable(tree,'pu')
+    ptHat       = SetVariable(tree,'ptHat')
+    maxPUptHat  = SetVariable(tree,'maxPUptHat')
 
     if Signal:
         Detaqq_off  = SetVariable(tree,'Detaqq_off')
@@ -124,32 +176,70 @@ def launchNtupleFromHLT(filesInput,fileOutput):
         Mbb_off     = SetVariable(tree,'Mbb_off')
 
     f.cd()
+
+    ##get trigger names
+    events.to(0)
+    for event in events: break
+    event.getByLabel(triggerBitLabel, triggerBits)
+    names = event.object().triggerNames(triggerBits.product())
+    triggerNames = names.triggerNames()
+    for name in triggerNames: name = name.split("_v")[0]
+    nTriggers = len(triggerNames)
+    triggerVars = {}
+    for trigger in triggerNames:
+        triggerVars[trigger]=array( 'i', [ 0 ] )
+        tree.Branch( trigger, triggerVars[trigger], trigger+'/O' )
+
     ##event loop
     for iev,event in enumerate(events):
+        event.getByLabel(triggerBitLabel, triggerBits)
+        event.getByLabel(generator_label, generator_source)
         event.getByLabel(pileUp_label, pileUp_source)
         event.getByLabel(caloJet_label, caloJet_source)
         event.getByLabel(calobtag_label, calobtag_source)
+        event.getByLabel(caloMet_label, caloMet_source)
+        event.getByLabel(caloMht_label, caloMht_source)
+        event.getByLabel(caloMhtNoPU_label, caloMhtNoPU_source)
+        event.getByLabel(pfMet_label, pfMet_source)
+        event.getByLabel(pfMht_label, pfMht_source)
+#        event.getByLabel(l1Met_label, l1Met_source)
+#        event.getByLabel(l1Mht_label, l1Mht_source)
         event.getByLabel(pfJet_label, pfJet_source)
         event.getByLabel(pfbtag_label, pfbtag_source)
-        event.getByLabel(l1JetFwd_label, l1JetFwd_source)
-        event.getByLabel(l1JetCtr_label, l1JetCtr_source)
+        event.getByLabel(l1Jet_label, l1Jet_source)
+#        event.getByLabel(l1JetFwd_label, l1JetFwd_source)
+#        event.getByLabel(l1JetCtr_label, l1JetCtr_source)
+        event.getByLabel(l1HT_label, l1HT_source)
         
         run[0]          = event.eventAuxiliary().run()
         lumi[0]         = event.eventAuxiliary().luminosityBlock()
         evt[0]          = event.eventAuxiliary().event()
         
         if Signal:
+            event.getByLabel(offMet_label, offMet_source)
             event.getByLabel(offJet_label, offJet_source)
             event.getByLabel(offbtag_label, offbtag_source)
 
+        caloMet[0]      = WithFallback( caloMet_source.productWithCheck() )
+        caloMht[0]      = WithFallback( caloMht_source.productWithCheck() )
+        caloMhtNoPU[0]  = WithFallback( caloMhtNoPU_source.productWithCheck() )
+        pfMet[0]        = WithFallback( pfMet_source.productWithCheck() )
+        pfMht[0]        = WithFallback( pfMht_source.productWithCheck() )
 
         FillJetsAndBtag(caloJet_source,caloJet.num,caloJet.pt,caloJet.eta,caloJet.phi,caloJet.mass,calobtag_source,caloJet.csv)
         FillJetsAndBtag(pfJet_source,pfJet.num,pfJet.pt,pfJet.eta,pfJet.phi,pfJet.mass,pfbtag_source,pfJet.csv)
-        FillJetsAndBtag(l1JetFwd_source,l1JetFwd.num,l1JetFwd.pt,l1JetFwd.eta,l1JetFwd.phi,l1JetFwd.mass)
-        FillJetsAndBtag(l1JetCtr_source,l1JetCtr.num,l1JetCtr.pt,l1JetCtr.eta,l1JetCtr.phi,l1JetCtr.mass)
+        FillJetsAndBtag(l1Jet_source,l1Jet.num,l1Jet.pt,l1Jet.eta,l1Jet.phi,l1Jet.mass)
+#        FillJetsAndBtag(l1JetFwd_source,l1JetFwd.num,l1JetFwd.pt,l1JetFwd.eta,l1JetFwd.phi,l1JetFwd.mass)
+#        FillJetsAndBtag(l1JetCtr_source,l1JetCtr.num,l1JetCtr.pt,l1JetCtr.eta,l1JetCtr.phi,l1JetCtr.mass)
+        l1HT_source.productWithCheck()
+        l1HT[0] = WithFallback(l1HT_source.productWithCheck(),'pt')
+#        l1Met[0] = WithFallback(l1HT_source.productWithCheck(),'MissingEt')
+#        l1Met_phi[0] = WithFallback(l1HT_source.productWithCheck(),'MissingEtPhi')
+#        l1Mht[0] = WithFallback(l1HT_source.productWithCheck(),'MissingHt')
 
         
         if Signal:
+            offMet[0]       = WithFallback( offMet_source.productWithCheck() )
             FillJetsAndBtag(offJet_source,offJet.num,offJet.pt,offJet.eta,offJet.phi,offJet.mass,offbtag_source,offJet.csv)
 
         calojetswithcsv = []
@@ -190,7 +280,8 @@ def launchNtupleFromHLT(filesInput,fileOutput):
             (b1,b2,q1,q2) = Sort(offjetswithcsv,'2BTagAndPt')
             (Detaqq_off[0],Dphibb_off[0],Mqq_off[0],Mbb_off[0]) = GetVariablesToFill(b1,b2,q1,q2)
             
-            
+        ptHat[0]    = generator_source.product().qScale()
+        
         if bunchCrossing>=pileUp_source.productWithCheck().size() or pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing()!=0:
             found=False
             for bunchCrossing in range(pileUp_source.productWithCheck().size()):
@@ -202,8 +293,24 @@ def launchNtupleFromHLT(filesInput,fileOutput):
             print "I'm using bunchCrossing=",bunchCrossing
         pu[0] = pileUp_source.productWithCheck().at(bunchCrossing).getTrueNumInteractions()
         
+        maxPUptHat[0] = -1
+        for ptHat in pileUp_source.productWithCheck().at(bunchCrossing).getPU_pT_hats():
+            maxPUptHat[0] = max(maxPUptHat[0],ptHat)
+        
+        names = event.object().triggerNames(triggerBits.product())
+        for i,triggerName in enumerate(triggerNames):
+            index = names.triggerIndex(triggerName)
+#            print "index=",index
+            if checkTriggerIndex(triggerName,index,names.triggerNames()):
+                triggerVars[triggerName][0] = triggerBits.product().accept(index)
+#                print "acc:",triggerBits.product().accept(index)
+            else:
+                triggerVars[triggerName][0] = 0
+        
         if iev%100==1: print "Event: ",iev," done."
         tree.Fill()
 
     f.Write()
     f.Close()
+
+launchNtupleFromHLT(filesInput,fileOutput)

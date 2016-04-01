@@ -9,6 +9,8 @@ from DataFormats.FWLite import Handle, Events
 from utils import deltaR,SetVariable,DummyClass,productWithCheck,checkTriggerIndex
 from VBFutils import Sort,GetVariablesToFill
 
+#ROOT.gROOT.LoadMacro("/scratch/sdonato/NtupleForPaolo/CMSSW_8_0_3_patch1/src/DataFormats/L1Trigger/interface/EtSumHelper.h")
+
 Handle.productWithCheck = productWithCheck
 
 pt_min          = 20
@@ -73,9 +75,9 @@ def launchNtupleFromHLT(filesInput,fileOutput):
     f = ROOT.TFile(fileOutput,"recreate")
     tree = ROOT.TTree("tree","tree")
 
-    Signal = False
-    if len(filesInput)>0 and ('AOD' in filesInput[0]):
-        Signal = True
+    Signal = True
+    if len(filesInput)>0 and ('QCD' in filesInput[0]):
+        Signal = False
     print "Signal=",Signal
 
     if len(filesInput)==0: exit
@@ -106,9 +108,7 @@ def launchNtupleFromHLT(filesInput,fileOutput):
 #    l1Met_source, l1Met_label              = Handle("vector<reco::CaloJet>"), ("hltAK4CaloJetsCorrectedIDPassed")
 #    l1Mht_source, l1Mht_label              = Handle("vector<reco::CaloJet>"), ("hltAK4CaloJetsCorrectedIDPassed")
 
-    offMet_source, offMet_label             = Handle("vector<reco::PFMET>"), ("pfMET")
-
-    offMet_source, offMet_label             = Handle("vector<reco::PFMET>"), ("pfMET")
+    offMet_source, offMet_label             = Handle("vector<reco::PFMET>"), ("pfMet")
 
     pfMet_source, pfMet_label               = Handle("vector<reco::MET>"), ("hltPFMETProducer")
     pfMht_source, pfMht_label               = Handle("vector<reco::MET>"), ("hltPFMHTTightID")
@@ -139,9 +139,10 @@ def launchNtupleFromHLT(filesInput,fileOutput):
     caloMhtNoPU = SetVariable(tree,'caloMhtNoPU')
     pfMet       = SetVariable(tree,'pfMet')
     pfMht       = SetVariable(tree,'pfMht')
-#    l1Met       = SetVariable(tree,'l1Met')
-#    l1Met_phi       = SetVariable(tree,'l1Met_phi')
-#    l1Mht       = SetVariable(tree,'l1Mht')
+    l1Met       = SetVariable(tree,'l1Met')
+    l1Met_phi   = SetVariable(tree,'l1Met_phi')
+    l1Mht       = SetVariable(tree,'l1Mht')
+    l1Mht_phi   = SetVariable(tree,'l1Mht')
     if Signal:
         offJet  = BookVector(tree,"offJet",['pt','eta','phi','mass','csv'])
         offMet  = SetVariable(tree,'offMet')
@@ -229,14 +230,17 @@ def launchNtupleFromHLT(filesInput,fileOutput):
         FillJetsAndBtag(caloJet_source,caloJet.num,caloJet.pt,caloJet.eta,caloJet.phi,caloJet.mass,calobtag_source,caloJet.csv)
         FillJetsAndBtag(pfJet_source,pfJet.num,pfJet.pt,pfJet.eta,pfJet.phi,pfJet.mass,pfbtag_source,pfJet.csv)
         FillJetsAndBtag(l1Jet_source,l1Jet.num,l1Jet.pt,l1Jet.eta,l1Jet.phi,l1Jet.mass)
-#        FillJetsAndBtag(l1JetFwd_source,l1JetFwd.num,l1JetFwd.pt,l1JetFwd.eta,l1JetFwd.phi,l1JetFwd.mass)
-#        FillJetsAndBtag(l1JetCtr_source,l1JetCtr.num,l1JetCtr.pt,l1JetCtr.eta,l1JetCtr.phi,l1JetCtr.mass)
-        l1HT_source.productWithCheck()
-        l1HT[0] = WithFallback(l1HT_source.productWithCheck(),'pt')
-#        l1Met[0] = WithFallback(l1HT_source.productWithCheck(),'MissingEt')
-#        l1Met_phi[0] = WithFallback(l1HT_source.productWithCheck(),'MissingEtPhi')
-#        l1Mht[0] = WithFallback(l1HT_source.productWithCheck(),'MissingHt')
 
+        l1Met[0],l1Met_phi[0],l1Mht[0],l1Mht_phi[0],l1HT[0] = -1,-1,-1,-1,-1
+        for et in l1HT_source.productWithCheck():
+            if et.getType()==ROOT.l1t.EtSum.kMissingEt:
+                (l1Met[0],l1Met_phi[0]) = (et.et(),et.phi())
+            elif et.getType()==ROOT.l1t.EtSum.kMissingHt:
+                (l1Mht[0],l1Mht_phi[0]) = (et.et(),et.phi())
+            elif et.getType()==ROOT.l1t.EtSum.kTotalEt:
+                pass
+            elif et.getType()==ROOT.l1t.EtSum.kTotalHt:
+                l1HT[0] = et.et()
         
         if Signal:
             offMet[0]       = WithFallback( offMet_source.productWithCheck() )
@@ -279,7 +283,7 @@ def launchNtupleFromHLT(filesInput,fileOutput):
         if Signal:
             (b1,b2,q1,q2) = Sort(offjetswithcsv,'2BTagAndPt')
             (Detaqq_off[0],Dphibb_off[0],Mqq_off[0],Mbb_off[0]) = GetVariablesToFill(b1,b2,q1,q2)
-            
+        
         ptHat[0]    = generator_source.product().qScale()
         
         if bunchCrossing>=pileUp_source.productWithCheck().size() or pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing()!=0:
@@ -294,8 +298,8 @@ def launchNtupleFromHLT(filesInput,fileOutput):
         pu[0] = pileUp_source.productWithCheck().at(bunchCrossing).getTrueNumInteractions()
         
         maxPUptHat[0] = -1
-        for ptHat in pileUp_source.productWithCheck().at(bunchCrossing).getPU_pT_hats():
-            maxPUptHat[0] = max(maxPUptHat[0],ptHat)
+        for ptHat_ in pileUp_source.productWithCheck().at(bunchCrossing).getPU_pT_hats():
+            maxPUptHat[0] = max(maxPUptHat[0],ptHat_)
         
         names = event.object().triggerNames(triggerBits.product())
         for i,triggerName in enumerate(triggerNames):
@@ -313,4 +317,5 @@ def launchNtupleFromHLT(filesInput,fileOutput):
     f.Write()
     f.Close()
 
-launchNtupleFromHLT(filesInput,fileOutput)
+if __name__ == "__main__":
+    launchNtupleFromHLT(filesInput,fileOutput)

@@ -1,16 +1,24 @@
 datasets=[
+'/SingleMuon/Run2016A-PromptReco-v1/AOD',
+'/SingleMuon/Run2016A-PromptReco-v2/AOD',
+
+'/SingleElectron/Run2016A-PromptReco-v1/AOD',
+'/SingleElectron/Run2016A-PromptReco-v2/AOD',
+
 #'/JetHT/Run2015D-05Oct2015-v1/MINIAOD',
 #'/JetHT/Run2015D-PromptReco-v4/MINIAOD',
 #'/SingleElectron/Run2015D-PromptReco-v4/AOD',
-'/ZeroBias/Run2015D-PromptReco-v4/AOD',
-'/ZeroBias1/Run2015D-PromptReco-v4/AOD',
-'/ZeroBias2/Run2015D-PromptReco-v4/AOD',
-'/ZeroBias3/Run2015D-PromptReco-v4/AOD',
-'/ZeroBias4/Run2015D-PromptReco-v4/AOD',
-'/JetHT/Run2015D-PromptReco-v4/AOD',
-'/L1MinimumBias/Run2015D-PromptReco-v4/AOD',
-'/MET/Run2015D-PromptReco-v4/AOD',
-'/SingleMuon/Run2015D-PromptReco-v4/AOD',
+
+#'/ZeroBias/Run2015D-PromptReco-v4/AOD',
+#'/ZeroBias1/Run2015D-PromptReco-v4/AOD',
+#'/ZeroBias2/Run2015D-PromptReco-v4/AOD',
+#'/ZeroBias3/Run2015D-PromptReco-v4/AOD',
+#'/ZeroBias4/Run2015D-PromptReco-v4/AOD',
+#'/JetHT/Run2015D-PromptReco-v4/AOD',
+#'/L1MinimumBias/Run2015D-PromptReco-v4/AOD',
+#'/MET/Run2015D-PromptReco-v4/AOD',
+#'/SingleMuon/Run2015D-PromptReco-v4/AOD',
+
 #'/SingleElectron/Run2015D-PromptReco-v4/AOD',
 #'/SingleElectron/Run2015D-PromptReco-v4/MINIAOD',
 #'/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD',
@@ -61,7 +69,7 @@ if __name__ == '__main__':
     from CRABClient.UserUtilities import config
     config = config()
     for dataset in datasets:
-        name = 'triggerNtupleAOD_FWLite_v27'
+        name = 'triggerNtupleAOD_FWLite_2016_v1'
         config.section_("General")
         config.General.workArea = 'crab_'+name
         config.General.transferLogs=True

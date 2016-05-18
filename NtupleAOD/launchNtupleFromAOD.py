@@ -20,8 +20,9 @@ def getSizeFilter(triggerEv,inputTag):
         return len(triggerEv.filterKeys(filterIndex))
 
 def goodEvent(run,lumi): #https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt
-    JSONlist={"254231": [[1, 24]], "254232": [[1, 81]], "254790": [[90, 90], [93, 630], [633, 697], [701, 715], [719, 784]], "254852": [[47, 94]], "254879": [[52, 52], [54, 140]], "254906": [[1, 75]], "254907": [[1, 52]], "254914": [[32, 32], [34, 78]], "256630": [[5, 26]], "256673": [[55, 56]], "256674": [[1, 2]], "256675": [[1, 106], [111, 164]], "256676": [[1, 160], [162, 208]], "256677": [[1, 291], [293, 390], [392, 397], [400, 455], [457, 482]], "256801": [[73, 263]], "256842": [[131, 132]], "256843": [[1, 204], [207, 284], [286, 378], [380, 461], [463, 587], [598, 627], [630, 661], [1001, 1034], [1036, 1081], [1083, 1191], [1193, 1193], [1195, 1329], [1331, 1332]], "256866": [[34, 47]], "256867": [[1, 16], [19, 94]], "256868": [[5, 33], [35, 200], [202, 492]], "256869": [[1, 34]], "256926": [[35, 50], [53, 62], [64, 65]], "256941": [[1, 17], [19, 29], [103, 105], [107, 126], [129, 129], [131, 168], [170, 170], [175, 290], [293, 294]], "257461": [[44, 95]], "257531": [[5, 45], [50, 143]], "257599": [[42, 118]], "257613": [[14, 1307]], "257614": [[1, 16]], "257645": [[37, 73], [75, 1096]], "257682": [[66, 366]], "257722": [[1, 19]], "257723": [[1, 1], [3, 108], [114, 148]], "257735": [[1, 15]], "257751": [[1, 463]], "257804": [[1, 17]], "257805": [[1, 249]], "257816": [[1, 385]], "257819": [[1, 248]], "257968": [[69, 326]], "257969": [[1, 634]], "258129": [[30, 124]], "258136": [[1, 60]], "258157": [[1, 56]], "258158": [[1, 1088], [1091, 1786]], "258159": [[1, 501]], "258177": [[1, 342], [347, 724], [755, 1939]], "258211": [[43, 129]], "258213": [[1, 165]], "258214": [[1, 217]], "258215": [[1, 6]], "258287": [[45, 144], [148, 227]], "258403": [[1, 251]], "258425": [[3, 136]], "258426": [[1, 10]], "258427": [[1, 107]], "258428": [[1, 159]], "258432": [[1, 4]], "258434": [[1, 453]], "258440": [[1, 442], [444, 732]], "258444": [[1, 37]], "258445": [[1, 302]], "258446": [[1, 142]], "258448": [[2, 100], [102, 731]], "258655": [[60, 68]], "258656": [[1, 334]], "258694": [[23, 199]], "258702": [[52, 402]], "258703": [[1, 389]], "258705": [[1, 100]], "258706": [[1, 733]], "258712": [[1, 524]], "258713": [[1, 161]], "258714": [[1, 67]], "258741": [[22, 72]], "258742": [[2, 693]], "258745": [[1, 260]], "258749": [[1, 204], [220, 604]], "258750": [[1, 197]], "259626": [[83, 106], [108, 111], [115, 166], [169, 215], [218, 437]], "259637": [[1, 72], [75, 221]], "259681": [[64, 98]], "259683": [[5, 19], [22, 23], [25, 94]], "259685": [[1, 209], [213, 240], [242, 290], [292, 445], [447, 538], [540, 544], [546, 630]], "259686": [[1, 43], [45, 47], [49, 100], [102, 108], [110, 163], [165, 245], [248, 341]], "259721": [[73, 99], [102, 408]], "259809": [[53, 222]], "259810": [[1, 113], [116, 116]], "259811": [[1, 47], [50, 91]], "259813": [[1, 10]], "259817": [[1, 5]], "259818": [[1, 160]], "259820": [[1, 32], [36, 161]], "259821": [[1, 75], [78, 212]], "259822": [[1, 14], [17, 464]], "259861": [[1, 34], [36, 38], [40, 66], [69, 77]], "259862": [[1, 13], [16, 532]], "259884": [[73, 143], [147, 155]], "259890": [[1, 34], [37, 109]], "259891": [[1, 108]], "260373": [[47, 370], [373, 408]], "260424": [[3, 12], [15, 266], [269, 672]], "260425": [[1, 18], [21, 55], [58, 256]], "260426": [[1, 52], [55, 296], [298, 307], [310, 504]], "260427": [[1, 198]], "260431": [[1, 447]], "260532": [[3, 8], [10, 456], [458, 746]], "260533": [[1, 14]], "260534": [[1, 375]], "260536": [[9, 37], [45, 60], [62, 193]], "260538": [[1, 284]], "260541": [[1, 24]], "260575": [[1, 24]], "260576": [[2, 88], [90, 150]], "260577": [[1, 76]], "260593": [[65, 401]], "260627": [[97, 611], [613, 757], [760, 788], [791, 1051], [1054, 1530], [1533, 1845]]}
-
+#    JSONlist={"254231": [[1, 24]], "254232": [[1, 81]], "254790": [[90, 90], [93, 630], [633, 697], [701, 715], [719, 784]], "254852": [[47, 94]], "254879": [[52, 52], [54, 140]], "254906": [[1, 75]], "254907": [[1, 52]], "254914": [[32, 32], [34, 78]], "256630": [[5, 26]], "256673": [[55, 56]], "256674": [[1, 2]], "256675": [[1, 106], [111, 164]], "256676": [[1, 160], [162, 208]], "256677": [[1, 291], [293, 390], [392, 397], [400, 455], [457, 482]], "256801": [[73, 263]], "256842": [[131, 132]], "256843": [[1, 204], [207, 284], [286, 378], [380, 461], [463, 587], [598, 627], [630, 661], [1001, 1034], [1036, 1081], [1083, 1191], [1193, 1193], [1195, 1329], [1331, 1332]], "256866": [[34, 47]], "256867": [[1, 16], [19, 94]], "256868": [[5, 33], [35, 200], [202, 492]], "256869": [[1, 34]], "256926": [[35, 50], [53, 62], [64, 65]], "256941": [[1, 17], [19, 29], [103, 105], [107, 126], [129, 129], [131, 168], [170, 170], [175, 290], [293, 294]], "257461": [[44, 95]], "257531": [[5, 45], [50, 143]], "257599": [[42, 118]], "257613": [[14, 1307]], "257614": [[1, 16]], "257645": [[37, 73], [75, 1096]], "257682": [[66, 366]], "257722": [[1, 19]], "257723": [[1, 1], [3, 108], [114, 148]], "257735": [[1, 15]], "257751": [[1, 463]], "257804": [[1, 17]], "257805": [[1, 249]], "257816": [[1, 385]], "257819": [[1, 248]], "257968": [[69, 326]], "257969": [[1, 634]], "258129": [[30, 124]], "258136": [[1, 60]], "258157": [[1, 56]], "258158": [[1, 1088], [1091, 1786]], "258159": [[1, 501]], "258177": [[1, 342], [347, 724], [755, 1939]], "258211": [[43, 129]], "258213": [[1, 165]], "258214": [[1, 217]], "258215": [[1, 6]], "258287": [[45, 144], [148, 227]], "258403": [[1, 251]], "258425": [[3, 136]], "258426": [[1, 10]], "258427": [[1, 107]], "258428": [[1, 159]], "258432": [[1, 4]], "258434": [[1, 453]], "258440": [[1, 442], [444, 732]], "258444": [[1, 37]], "258445": [[1, 302]], "258446": [[1, 142]], "258448": [[2, 100], [102, 731]], "258655": [[60, 68]], "258656": [[1, 334]], "258694": [[23, 199]], "258702": [[52, 402]], "258703": [[1, 389]], "258705": [[1, 100]], "258706": [[1, 733]], "258712": [[1, 524]], "258713": [[1, 161]], "258714": [[1, 67]], "258741": [[22, 72]], "258742": [[2, 693]], "258745": [[1, 260]], "258749": [[1, 204], [220, 604]], "258750": [[1, 197]], "259626": [[83, 106], [108, 111], [115, 166], [169, 215], [218, 437]], "259637": [[1, 72], [75, 221]], "259681": [[64, 98]], "259683": [[5, 19], [22, 23], [25, 94]], "259685": [[1, 209], [213, 240], [242, 290], [292, 445], [447, 538], [540, 544], [546, 630]], "259686": [[1, 43], [45, 47], [49, 100], [102, 108], [110, 163], [165, 245], [248, 341]], "259721": [[73, 99], [102, 408]], "259809": [[53, 222]], "259810": [[1, 113], [116, 116]], "259811": [[1, 47], [50, 91]], "259813": [[1, 10]], "259817": [[1, 5]], "259818": [[1, 160]], "259820": [[1, 32], [36, 161]], "259821": [[1, 75], [78, 212]], "259822": [[1, 14], [17, 464]], "259861": [[1, 34], [36, 38], [40, 66], [69, 77]], "259862": [[1, 13], [16, 532]], "259884": [[73, 143], [147, 155]], "259890": [[1, 34], [37, 109]], "259891": [[1, 108]], "260373": [[47, 370], [373, 408]], "260424": [[3, 12], [15, 266], [269, 672]], "260425": [[1, 18], [21, 55], [58, 256]], "260426": [[1, 52], [55, 296], [298, 307], [310, 504]], "260427": [[1, 198]], "260431": [[1, 447]], "260532": [[3, 8], [10, 456], [458, 746]], "260533": [[1, 14]], "260534": [[1, 375]], "260536": [[9, 37], [45, 60], [62, 193]], "260538": [[1, 284]], "260541": [[1, 24]], "260575": [[1, 24]], "260576": [[2, 88], [90, 150]], "260577": [[1, 76]], "260593": [[65, 401]], "260627": [[97, 611], [613, 757], [760, 788], [791, 1051], [1054, 1530], [1533, 1845]]}
+# https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt
+    JSONlist={"272007":[[1,6]], "272008":[[1,5],[10,35]], "272010":[[1,24]], "272011":[[1,30],[32,38],[42,90],[93,107],[110,116],[119,132],[135,147],[150,189],[191,202]], "272012":[[1,27],[30,41],[44,55],[57,68],[71,82],[85,96],[99,112],[116,148],[150,158],[160,168],[170,185],[187,193],[195,201],[204,214]], "272014":[[1,10],[12,19],[21,28],[32,39],[41,47],[50,56],[58,82],[84,91],[93,99],[101,108],[110,125]], "272016":[[1,9],[12,18],[21,27],[29,36],[38,48]], "272017":[[1,2]], "272019":[[1,22]], "272021":[[1,125]], "272022":[[1,69]], "272760":[[66,78],[79,79],[80,86]], "272761":[[1,51],[52,54],[55,85]], "272762":[[1,80],[81,81],[82,108]], "272774":[[99,112]], "272775":[[1,30],[31,32],[33,186],[187,187],[188,204]], "272776":[[1,105]], "272782":[[80,113]], "272783":[[1,151]], "272784":[[1,305]], "272785":[[1,149]], "272786":[[1,59]], "272798":[[91,223],[224,947],[948,948],[949,959],[960,960],[961,972],[973,973],[974,995],[996,996],[997,1022],[1023,1024],[1025,1036],[1037,1038],[1039,1051],[1052,1053],[1054,1060],[1061,1065],[1066,1066],[1067,1067],[1068,1360],[1361,1363],[1364,1370],[1371,1373],[1374,1718],[1719,1720],[1721,1800]], "272811":[[95,189]], "272812":[[1,380]], "272814":[[1,9]], "272815":[[1,22]], "272816":[[1,35]], "272818":[[1,65],[66,67],[68,245],[246,246],[247,279],[280,280],[281,451],[452,457],[458,620]], "272827":[[98,111]], "272828":[[1,59]], "272922":[[15,34]], "272923":[[1,32]], "272924":[[1,22]], "272925":[[1,9]], "272926":[[1,22]], "272927":[[1,73]], "272930":[[1,164]], "272936":[[25,379]], "273013":[[26,330]], "273017":[[1,928]], "273150":[[64,75]], "273158":[[1,1283]], "273290":[[10,22]], "273291":[[1,83]], "273292":[[1,21]], "273294":[[1,8]], "273295":[[1,11]], "273299":[[1,47]], "273301":[[1,614]], "273302":[[1,459]], "273402":[[100,292]], "273403":[[1,68]], "273404":[[1,22]], "273405":[[1,34]], "273406":[[1,125]], "273407":[[1,9]], "273408":[[1,9]], "273409":[[1,317]], "273410":[[1,99]], "273411":[[1,29]], "273425":[[62,352],[353,353],[354,742]], "273426":[[1,65]], "273445":[[7,9]], "273446":[[1,48]], "273447":[[1,113],[114,114],[115,420]], "273448":[[1,396]], "273449":[[1,216]], "273450":[[1,214],[215,218],[219,647]], "273492":[[71,282],[283,283],[284,325],[326,326],[327,343]], "273493":[[1,241]], "273494":[[1,192]], "273502":[[73,256],[257,257],[258,318],[319,319],[320,813],[814,814],[815,1077]], "273503":[[1,598]], "273522":[[79,121]], "273523":[[1,228]], "273526":[[1,34]], "273531":[[1,280]], "273537":[[1,779]], "273554":[[77,444],[445,446]], "273555":[[1,173]]}
     if str(run) in JSONlist.keys():
         for rg in JSONlist[str(run)]:
             if len(rg) ==2:
@@ -138,108 +139,115 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     maxJets = 50
     
     calobjets = [
-    'hltBLifetimeL3FilterCSVsusy',
-    'hltCSV0p72L3',
-    'hltCSVL30p74',
-    'hltTripleCSV0p67',
-    'hltDoubleCSV0p67',
-    'hltBLifetimeL3FilterCSVLoose0p45',
-    'hltCSV0p55L3',
+    'hltBTagCaloCSVp014DoubleWithMatching',
+    'hltBTagCaloCSVp022Single',
+    'hltBTagCaloCSVp026DoubleWithMatching',
+    'hltBTagCaloCSVp067Single',
+    'hltBTagCaloCSVp087Double',
+    'hltBTagCaloCSVp087Triple',
+    'hltBTagCaloCSVp14Single',
+    'hltBTagCaloCSVp20Single',
+    'hltBTagCaloCSVp24Double',
+    'hltBTagCaloCSVp24Single',
+    'hltBTagCaloCSVp50Double',
     ]
     
-    calobjetsMC = [
-    'hltBLifetimeL3FilterCSVsusy',
-    'hltCSV0p7L3',
-    'hltCSVL30p6',
-    'hltTripleCSV0p5',
-    'hltDoubleCSV0p5',
-    'hltBLifetimeL3FilterCSVLoose0p41',
-    'hltCSV0p5L3',
-    ]
+#    calobjetsMC = [
+#    'hltBLifetimeL3FilterCSVsusy',
+#    'hltCSV0p7L3',
+#    'hltCSVL30p6',
+#    'hltTripleCSV0p5',
+#    'hltDoubleCSV0p5',
+#    'hltBLifetimeL3FilterCSVLoose0p41',
+#    'hltCSV0p5L3',
+#    ]
     
     pfbjets = [
-    'hltCSVFilterSingleTop',
-    'hltDoubleCSVPF0p58',
-    'hltCSVPF0p78',
-    'hltCSV0p54FilterSingleMu10',
-    'hltCSV0p54FilterSingleEle10',
-    'hltCSVFilterPF0p72',
-    'hlt2CSVFilterPF0p72',
+    'hltBTagPFCSVp016SingleWithMatching',
+    'hltBTagPFCSVp056Double',
+    'hltBTagPFCSVp056Single',
+    'hltBTagPFCSVp063Double',
+    'hltBTagPFCSVp063DoubleMbb60200Ptb5030',
+    'hltBTagPFCSVp063Single',
+    'hltBTagPFCSVp063p20Mbb60200Ptb5030',
+    'hltBTagPFCSVp11DoubleWithMatching',
+    'hltBTagPFCSVp13Single',
+    'hltBTagPFCSVp20Double'
     ]
     
-    pfbjetsMC = [
-    'hltCSVFilterSingleTop',
-    'hltDoubleCSVPF0p4',
-    'hltCSVPF0p7',
-    'hltCSV0p5FilterSingleMu10',
-    'hltCSV0p5FilterSingleEle10',
-    'hltCSVFilterPF0p7',
-    'hlt2CSVFilterPF0p7',
-    ]
+#    pfbjetsMC = [
+#    'hltCSVFilterSingleTop',
+#    'hltDoubleCSVPF0p4',
+#    'hltCSVPF0p7',
+#    'hltCSV0p5FilterSingleMu10',
+#    'hltCSV0p5FilterSingleEle10',
+#    'hltCSVFilterPF0p7',
+#    'hlt2CSVFilterPF0p7',
+#    ]
     
-    filtersMC = [
-    'hltL1sTripleVBF',
-    'hltPreQuadPFJetDoubleBTagCSVVBFMqq200',
-    'hltPreQuadPFJetSingleBTagCSVVBFMqq460',
-    'hltPreQuadPFJetDoubleBTagCSVVBFMqq240',
-    'hltPreQuadPFJetSingleBTagCSVVBFMqq500',
-    'hltQuadJet15',
-    'hltTripleJet50',
-    'hltDoubleJet65',
-    'hltSingleJet80',
-    'hltVBFCaloJetEtaSortedMqq150Deta1p5',
-    'hltCSVL30p6',
-    'hltPFQuadJetLooseID15',
-    'hltPFTripleJetLooseID64',
-    'hltPFDoubleJetLooseID76',
-    'hltPFSingleJetLooseID92',
-    'hltSelector6PFJets',
-    'hltDoubleCSVPF0p4',
-    'hltCSVPF0p7',
-    'hltVBFPFJetCSVSortedMqq200Detaqq1p2',
-    'hltVBFPFJetCSVSortedMqq460Detaqq4p1',
-    'hltVBFPFJetCSVSortedMqq240Detaqq2p0',
-    'hltVBFPFJetCSVSortedMqq500Detaqq4p6',
-    ]
+#    filtersMC = [
+#    'hltL1sTripleVBF',
+#    'hltPreQuadPFJetDoubleBTagCSVVBFMqq200',
+#    'hltPreQuadPFJetSingleBTagCSVVBFMqq460',
+#    'hltPreQuadPFJetDoubleBTagCSVVBFMqq240',
+#    'hltPreQuadPFJetSingleBTagCSVVBFMqq500',
+#    'hltQuadJet15',
+#    'hltTripleJet50',
+#    'hltDoubleJet65',
+#    'hltSingleJet80',
+#    'hltVBFCaloJetEtaSortedMqq150Deta1p5',
+#    'hltCSVL30p6',
+#    'hltPFQuadJetLooseID15',
+#    'hltPFTripleJetLooseID64',
+#    'hltPFDoubleJetLooseID76',
+#    'hltPFSingleJetLooseID92',
+#    'hltSelector6PFJets',
+#    'hltDoubleCSVPF0p4',
+#    'hltCSVPF0p7',
+#    'hltVBFPFJetCSVSortedMqq200Detaqq1p2',
+#    'hltVBFPFJetCSVSortedMqq460Detaqq4p1',
+#    'hltVBFPFJetCSVSortedMqq240Detaqq2p0',
+#    'hltVBFPFJetCSVSortedMqq500Detaqq4p6',
+#    ]
     
     filters = [
-    'hltL1sL1TripleJet927664ORL1TripleJet927664NoFFF',
+    'hltL1sTripleJetVBFIorHTTIorDoubleJetCIorSingleJet',
     'hltQuadJet15',
     'hltTripleJet50',
     'hltDoubleJet65',
     'hltSingleJet80',
     'hltVBFCaloJetEtaSortedMqq150Deta1p5',
-    'hltCSVL30p74',
+    'hltBTagCaloCSVp022Single',
     'hltPFQuadJetLooseID15',
     'hltPFTripleJetLooseID64',
     'hltPFDoubleJetLooseID76',
     'hltPFSingleJetLooseID92',
-    'hltCSVPF0p78',
-    'hltDoubleCSVPF0p58',
-    'hltVBFPFJetCSVSortedMqq200Detaqq1p2',
-    'hltVBFPFJetCSVSortedMqq240Detaqq2p0',
-    'hltVBFPFJetCSVSortedMqq460Detaqq4p1',
-    'hltVBFPFJetCSVSortedMqq500Detaqq4p6',
+    'hltBTagPFCSVp016SingleWithMatching',
+    'hltBTagPFCSVp11DoubleWithMatching',
+    'hltVBFPFJetCSVSortedMqq200Detaqq1p5',
+    'hltVBFPFJetCSVSortedMqq240Detaqq2p3',
+    'hltVBFPFJetCSVSortedMqq460Detaqq3p5',
+    'hltVBFPFJetCSVSortedMqq500Detaqq4p1',
 
-    'hltL1sL1Quad60ORHTT175',
+    'hltL1sQuadJetCIorTripleJetVBFIorHTT',
     'hltQuadCentralJet45',
     'hltQuadPFCentralJetLooseID45',
 
-    'hltL1sL1TripleJet927664ORL1TripleJet927664NoFFFORL1DoubleJetC100',
+    'hltL1sTripleJetVBFIorHTTIorDoubleJetCIorSingleJet',
     'hltQuadCentralJet30',
     'hltDoubleCentralJet90',
     'hltQuadPFCentralJetLooseID30',
     'hltDoublePFCentralJetLooseID90',
 
-    'hltDoubleCSV0p67',
-    'hltTripleCSV0p67',
+    'hltBTagCaloCSVp087Double',
+    'hltBTagCaloCSVp087Triple',
 
-    'hltL1EG25erHTT125ORL1SingleIsoEG30erORL1SingleEG40',
+    'hltL1sSingleEG40IorSingleIsoEG22erIorSingleIsoEG24erIorSingleIsoEG24IorSingleIsoEG26',
     'hltJetFilterEle27WPLoose',
     'hltHCand80NoEle27WPLoose',
     'hltWCand80NoEle27WPLooseMET',
     'hltWCand70NoEle27WPLooseMHTIDTight',
-    'hltL1sL1SingleIsoEG22erOrSingleEG25',
+#    'hltL1sL1SingleIsoEG22erOrSingleEG25',
 
 #    'hltEGL1SingleIsoEG22erOrSingleEG25Filter',
 #    'hltEG27EtL1IsoEG22erOrSingleEG25Filter',
@@ -253,7 +261,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
 #    'hltEle27WPLooseGsfMissingHitsFilter',
 #    'hltEle27WPLooseGsfDetaFilter',
 #    'hltEle27WPLooseGsfDphiFilter',
-    'hltEle27WPLooseGsfTrackIsoFilter',
+#    'hltEle27noerWPLooseGsfTrackIsoFilter',
 
 #    'hltEGL1EG25erHTT125ORL1SingleIsoEG30erORL1SingleEG40',
 #    'hltEG27EtL1EG25erHTT125ORL1SingleIsoEG30erORL1SingleEG40',
@@ -269,7 +277,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
 #    'hltEle27noerWPLooseGsfDphiFilter',
     'hltEle27noerWPLooseGsfTrackIsoFilter',
 
-	'hltL1sL1ETM70ORETM60',
+	'hltL1sETM50IorETM60IorETM70lorETM80lorETM90lorETM100',
 	'hltMET70',
 	'hltMHT70',
 	'hltPFMHTTightID90',
@@ -290,7 +298,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
 	'hltPFMET120',
 
 	'hltMHTNoPU90',
-	'hltCSV0p72L3',
+	'hltBTagCaloCSVp067Single',
 
     ]
 
@@ -841,9 +849,9 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
 
         ##[CHECKME] : .At(2) ???
         event.getByLabel(l1METLabel, l1METs)
-        l1Met[0] = l1METs.product().at(2).pt()
-        l1Met_phi[0] = l1METs.product().at(2).phi()
-        l1Met_sumet[0] = l1METs.product().at(2).etTotal()
+        l1Met[0] = l1METs.product().at(0).pt()
+        l1Met_phi[0] = l1METs.product().at(0).phi()
+        l1Met_sumet[0] = l1METs.product().at(0).etTotal()
 
         event.getByLabel(l1MHTLabel, l1MHTs)
         l1Mht[0] = l1MHTs.product().begin().pt()

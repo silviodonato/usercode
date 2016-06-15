@@ -1,6 +1,7 @@
 from launchNtupleFromAOD import launchNtupleFromAOD
 
-maxevents=1000
+maxevents=10000000000000000000
+#maxevents=1000
 fileOutput = 'ntupleTest.root'
 filesInput=[
     "file:SingleMu_Run273447.root",

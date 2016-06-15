@@ -1,9 +1,30 @@
 datasets=[
-'/SingleMuon/Run2016A-PromptReco-v1/AOD',
-'/SingleMuon/Run2016A-PromptReco-v2/AOD',
 
-'/SingleElectron/Run2016A-PromptReco-v1/AOD',
-'/SingleElectron/Run2016A-PromptReco-v2/AOD',
+#'/SingleMuon/Run2016A-PromptReco-v2/AOD',
+#'/SingleMuon/Run2016A-PromptReco-v1/AOD',
+
+#'/SingleElectron/Run2016A-PromptReco-v2/AOD',
+#'/SingleElectron/Run2016A-PromptReco-v1/AOD',
+
+#'/BTagCSV/Run2016B-PromptReco-v2/AOD',
+##'/BTagCSV/Run2016B-PromptReco-v1/AOD',
+
+#'/JetHT/Run2016B-PromptReco-v2/AOD',
+#'/JetHT/Run2016B-PromptReco-v1/AOD',
+
+#'/MET/Run2016B-PromptReco-v2/AOD',
+#'/MET/Run2016B-PromptReco-v1/AOD',
+
+#'/HLTPhysics/Run2016B-PromptReco-v2/AOD',
+#'/HLTPhysics/Run2016B-PromptReco-v1/AOD',
+
+#'/MuonEG/Run2016B-PromptReco-v2/AOD',
+#'/MuonEG/Run2016B-PromptReco-v1/AOD',
+
+
+'/ZeroBias/Run2016B-PromptReco-v2/AOD',
+'/ZeroBias/Run2016B-PromptReco-v1/AOD',
+
 
 #'/JetHT/Run2015D-05Oct2015-v1/MINIAOD',
 #'/JetHT/Run2015D-PromptReco-v4/MINIAOD',
@@ -62,14 +83,11 @@ datasets=[
 ]
 if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand
-    
-    def submit(config):
-        res = crabCommand('submit', config = config)
-    
     from CRABClient.UserUtilities import config
     config = config()
+    
     for dataset in datasets:
-        name = 'triggerNtupleAOD_FWLite_2016_v1'
+        name = 'triggerNtupleAOD_FWLite_2016_v4'
         config.section_("General")
         config.General.workArea = 'crab_'+name
         config.General.transferLogs=True
@@ -91,7 +109,7 @@ if __name__ == '__main__':
         config.section_("Data")
         config.Data.inputDBS = 'global'
         config.Data.splitting = 'FileBased'
-        config.Data.unitsPerJob = 20 ##FIXME: use 20
+        config.Data.unitsPerJob = 10 ##FIXME: use 20
         config.Data.totalUnits = -1 ##FIXME: use -1
         config.Data.outLFNDirBase = '/store/user/sdonato/' + name
         config.Data.publication = True
@@ -103,5 +121,7 @@ if __name__ == '__main__':
         
         config.section_("Site")
         config.Site.storageSite = "T2_IT_Pisa"
-        submit(config)
+        print "submitting ",dataset
+        crabCommand('submit',config = config)
+        print "DONE ",dataset
     

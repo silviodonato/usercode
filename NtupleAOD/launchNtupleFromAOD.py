@@ -355,19 +355,24 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     caloNoPuMht_phi = array( 'f', [ 0 ] )
     tree.Branch( 'caloNoPuMht_phi', caloNoPuMht_phi, 'caloNoPuMht_phi/F' )
     
-    l1Met = array( 'f', [ 0 ] )
-    tree.Branch( 'l1Met', l1Met, 'l1Met/F' )
-    l1Met_phi = array( 'f', [ 0 ] )
-    tree.Branch( 'l1Met_phi', l1Met_phi, 'l1Met_phi/F' )
-    l1Met_sumet = array( 'f', [ 0 ] )
-    tree.Branch( 'l1Met_sumet', l1Met_sumet, 'l1Met_sumet/F' )
+    l1MET2 = array( 'f', [ 0 ] )
+    tree.Branch( 'l1MET2', l1MET2, 'l1MET2/F' )
+    l1MET2_phi = array( 'f', [ 0 ] )
+    tree.Branch( 'l1MET2_phi', l1MET2_phi, 'l1MET2_phi/F' )
     
-    l1Mht = array( 'f', [ 0 ] )
-    tree.Branch( 'l1Mht', l1Mht, 'l1Mht/F' )
-    l1Mht_phi = array( 'f', [ 0 ] )
-    tree.Branch( 'l1Mht_phi', l1Mht_phi, 'l1Mht_phi/F' )
-    l1Mht_sumet = array( 'f', [ 0 ] )
-    tree.Branch( 'l1Mht_sumet', l1Mht_sumet, 'l1Mht_sumet/F' )
+    l1MET = array( 'f', [ 0 ] )
+    tree.Branch( 'l1MET', l1MET, 'l1MET/F' )
+    l1MET_phi = array( 'f', [ 0 ] )
+    tree.Branch( 'l1MET_phi', l1MET_phi, 'l1MET_phi/F' )
+    l1ET = array( 'f', [ 0 ] )
+    tree.Branch( 'l1ET', l1ET, 'l1ET/F' )
+    
+    l1MHT = array( 'f', [ 0 ] )
+    tree.Branch( 'l1MHT', l1MHT, 'l1MHT/F' )
+    l1MHT_phi = array( 'f', [ 0 ] )
+    tree.Branch( 'l1MHT_phi', l1MHT_phi, 'l1MHT_phi/F' )
+    l1HT = array( 'f', [ 0 ] )
+    tree.Branch( 'l1HT', l1HT, 'l1HT/F' )
     
     l1Jet_num = array( 'i', [ 0 ] )
     tree.Branch( 'l1Jet_num', l1Jet_num, 'l1Jet_num/I' )
@@ -379,23 +384,36 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     tree.Branch( 'l1Jet_phi', l1Jet_phi, 'l1Jet_phi[l1Jet_num]/F' )
     l1Jet_mass = array( 'f', maxJets*[ 0 ] )
     tree.Branch( 'l1Jet_mass', l1Jet_mass, 'l1Jet_mass[l1Jet_num]/F' )
-    l1Jet_tau = array( 'i', maxJets*[ 0 ] )
-    tree.Branch( 'l1Jet_tau', l1Jet_tau, 'l1Jet_tau[l1Jet_num]/I' )
     l1Jet_offmatch = array( 'i', maxJets*[ 0 ] )
     tree.Branch( 'l1Jet_offmatch', l1Jet_offmatch, 'l1Jet_offmatch[l1Jet_num]/I' )
     
-    l1EG_num = array( 'i', [ 0 ] )
-    tree.Branch( 'l1EG_num', l1EG_num, 'l1EG_num/I' )
-    l1EG_pt = array( 'f', maxJets*[ 0 ] )
-    tree.Branch( 'l1EG_pt', l1EG_pt, 'l1EG_pt[l1EG_num]/F' )
-    l1EG_eta = array( 'f', maxJets*[ 0 ] )
-    tree.Branch( 'l1EG_eta', l1EG_eta, 'l1EG_eta[l1EG_num]/F' )
-    l1EG_phi = array( 'f', maxJets*[ 0 ] )
-    tree.Branch( 'l1EG_phi', l1EG_phi, 'l1EG_phi[l1EG_num]/F' )
-    l1EG_iso = array( 'i', maxJets*[ 0 ] )
-    tree.Branch( 'l1EG_iso', l1EG_iso, 'l1EG_iso[l1EG_num]/I' )
-    l1EG_offmatch = array( 'i', maxJets*[ 0 ] )
-    tree.Branch( 'l1EG_offmatch', l1EG_offmatch, 'l1EG_offmatch[l1EG_num]/I' )
+    l1Tau_num = array( 'i', [ 0 ] )
+    tree.Branch( 'l1Tau_num', l1Tau_num, 'l1Tau_num/I' )
+    l1Tau_pt = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1Tau_pt', l1Tau_pt, 'l1Tau_pt[l1Tau_num]/F' )
+    l1Tau_eta = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1Tau_eta', l1Tau_eta, 'l1Tau_eta[l1Tau_num]/F' )
+    l1Tau_phi = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1Tau_phi', l1Tau_phi, 'l1Tau_phi[l1Tau_num]/F' )
+    l1Tau_mass = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1Tau_mass', l1Tau_mass, 'l1Tau_mass[l1Tau_num]/F' )
+    l1Tau_offmatch = array( 'i', maxJets*[ 0 ] )
+    tree.Branch( 'l1Tau_offmatch', l1Tau_offmatch, 'l1Tau_offmatch[l1Tau_num]/I' )
+    
+    l1EGamma_num = array( 'i', [ 0 ] )
+    tree.Branch( 'l1EGamma_num', l1EGamma_num, 'l1EGamma_num/I' )
+    l1EGamma_pt = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1EGamma_pt', l1EGamma_pt, 'l1EGamma_pt[l1EGamma_num]/F' )
+    l1EGamma_eta = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1EGamma_eta', l1EGamma_eta, 'l1EGamma_eta[l1EGamma_num]/F' )
+    l1EGamma_phi = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1EGamma_phi', l1EGamma_phi, 'l1EGamma_phi[l1EGamma_num]/F' )
+    l1EGamma_mass = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1EGamma_mass', l1EGamma_mass, 'l1EGamma_mass[l1EGamma_num]/F' )
+    l1EGamma_iso = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1EGamma_iso', l1EGamma_iso, 'l1EGamma_iso[l1EGamma_num]/F' )
+    l1EGamma_offmatch = array( 'i', maxJets*[ 0 ] )
+    tree.Branch( 'l1EGamma_offmatch', l1EGamma_offmatch, 'l1EGamma_offmatch[l1EGamma_num]/I' )
     
     l1Muon_num = array( 'i', [ 0 ] )
     tree.Branch( 'l1Muon_num', l1Muon_num, 'l1Muon_num/I' )
@@ -405,6 +423,8 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     tree.Branch( 'l1Muon_eta', l1Muon_eta, 'l1Muon_eta[l1Muon_num]/F' )
     l1Muon_phi = array( 'f', maxJets*[ 0 ] )
     tree.Branch( 'l1Muon_phi', l1Muon_phi, 'l1Muon_phi[l1Muon_num]/F' )
+    l1Muon_iso = array( 'f', maxJets*[ 0 ] )
+    tree.Branch( 'l1Muon_iso', l1Muon_iso, 'l1Muon_iso[l1Muon_num]/F' )
     l1Muon_offmatch = array( 'i', maxJets*[ 0 ] )
     tree.Branch( 'l1Muon_offmatch', l1Muon_offmatch, 'l1Muon_offmatch[l1Muon_num]/I' )
     
@@ -547,18 +567,11 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     
     patJets, patJetLabel = Handle("vector<reco::PFJet>"), ("ak4PFJets") #AOD
 
-    l1JetCentrals, l1JetCentralLabel = Handle("vector<l1extra::L1JetParticle>"), ("l1extraParticles:Central") #AOD
-    l1JetForwards, l1JetForwardLabel = Handle("vector<l1extra::L1JetParticle>"), ("l1extraParticles:Forward") #AOD
-    l1JetTaus, l1JetTauLabel = Handle("vector<l1extra::L1JetParticle>"), ("l1extraParticles:Tau") #AOD
-    l1JetIsoTaus, l1JetIsoTauLabel = Handle("vector<l1extra::L1JetParticle>"), ("l1extraParticles:IsoTau") #AOD
-
-    l1EGNonIsos, l1EGNonIsoLabel = Handle("vector<l1extra::L1EmParticle>"), ("l1extraParticles:NonIsolated") #AOD
-    l1EGIsos, l1EGIsoLabel = Handle("vector<l1extra::L1EmParticle>"), ("l1extraParticles:Isolated") #AOD
-
-    l1METs, l1METLabel = Handle("vector<l1extra::L1EtMissParticle>"), ("l1extraParticles:MET") #AOD
-    l1MHTs, l1MHTLabel = Handle("vector<l1extra::L1EtMissParticle>"), ("l1extraParticles:MHT") #AOD
-
-    l1Muons, l1MuonLabel = Handle("vector<l1extra::L1MuonParticle>"), ("l1extraParticles") #AOD
+    l1Jets, l1JetLabel = Handle("BXVector<l1t::Jet>"), ("caloStage2Digis:Jet") #AOD
+    l1Taus, l1TauLabel = Handle("BXVector<l1t::Tau>"), ("caloStage2Digis:Tau") #AOD
+    l1EGammas, l1EGammaLabel = Handle("BXVector<l1t::EGamma>"), ("caloStage2Digis:EGamma") #AOD
+    l1EtSums, l1EtSumLabel = Handle("BXVector<l1t::EtSum>"), ("caloStage2Digis:EtSum") #AOD
+    l1Muons, l1MuonLabel = Handle("BXVector<l1t::Muon>"), ("gmtStage2Digis:Muon") #AOD
 
     patMets, patMetLabel = Handle("vector<reco::PFMET>"), ("pfMet") #AOD
     recoVertexs, recoVertexLabel = Handle("vector<reco::Vertex>"), ("offlinePrimaryVertices") #AOD
@@ -797,66 +810,88 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
         pfMHTCollection = "hltPFMHTTightID"
         pfMht[0],pfMht_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(pfMHTCollection,"","HLT"))
 
-        event.getByLabel(l1JetCentralLabel, l1JetCentrals)
-        event.getByLabel(l1JetForwardLabel, l1JetForwards)
-        event.getByLabel(l1JetTauLabel, l1JetTaus)
-        if not MC:
-            event.getByLabel(l1JetIsoTauLabel, l1JetIsoTaus)
-            l1JetIsoTaus_=l1JetIsoTaus.product()
-        else:
-            l1JetIsoTaus_=[]
+        event.getByLabel(l1JetLabel, l1Jets)
         i=0
         l1Jet_num[0] = 0
-        for l1Jet in itertools.chain(l1JetCentrals.product(),l1JetForwards.product(),l1JetTaus.product(),l1JetIsoTaus_):
+        for i in range(l1Jets.product().size(0)):
+            l1Jet = l1Jets.product().at(0,i)
             l1Jet_pt[i] = l1Jet.pt()
             l1Jet_eta[i] = l1Jet.eta()
             l1Jet_phi[i] = l1Jet.phi()
             l1Jet_mass[i] = l1Jet.mass()
             l1Jet_offmatch[i] = matching(l1Jet.eta(),l1Jet.phi(),offJet_eta,offJet_phi,offJet_num[0])
-            l1Jet_tau[i] = 0
-            if l1Jet in l1JetTaus.product():
-                l1Jet_tau[i] = 1
-            if l1Jet in l1JetIsoTaus_:
-                l1Jet_tau[i] = 2
             l1Jet_num[0] = i+1
+            i+=1
+
+        event.getByLabel(l1TauLabel, l1Taus)
+        i=0
+        l1Tau_num[0] = 0
+        for i in range(l1Taus.product().size(0)):
+            l1Tau = l1Taus.product().at(0,i)
+            l1Tau_pt[i] = l1Tau.pt()
+            l1Tau_eta[i] = l1Tau.eta()
+            l1Tau_phi[i] = l1Tau.phi()
+            l1Tau_mass[i] = l1Tau.mass()
+            l1Tau_offmatch[i] = matching(l1Tau.eta(),l1Tau.phi(),offJet_eta,offJet_phi,offJet_num[0])
+            l1Tau_num[0] = i+1
             i+=1
 
         event.getByLabel(l1MuonLabel, l1Muons)
         i=0
         l1Muon_num[0] = 0
-        for l1Muon in itertools.chain(l1Muons.product()):
+        for i in range(l1Muons.product().size(0)):
+            l1Muon = l1Muons.product().at(0,i)
             l1Muon_pt[i] = l1Muon.pt()
             l1Muon_eta[i] = l1Muon.eta()
             l1Muon_phi[i] = l1Muon.phi()
-            l1Muon_offmatch[i] = matching(l1Muon.eta(),l1Muon.phi(),offMuon_eta,offMuon_phi,offMuon_num[0])
+            l1Muon_iso[i] = l1Muon.hwIsoSum()
+            l1Muon_offmatch[i] = matching(l1Muon.eta(),l1Muon.phi(),offJet_eta,offJet_phi,offJet_num[0])
             l1Muon_num[0] = i+1
             i+=1
 
-        event.getByLabel(l1EGIsoLabel, l1EGIsos)
-        event.getByLabel(l1EGNonIsoLabel, l1EGNonIsos)
+        event.getByLabel(l1EGammaLabel, l1EGammas)
         i=0
-        l1EG_num[0] = 0
-        for l1EG in itertools.chain(l1EGIsos.product(),l1EGNonIsos.product()):
-            l1EG_pt[i] = l1EG.pt()
-            l1EG_eta[i] = l1EG.eta()
-            l1EG_phi[i] = l1EG.phi()
-            l1EG_offmatch[i] = matching(l1EG.eta(),l1EG.phi(),offElectron_eta,offElectron_phi,offElectron_num[0]) #ignoring offline photons
-            l1EG_iso[i] = 0
-            if l1EG in l1EGIsos.product():
-                l1EG_iso[i] = 1
-            l1EG_num[0] = i+1
+        l1EGamma_num[0] = 0
+        for i in range(l1EGammas.product().size(0)):
+            l1EGamma = l1EGammas.product().at(0,i)
+            l1EGamma_pt[i] = l1EGamma.pt()
+            l1EGamma_eta[i] = l1EGamma.eta()
+            l1EGamma_phi[i] = l1EGamma.phi()
+            l1EGamma_mass[i] = l1EGamma.mass()
+            l1EGamma_iso[i] = l1EGamma.isoEt()
+            l1EGamma_offmatch[i] = matching(l1EGamma.eta(),l1EGamma.phi(),offJet_eta,offJet_phi,offJet_num[0])
+            l1EGamma_num[0] = i+1
             i+=1
 
-        ##[CHECKME] : .At(2) ???
-        event.getByLabel(l1METLabel, l1METs)
-        l1Met[0] = l1METs.product().at(0).pt()
-        l1Met_phi[0] = l1METs.product().at(0).phi()
-        l1Met_sumet[0] = l1METs.product().at(0).etTotal()
+        event.getByLabel(l1EtSumLabel, l1EtSums)
+        MET2,MET,ET,MHT,HT = 0,0,0,0,0
+        for i in range(l1EtSums.product().size(0)):
+            l1Obj = l1EtSums.product().at(0,i)
+            l1ObjType = l1Obj.getType()
+            if l1ObjType == l1Obj.kMissingEt2:
+                MET2 = l1Obj
+            elif l1ObjType == l1Obj.kMissingEt:
+                MET = l1Obj
+            elif l1ObjType == l1Obj.kMissingHt:
+                MHT = l1Obj
+            elif l1ObjType == l1Obj.kTotalEt:
+                ET = l1Obj
+            elif l1ObjType == l1Obj.kTotalHt:
+                HT = l1Obj
 
-        event.getByLabel(l1MHTLabel, l1MHTs)
-        l1Mht[0] = l1MHTs.product().begin().pt()
-        l1Mht_phi[0] = l1MHTs.product().begin().phi()
-        l1Mht_sumet[0] = l1MHTs.product().begin().etTotal()
+        if MET2:
+            l1MET2[0] = MET2.pt()
+            l1MET2_phi[0] = MET2.phi()
+        if MET:
+            l1MET[0] = MET.pt()
+            l1MET_phi[0] = MET.phi()
+        if ET:
+            l1ET[0] = ET.pt()
+        if MHT:
+            l1MHT[0] = MHT.pt()
+            l1MHT_phi[0] = MHT.phi()
+        if HT:
+            l1HT[0] = HT.pt()
 
         names = event.object().triggerNames(triggerBits.product())
         for i,triggerName in enumerate(triggerNames):

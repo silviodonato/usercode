@@ -1,5 +1,33 @@
 from math import sqrt, pi, log10, log, exp
 
+def isGoodMuonCut( me0muon, MaxPullX, MaxDiffX, MaxPullY, MaxDiffY, MaxDiffPhiDir ):
+    thisSegment = me0muon.me0segment()
+    r3FinalReco = me0muon.localTrackPosAtSurface()
+    C = me0muon.localTrackCov()
+    thisPosition = LocalPoint(thisSegment.localPosition())
+    sigmax = sqrt(C[3][3]+thisSegment.localPositionError().xx() )
+    sigmay = sqrt(C[4][4]+thisSegment.localPositionError().yy() )
+    X_MatchFound = False, Y_MatchFound = False, Dir_MatchFound = False
+    if ( (abs(thisPosition.x()-r3FinalReco.x())/sigmax ) < MaxPullX ) or (abs(thisPosition.x()-r3FinalReco.x()) < MaxDiffX ) : X_MatchFound = True
+    if ( (abs(thisPosition.y()-r3FinalReco.y())/sigmay ) < MaxPullY ) or (abs(thisPosition.y()-r3FinalReco.y()) < MaxDiffY ) : Y_MatchFound = True
+    if abs(reco.deltaPhi(me0muon.localTrackMomAtSurface().barePhi(),thisSegment.localDirection().barePhi())) < MaxDiffPhiDir : Dir_MatchFound = True
+    return (X_MatchFound and Y_MatchFound and Dir_MatchFound)
+
+def isGoodMuon(me0muon, type):
+    if type=="All":
+        return True
+    elif type=="VeryLoose":
+        return isGoodMuonCut(me0muon,3,4,20,20,3.14)
+    elif type=="Loose":
+        return isGoodMuonCut(me0muon,3,2,3,2,0.5)
+    elif type=="Tight":
+        return isGoodMuonCut(me0muon,3,2,3,2,0.15)
+    else:
+        return False
+
+def isLooseMuon(muon):
+ return muon.isPFMuon() and ( muon.isGlobalMuon() or muon.isTrackerMuon());
+
 def printLabelFilters(triggerEv):
     print "Filters:"
     for i in range(triggerEv.sizeFilters()):
@@ -20,9 +48,154 @@ def getSizeFilter(triggerEv,inputTag):
         return len(triggerEv.filterKeys(filterIndex))
 
 def goodEvent(run,lumi): #https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions15/13TeV/Cert_246908-260627_13TeV_PromptReco_Collisions15_25ns_JSON.txt
-#    JSONlist={"254231": [[1, 24]], "254232": [[1, 81]], "254790": [[90, 90], [93, 630], [633, 697], [701, 715], [719, 784]], "254852": [[47, 94]], "254879": [[52, 52], [54, 140]], "254906": [[1, 75]], "254907": [[1, 52]], "254914": [[32, 32], [34, 78]], "256630": [[5, 26]], "256673": [[55, 56]], "256674": [[1, 2]], "256675": [[1, 106], [111, 164]], "256676": [[1, 160], [162, 208]], "256677": [[1, 291], [293, 390], [392, 397], [400, 455], [457, 482]], "256801": [[73, 263]], "256842": [[131, 132]], "256843": [[1, 204], [207, 284], [286, 378], [380, 461], [463, 587], [598, 627], [630, 661], [1001, 1034], [1036, 1081], [1083, 1191], [1193, 1193], [1195, 1329], [1331, 1332]], "256866": [[34, 47]], "256867": [[1, 16], [19, 94]], "256868": [[5, 33], [35, 200], [202, 492]], "256869": [[1, 34]], "256926": [[35, 50], [53, 62], [64, 65]], "256941": [[1, 17], [19, 29], [103, 105], [107, 126], [129, 129], [131, 168], [170, 170], [175, 290], [293, 294]], "257461": [[44, 95]], "257531": [[5, 45], [50, 143]], "257599": [[42, 118]], "257613": [[14, 1307]], "257614": [[1, 16]], "257645": [[37, 73], [75, 1096]], "257682": [[66, 366]], "257722": [[1, 19]], "257723": [[1, 1], [3, 108], [114, 148]], "257735": [[1, 15]], "257751": [[1, 463]], "257804": [[1, 17]], "257805": [[1, 249]], "257816": [[1, 385]], "257819": [[1, 248]], "257968": [[69, 326]], "257969": [[1, 634]], "258129": [[30, 124]], "258136": [[1, 60]], "258157": [[1, 56]], "258158": [[1, 1088], [1091, 1786]], "258159": [[1, 501]], "258177": [[1, 342], [347, 724], [755, 1939]], "258211": [[43, 129]], "258213": [[1, 165]], "258214": [[1, 217]], "258215": [[1, 6]], "258287": [[45, 144], [148, 227]], "258403": [[1, 251]], "258425": [[3, 136]], "258426": [[1, 10]], "258427": [[1, 107]], "258428": [[1, 159]], "258432": [[1, 4]], "258434": [[1, 453]], "258440": [[1, 442], [444, 732]], "258444": [[1, 37]], "258445": [[1, 302]], "258446": [[1, 142]], "258448": [[2, 100], [102, 731]], "258655": [[60, 68]], "258656": [[1, 334]], "258694": [[23, 199]], "258702": [[52, 402]], "258703": [[1, 389]], "258705": [[1, 100]], "258706": [[1, 733]], "258712": [[1, 524]], "258713": [[1, 161]], "258714": [[1, 67]], "258741": [[22, 72]], "258742": [[2, 693]], "258745": [[1, 260]], "258749": [[1, 204], [220, 604]], "258750": [[1, 197]], "259626": [[83, 106], [108, 111], [115, 166], [169, 215], [218, 437]], "259637": [[1, 72], [75, 221]], "259681": [[64, 98]], "259683": [[5, 19], [22, 23], [25, 94]], "259685": [[1, 209], [213, 240], [242, 290], [292, 445], [447, 538], [540, 544], [546, 630]], "259686": [[1, 43], [45, 47], [49, 100], [102, 108], [110, 163], [165, 245], [248, 341]], "259721": [[73, 99], [102, 408]], "259809": [[53, 222]], "259810": [[1, 113], [116, 116]], "259811": [[1, 47], [50, 91]], "259813": [[1, 10]], "259817": [[1, 5]], "259818": [[1, 160]], "259820": [[1, 32], [36, 161]], "259821": [[1, 75], [78, 212]], "259822": [[1, 14], [17, 464]], "259861": [[1, 34], [36, 38], [40, 66], [69, 77]], "259862": [[1, 13], [16, 532]], "259884": [[73, 143], [147, 155]], "259890": [[1, 34], [37, 109]], "259891": [[1, 108]], "260373": [[47, 370], [373, 408]], "260424": [[3, 12], [15, 266], [269, 672]], "260425": [[1, 18], [21, 55], [58, 256]], "260426": [[1, 52], [55, 296], [298, 307], [310, 504]], "260427": [[1, 198]], "260431": [[1, 447]], "260532": [[3, 8], [10, 456], [458, 746]], "260533": [[1, 14]], "260534": [[1, 375]], "260536": [[9, 37], [45, 60], [62, 193]], "260538": [[1, 284]], "260541": [[1, 24]], "260575": [[1, 24]], "260576": [[2, 88], [90, 150]], "260577": [[1, 76]], "260593": [[65, 401]], "260627": [[97, 611], [613, 757], [760, 788], [791, 1051], [1054, 1530], [1533, 1845]]}
 # https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt
-    JSONlist={"272007":[[1,6]], "272008":[[1,5],[10,35]], "272010":[[1,24]], "272011":[[1,30],[32,38],[42,90],[93,107],[110,116],[119,132],[135,147],[150,189],[191,202]], "272012":[[1,27],[30,41],[44,55],[57,68],[71,82],[85,96],[99,112],[116,148],[150,158],[160,168],[170,185],[187,193],[195,201],[204,214]], "272014":[[1,10],[12,19],[21,28],[32,39],[41,47],[50,56],[58,82],[84,91],[93,99],[101,108],[110,125]], "272016":[[1,9],[12,18],[21,27],[29,36],[38,48]], "272017":[[1,2]], "272019":[[1,22]], "272021":[[1,125]], "272022":[[1,69]], "272760":[[66,78],[79,79],[80,86]], "272761":[[1,51],[52,54],[55,85]], "272762":[[1,80],[81,81],[82,108]], "272774":[[99,112]], "272775":[[1,30],[31,32],[33,186],[187,187],[188,204]], "272776":[[1,105]], "272782":[[80,113]], "272783":[[1,151]], "272784":[[1,305]], "272785":[[1,149]], "272786":[[1,59]], "272798":[[91,223],[224,947],[948,948],[949,959],[960,960],[961,972],[973,973],[974,995],[996,996],[997,1022],[1023,1024],[1025,1036],[1037,1038],[1039,1051],[1052,1053],[1054,1060],[1061,1065],[1066,1066],[1067,1067],[1068,1360],[1361,1363],[1364,1370],[1371,1373],[1374,1718],[1719,1720],[1721,1800]], "272811":[[95,189]], "272812":[[1,380]], "272814":[[1,9]], "272815":[[1,22]], "272816":[[1,35]], "272818":[[1,65],[66,67],[68,245],[246,246],[247,279],[280,280],[281,451],[452,457],[458,620]], "272827":[[98,111]], "272828":[[1,59]], "272922":[[15,34]], "272923":[[1,32]], "272924":[[1,22]], "272925":[[1,9]], "272926":[[1,22]], "272927":[[1,73]], "272930":[[1,164]], "272936":[[25,379]], "273013":[[26,330]], "273017":[[1,928]], "273150":[[64,75]], "273158":[[1,1283]], "273290":[[10,22]], "273291":[[1,83]], "273292":[[1,21]], "273294":[[1,8]], "273295":[[1,11]], "273299":[[1,47]], "273301":[[1,614]], "273302":[[1,459]], "273402":[[100,292]], "273403":[[1,68]], "273404":[[1,22]], "273405":[[1,34]], "273406":[[1,125]], "273407":[[1,9]], "273408":[[1,9]], "273409":[[1,317]], "273410":[[1,99]], "273411":[[1,29]], "273425":[[62,352],[353,353],[354,742]], "273426":[[1,65]], "273445":[[7,9]], "273446":[[1,48]], "273447":[[1,113],[114,114],[115,420]], "273448":[[1,396]], "273449":[[1,216]], "273450":[[1,214],[215,218],[219,647]], "273492":[[71,282],[283,283],[284,325],[326,326],[327,343]], "273493":[[1,241]], "273494":[[1,192]], "273502":[[73,256],[257,257],[258,318],[319,319],[320,813],[814,814],[815,1077]], "273503":[[1,598]], "273522":[[79,121]], "273523":[[1,228]], "273526":[[1,34]], "273531":[[1,280]], "273537":[[1,779]], "273554":[[77,444],[445,446]], "273555":[[1,173]]}
+    JSONlist={"273158": [[1, 1279]],
+ "273302": [[1, 459]],
+ "273402": [[100, 292]],
+ "273403": [[1, 53]],
+ "273404": [[1, 18]],
+ "273405": [[2, 25]],
+ "273406": [[1, 112]],
+ "273408": [[1, 6]],
+ "273409": [[1, 309]],
+ "273410": [[1, 90]],
+ "273411": [[1, 29]],
+ "273425": [[62, 352], [354, 733]],
+ "273446": [[1, 33]],
+ "273447": [[1, 113], [115, 412]],
+ "273448": [[1, 391]],
+ "273449": [[1, 214]],
+ "273450": [[1, 214], [219, 647]],
+ "273492": [[71, 71], [73, 282], [284, 325], [327, 338]],
+ "273493": [[1, 233]],
+ "273494": [[1, 192]],
+ "273502": [[73, 256], [258, 318], [320, 813], [815, 1064]],
+ "273503": [[1, 598]],
+ "273554": [[77, 437]],
+ "273555": [[1, 173]],
+ "273725": [[83, 252], [254, 2545]],
+ "273728": [[1, 100]],
+ "273730": [[1, 1814], [1820, 2126]],
+ "274094": [[108, 332]],
+ "274146": [[1, 67]],
+ "274159": [[1, 43]],
+ "274160": [[1, 207]],
+ "274161": [[1, 516]],
+ "274172": [[31, 95]],
+ "274198": [[81, 191]],
+ "274199": [[1, 623]],
+ "274200": [[1, 678]],
+ "274240": [[1, 40], [42, 82]],
+ "274241": [[1, 1152], [1161, 1176]],
+ "274244": [[1, 607]],
+ "274250": [[1, 701]],
+ "274251": [[1, 546]],
+ "274283": [[2, 19]],
+ "274284": [[1, 210]],
+ "274286": [[1, 154]],
+ "274314": [[97, 97], [99, 158]],
+ "274315": [[1, 424]],
+ "274316": [[1, 959]],
+ "274317": [[1, 3]],
+ "274319": [[1, 225]],
+ "274335": [[60, 1003]],
+ "274336": [[1, 14]],
+ "274337": [[3, 17]],
+ "274338": [[1, 698]],
+ "274339": [[1, 29], [31, 31], [33, 33], [35, 93]],
+ "274344": [[1, 632]],
+ "274345": [[1, 170]],
+ "274382": [[94, 144]],
+ "274387": [[88, 439]],
+ "274388": [[1, 1820]],
+ "274420": [[94, 268]],
+ "274421": [[1, 342]],
+ "274422": [[1, 2207]],
+ "274440": [[92, 493]],
+ "274441": [[1, 431]],
+ "274442": [[1, 752]],
+ "274954": [[37, 37], [39, 57]],
+ "274955": [[1, 91]],
+ "274968": [[1, 1192]],
+ "274969": [[1, 1003]],
+ "274970": [[1, 47]],
+ "274971": [[1, 905]],
+ "274998": [[64, 782]],
+ "274999": [[1, 1241]],
+ "275000": [[1, 136]],
+ "275001": [[1, 1781], [1786, 2061]],
+ "275059": [[78, 81], [105, 137]],
+ "275066": [[1, 96]],
+ "275067": [[1, 392]],
+ "275068": [[1, 915]],
+ "275073": [[1, 517]],
+ "275074": [[1, 442], [444, 647]],
+ "275124": [[106, 106], [108, 431]],
+ "275125": [[1, 989]],
+ "275282": [[91, 180]],
+ "275283": [[1, 132]],
+ "275284": [[1, 74]],
+ "275290": [[96, 143]],
+ "275291": [[1, 347]],
+ "275292": [[1, 121]],
+ "275293": [[1, 142], [144, 201]],
+ "275309": [[55, 617]],
+ "275310": [[1, 1929]],
+ "275311": [[1, 1253]],
+ "275319": [[141, 282]],
+ "275337": [[1, 427]],
+ "275338": [[1, 520]],
+ "275344": [[76, 356]],
+ "275345": [[1, 353]],
+ "275370": [[81, 365]],
+ "275371": [[1, 22], [28, 569]],
+ "275375": [[127, 1449]],
+ "275376": [[1, 2667], [2669, 3096]],
+ "275657": [[1, 105]],
+ "275658": [[1, 337]],
+ "275659": [[1, 17]],
+ "275761": [[1, 9]],
+ "275767": [[1, 4]],
+ "275772": [[1, 56]],
+ "275773": [[1, 7]],
+ "275774": [[1, 311], [315, 315]],
+ "275776": [[1, 140]],
+ "275777": [[1, 300]],
+ "275778": [[1, 305]],
+ "275782": [[1, 131], [133, 762]],
+ "275832": [[1, 367]],
+ "275833": [[1, 53], [56, 115], [117, 251]],
+ "275834": [[1, 297]],
+ "275835": [[1, 13]],
+ "275836": [[1, 429], [431, 1163], [1166, 1170], [1184, 1293]],
+ "275837": [[1, 186], [198, 726]],
+ "275847": [[1, 2263]],
+ "275886": [[73, 109]],
+ "275890": [[1, 1393]],
+ "275911": [[62, 298], [300, 354], [356, 440]],
+ "275912": [[1, 289]],
+ "275913": [[1, 475]],
+ "275918": [[1, 318], [348, 361]],
+ "275920": [[5, 463]],
+ "275921": [[1, 2], [4, 5], [17, 20]],
+ "275923": [[3, 53], [63, 64], [66, 126]],
+ "275931": [[1, 14], [19, 89]],
+ "275963": [[82, 139], [141, 172]],
+ "276092": [[74, 149]],
+ "276097": [[1, 507]],
+ "276242": [[1, 7], [18, 61], [72, 1664]],
+ "276243": [[1, 15], [18, 480], [482, 611]],
+ "276244": [[3, 1202]],
+ "276282": [[75, 534], [537, 1142]],
+ "276283": [[3, 1087]],
+ "276315": [[40, 175], [178, 217]],
+ "276317": [[3, 138]],
+ "276318": [[3, 103], [106, 570]],
+ "276355": [[1, 33]],
+ "276361": [[1, 161], [169, 208], [210, 800], [802, 833]],
+ "276363": [[1, 140], [142, 238], [242, 1482]],
+ "276384": [[2, 1117]]}
+
     if str(run) in JSONlist.keys():
         for rg in JSONlist[str(run)]:
             if len(rg) ==2:
@@ -305,15 +478,18 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     MC = False
     if len(filesInput)>0 and ('AODSIM' in filesInput[0]):
         MC = True
-    print "MC=",MC
+    HLTprocess = "HLT"
+    if len(filesInput)>0 and ('reHLT' in filesInput[0]):
+        HLTprocess = "HLT2"
+    print "HLTprocess=",HLTprocess
     
     btags, btagLabel = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("pfCombinedInclusiveSecondaryVertexV2BJetTags") #("pfCombinedSecondaryVertexBJetTags")
     
     if MC:
-        btagLabel = ("combinedInclusiveSecondaryVertexV2BJetTags")
-        calobjets = calobjetsMC
-        pfbjets = pfbjetsMC
-    
+#        btagLabel = ("combinedInclusiveSecondaryVertexV2BJetTags")
+#        calobjets = calobjetsMC
+#        pfbjets = pfbjetsMC
+	pass    
     ncalobjets = len(calobjets)
     npfbjets = len(pfbjets)
 
@@ -327,8 +503,12 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     tree.Branch( 'lumi', lumi, 'lumi/i' )
     eventNumber = array( 'L', [ 0 ] )
     tree.Branch( 'event', eventNumber, 'event/i' )
+    bx = array( 'L', [ 0 ] )
+    tree.Branch( 'bx', bx, 'bx/i' )
     JSON = array( 'i', [ 0 ] )
     tree.Branch( 'JSON', JSON, 'JSON/I' )
+    instLumi = array( 'f', [ 0 ] )
+    tree.Branch( 'instLumi', instLumi, 'instLumi/F' )
     
     caloMet = array( 'f', [ 0 ] )
     tree.Branch( 'caloMet', caloMet, 'caloMet/F' )
@@ -561,10 +741,12 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     offPUPPIJet_csv = array( 'f', maxJets*[ 0 ] )
     tree.Branch( 'offPUPPIJet_csv', offPUPPIJet_csv, 'offPUPPIJet_csv[offPUPPIJet_num]/F' )
     
-    triggerBits, triggerBitLabel = Handle("edm::TriggerResults"), ("TriggerResults::HLT")
+    triggerBits, triggerBitLabel = Handle("edm::TriggerResults"), ("TriggerResults::%s"%HLTprocess)
     triggerObjects, triggerObjectLabel  = Handle("std::vector<pat::TriggerObjectStandAlone>"), "selectedPatTrigger"
     triggerPrescales, triggerPrescaleLabel  = Handle("pat::PackedTriggerPrescales"), "patTrigger"
     
+    lumiscaler, lumiscalerLabel = Handle("vector<LumiScalers>"), ("scalersRawToDigi")
+
     patJets, patJetLabel = Handle("vector<reco::PFJet>"), ("ak4PFJets") #AOD
 
     l1Jets, l1JetLabel = Handle("BXVector<l1t::Jet>"), ("caloStage2Digis:Jet") #AOD
@@ -586,13 +768,14 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     ##get triggerNames from the first event
     events.to(0)
     for event in events: break
+    triggerEvent, triggerEventLabel = Handle("trigger::TriggerEvent"), ("hltTriggerSummaryAOD::%s"%HLTprocess)
     event.getByLabel(triggerBitLabel, triggerBits)
+    triggerBits.product()
     names = event.object().triggerNames(triggerBits.product())
     triggerNames = names.triggerNames()
     for name in triggerNames: name = name.split("_v")[0]
     nTriggers = len(triggerNames)
 
-    triggerEvent, triggerEventLabel = Handle("trigger::TriggerEvent"), ("hltTriggerSummaryAOD::HLT")
 #    ##get filters from the first event
 #    event.getByLabel(triggerEventLabel, triggerEvent) ## AOD
 #    for i in range(triggerEvent.product().sizeFilters()): filters.append(triggerEvent.product().filterLabel(i))
@@ -601,13 +784,14 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
     triggerVars = {}
     for trigger in triggerNames:
         triggerVars[trigger]=array( 'i', [ 0 ] )
-        tree.Branch( trigger, triggerVars[trigger], trigger+'/O' )
+        tree.Branch( trigger[:-3], triggerVars[trigger], trigger[:-3]+'/O' )
 
     filterVars = {}
     for filter_ in filters:
         filterVars[filter_]=array( 'i', [ 0 ] )
         tree.Branch( filter_, filterVars[filter_], filter_+'/I' )
     
+    skipL1 = False
     memOld = 0
     ##event loop
     for iev,event in enumerate(events):
@@ -619,6 +803,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
             memOld = memNew
         if iev>maxevents: break
         event.getByLabel(triggerBitLabel, triggerBits)
+            
 #        event.getByLabel(triggerObjectLabel, triggerObjects)
 #        event.getByLabel(triggerPrescaleLabel, triggerPrescales)
         event.getByLabel(triggerEventLabel, triggerEvent) ## AOD
@@ -628,7 +813,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
         event.getByLabel(patElectronLabel, patElectrons)
         event.getByLabel(patMuonLabel, patMuons)
         event.getByLabel(patPhotonLabel, patPhotons)
-        
+        event.getByLabel(lumiscalerLabel, lumiscaler)        
         ## AOD
         event.getByLabel(btagLabel, btags)
 
@@ -636,7 +821,10 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
         run[0] = event.eventAuxiliary().run()
         lumi[0] = event.eventAuxiliary().luminosityBlock()
         eventNumber[0] = event.eventAuxiliary().event()
-        JSON[0] = goodEvent(event.eventAuxiliary().run(),event.eventAuxiliary().luminosityBlock())
+        if not MC: 
+            bx[0] = event.eventAuxiliary().bunchCrossing()
+            instLumi[0] = lumiscaler.product().begin().instantLumi()
+            JSON[0] = goodEvent(event.eventAuxiliary().run(),event.eventAuxiliary().luminosityBlock())
         
         i=0
         offJet_num[0] = 0
@@ -668,7 +856,12 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
                 offMuon_pt[i] = muon.pt()
                 offMuon_eta[i] = muon.eta()
                 offMuon_phi[i] = muon.phi()
-                offMuon_iso[i] = 0
+#                print muon.pfIsolationR03()
+                if isLooseMuon(muon):
+                    offMuon_iso[i] = 1
+                else:
+                    offMuon_iso[i] = 0
+#                pfIsolationR04()
                 offMuon_num[0] = i + 1
                 i+=1
         
@@ -680,7 +873,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
                 offElectron_pt[i] = electron.pt()
                 offElectron_eta[i] = electron.eta()
                 offElectron_phi[i] = electron.phi()
-                offElectron_iso[i] = 0
+                offElectron_iso[i] = electron.mva_Isolated() 
                 offElectron_num[0] = i + 1
                 i+=1
 
@@ -692,7 +885,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
                 offPhoton_pt[i] = photon.pt()
                 offPhoton_eta[i] = photon.eta()
                 offPhoton_phi[i] = photon.phi()
-                offPhoton_iso[i] = 0
+                offPhoton_iso[i] = photon.photonIso()
                 offPhoton_num[0] = i + 1
                 i+=1
                 
@@ -723,8 +916,8 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
         calojetCollection = "hltAK4CaloJetsCorrectedIDPassed"
         calojetCollectionForBtag = "hltSelector8CentralJetsL1FastJet"
         trigObjColl = triggerEvent.product().getObjects()
-        collectionKeys = getCollectionKeys(triggerEvent.product(),ROOT.edm.InputTag(calojetCollection,"","HLT"))
-        collectionKeysForBtag = getCollectionKeys(triggerEvent.product(),ROOT.edm.InputTag(calojetCollectionForBtag,"","HLT"))
+        collectionKeys = getCollectionKeys(triggerEvent.product(),ROOT.edm.InputTag(calojetCollection,"",HLTprocess))
+        collectionKeysForBtag = getCollectionKeys(triggerEvent.product(),ROOT.edm.InputTag(calojetCollectionForBtag,"",HLTprocess))
         i=0
         caloJet_num[0] = 0
         for key in collectionKeys:
@@ -739,7 +932,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
                 caloJet_num[0] = i+1 
                 for calobjet in calobjets:
                     caloJet_btagged[calobjet][i] = -1
-                    filterIndex = triggerEvent.product().filterIndex(ROOT.edm.InputTag(calobjet,"","HLT"))
+                    filterIndex = triggerEvent.product().filterIndex(ROOT.edm.InputTag(calobjet,"",HLTprocess))
                     if filterIndex < triggerEvent.product().sizeFilters():
                         for key3 in collectionKeysForBtag:
                             jetForBtag = trigObjColl[key3];
@@ -758,8 +951,8 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
         pfjetCollection = "hltAK4PFJetsCorrected"
         pfjetCollectionForBtag = "hltPFJetForBtag"
         trigObjColl = triggerEvent.product().getObjects()
-        collectionKeys = getCollectionKeys(triggerEvent.product(),ROOT.edm.InputTag(pfjetCollection,"","HLT"))
-        collectionKeysForBtag = getCollectionKeys(triggerEvent.product(),ROOT.edm.InputTag(pfjetCollectionForBtag,"","HLT"))
+        collectionKeys = getCollectionKeys(triggerEvent.product(),ROOT.edm.InputTag(pfjetCollection,"",HLTprocess))
+        collectionKeysForBtag = getCollectionKeys(triggerEvent.product(),ROOT.edm.InputTag(pfjetCollectionForBtag,"",HLTprocess))
         i=0
         pfJet_num[0] = 0
         for key in collectionKeys:
@@ -774,7 +967,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
                 pfJet_num[0] = i+1
                 for pfbjet in pfbjets:
                     pfJet_btagged[pfbjet][i] = -1
-                    filterIndex = triggerEvent.product().filterIndex(ROOT.edm.InputTag(pfbjet,"","HLT"))
+                    filterIndex = triggerEvent.product().filterIndex(ROOT.edm.InputTag(pfbjet,"",HLTprocess))
                     if filterIndex < triggerEvent.product().sizeFilters():
                         for key3 in collectionKeysForBtag:
                             jetForBtag = trigObjColl[key3];
@@ -796,24 +989,26 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
             offJet_calomatch[i] = matching(offJet_eta[i],offJet_phi[i],caloJet_eta,caloJet_phi,caloJet_num[0])
         
         caloMETCollection = "hltMet"
-        caloMet[0],caloMet_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(caloMETCollection,"","HLT"))
+        caloMet[0],caloMet_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(caloMETCollection,"",HLTprocess))
         
         caloMHTCollection = "hltHtMht"
-        caloMht[0],caloMht_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(caloMHTCollection,"","HLT"))
+        caloMht[0],caloMht_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(caloMHTCollection,"",HLTprocess))
 
         caloNoPuMHTCollection = "hltMHTNoPU"
-        caloNoPuMht[0],caloNoPuMht_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(caloNoPuMHTCollection,"","HLT"))
+        caloNoPuMht[0],caloNoPuMht_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(caloNoPuMHTCollection,"",HLTprocess))
 
         pfMETCollection = "hltPFMETProducer"
-        pfMet[0],pfMet_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(pfMETCollection,"","HLT"))
+        pfMet[0],pfMet_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(pfMETCollection,"",HLTprocess))
         
         pfMHTCollection = "hltPFMHTTightID"
-        pfMht[0],pfMht_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(pfMHTCollection,"","HLT"))
+        pfMht[0],pfMht_phi[0] = getMET(triggerEvent.product(),ROOT.edm.InputTag(pfMHTCollection,"",HLTprocess))
 
-        event.getByLabel(l1JetLabel, l1Jets)
-        i=0
-        l1Jet_num[0] = 0
-        for i in range(l1Jets.product().size(0)):
+	if not skipL1:
+	 try:
+          event.getByLabel(l1JetLabel, l1Jets)
+          i=0
+          l1Jet_num[0] = 0
+          for i in range(l1Jets.product().size(0)):
             l1Jet = l1Jets.product().at(0,i)
             l1Jet_pt[i] = l1Jet.pt()
             l1Jet_eta[i] = l1Jet.eta()
@@ -823,10 +1018,10 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
             l1Jet_num[0] = i+1
             i+=1
 
-        event.getByLabel(l1TauLabel, l1Taus)
-        i=0
-        l1Tau_num[0] = 0
-        for i in range(l1Taus.product().size(0)):
+          event.getByLabel(l1TauLabel, l1Taus)
+          i=0
+          l1Tau_num[0] = 0
+          for i in range(l1Taus.product().size(0)):
             l1Tau = l1Taus.product().at(0,i)
             l1Tau_pt[i] = l1Tau.pt()
             l1Tau_eta[i] = l1Tau.eta()
@@ -836,10 +1031,10 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
             l1Tau_num[0] = i+1
             i+=1
 
-        event.getByLabel(l1MuonLabel, l1Muons)
-        i=0
-        l1Muon_num[0] = 0
-        for i in range(l1Muons.product().size(0)):
+          event.getByLabel(l1MuonLabel, l1Muons)
+          i=0
+          l1Muon_num[0] = 0
+          for i in range(l1Muons.product().size(0)):
             l1Muon = l1Muons.product().at(0,i)
             l1Muon_pt[i] = l1Muon.pt()
             l1Muon_eta[i] = l1Muon.eta()
@@ -849,10 +1044,10 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
             l1Muon_num[0] = i+1
             i+=1
 
-        event.getByLabel(l1EGammaLabel, l1EGammas)
-        i=0
-        l1EGamma_num[0] = 0
-        for i in range(l1EGammas.product().size(0)):
+          event.getByLabel(l1EGammaLabel, l1EGammas)
+          i=0
+          l1EGamma_num[0] = 0
+          for i in range(l1EGammas.product().size(0)):
             l1EGamma = l1EGammas.product().at(0,i)
             l1EGamma_pt[i] = l1EGamma.pt()
             l1EGamma_eta[i] = l1EGamma.eta()
@@ -863,9 +1058,9 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
             l1EGamma_num[0] = i+1
             i+=1
 
-        event.getByLabel(l1EtSumLabel, l1EtSums)
-        MET2,MET,ET,MHT,HT = 0,0,0,0,0
-        for i in range(l1EtSums.product().size(0)):
+          event.getByLabel(l1EtSumLabel, l1EtSums)
+          MET2,MET,ET,MHT,HT = 0,0,0,0,0
+          for i in range(l1EtSums.product().size(0)):
             l1Obj = l1EtSums.product().at(0,i)
             l1ObjType = l1Obj.getType()
             if l1ObjType == l1Obj.kMissingEt2:
@@ -879,19 +1074,21 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
             elif l1ObjType == l1Obj.kTotalHt:
                 HT = l1Obj
 
-        if MET2:
+          if MET2:
             l1MET2[0] = MET2.pt()
             l1MET2_phi[0] = MET2.phi()
-        if MET:
+          if MET:
             l1MET[0] = MET.pt()
             l1MET_phi[0] = MET.phi()
-        if ET:
+          if ET:
             l1ET[0] = ET.pt()
-        if MHT:
+          if MHT:
             l1MHT[0] = MHT.pt()
             l1MHT_phi[0] = MHT.phi()
-        if HT:
+          if HT:
             l1HT[0] = HT.pt()
+	 except:
+	  skipL1=True
 
         names = event.object().triggerNames(triggerBits.product())
         for i,triggerName in enumerate(triggerNames):
@@ -902,7 +1099,7 @@ def launchNtupleFromAOD(fileOutput,filesInput,maxevents):
                 triggerVars[triggerName][0] = 0
         
         for filter_ in filters:
-            filterVars[filter_][0] = getSizeFilter(triggerEvent.product(),ROOT.edm.InputTag(filter_,"","HLT"))
+            filterVars[filter_][0] = getSizeFilter(triggerEvent.product(),ROOT.edm.InputTag(filter_,"",HLTprocess))
         
 #        if triggerVars["HLT_CaloMHTNoPU90_PFMET90_PFMHT90_IDLoose_v1"][0]:
 #        if triggerVars['HLT_QuadPFJet_SingleBTagCSV_VBF_Mqq500_v2'][0]:

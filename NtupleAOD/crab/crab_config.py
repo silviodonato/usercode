@@ -1,7 +1,7 @@
 datasets=[
 #'/JetHT/Run2015D-05Oct2015-v1/MINIAOD',
 #'/JetHT/Run2015D-PromptReco-v4/MINIAOD',
-'/SingleElectron/Run2015D-05Oct2015-v1/MINIAOD',
+'/JetHT/Run2016B-PromptReco-v2/AOD',
 #'/SingleElectron/Run2015D-PromptReco-v4/MINIAOD',
 #'/SingleMuon/Run2015D-05Oct2015-v1/MINIAOD',
 #'/SingleMuon/Run2015D-PromptReco-v4/MINIAOD',
@@ -29,7 +29,7 @@ config.JobType.inputFiles = [
                              'fwlite_config.py',
                              'script.py',
                              'python.tar.gz',
-                             'x509up_u9300',
+#                             'x509up_u9300',
 ]
 #config.JobType.outputFiles = ['tree.root']
 
@@ -41,8 +41,8 @@ config.Data.unitsPerJob = 1 ##just for test##
 config.Data.totalUnits = 1 ##just for test##
 config.Data.outLFNDirBase = '/store/user/sdonato/' + name
 config.Data.publication = True
-config.Data.publishDataName = name+"_"+datasets[0].split('/')[1]
+config.Data.outputDatasetTag = name+"_"+datasets[0].split('/')[1]
 #config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
 
 config.section_("Site")
-config.Site.storageSite = "T2_IT_Pisa"
+config.Site.storageSite = "T2_CH_CSCS"

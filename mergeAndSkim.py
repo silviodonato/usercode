@@ -2,8 +2,8 @@ from ROOT import *
 
 fileout = TFile("merged.root","recreate")
 chain = TChain("tree")
-#chain.Add("tree_134.root")
-#chain.Add("tree_699.root")
+#chain.Add("tree_1.root")
+#chain.Add("tree_2.root")
 chain.Add("tree_*.root")
 
 chain.SetBranchStatus("*",0)

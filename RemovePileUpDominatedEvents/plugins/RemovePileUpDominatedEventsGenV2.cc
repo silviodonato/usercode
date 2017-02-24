@@ -190,8 +190,9 @@ void RemovePileUpDominatedEventsGenV2::endJob() {}
 void RemovePileUpDominatedEventsGenV2::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   edm::ParameterSetDescription desc;
   desc.add<edm::InputTag> ("pileupSummaryInfos",edm::InputTag("addPileupInfo"));
+//  desc.add<edm::InputTag> ("genJets",edm::InputTag("ak4GenJetsNoNu"));
   desc.add<edm::InputTag> ("genJets",edm::InputTag("ak4GenJets"));
-  desc.add<std::string> ("fileListFolder",std::string("/afs/cern.ch/user/s/sdonato/AFSwork/public/genJetPtHatPU"));
+  desc.add<std::string> ("fileListFolder",std::string("/afs/cern.ch/user/s/sdonato/AFSwork/public/genJetPtHadPU_RunIISummer15GS"));
   descriptions.addDefault(desc);
 }
 

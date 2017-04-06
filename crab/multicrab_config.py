@@ -17,12 +17,17 @@ signals=[
     '/GluGluToRSGravitonToHHTo4B_M-600_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
     '/GluGluToRSGravitonToHHTo4B_M-750_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
     '/GluGluToRSGravitonToHHTo4B_M-900_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+    '/VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_HIG092_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+    '/ZH_HToBB_ZToNuNu_M125_13TeV_powheg_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_HIG087_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+    
 ]
 
 #datasets = ['/QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW']
 
-datasets = ['/GluGluToRSGravitonToHHTo4B_M-260_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM']
+#datasets = ['/GluGluToRSGravitonToHHTo4B_M-260_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM']
+datasets = ['/GluGluToRSGravitonToHHTo4B_M-260_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW']
 
+datasets = QCD+signals
 
 if __name__ == '__main__':
     from CRABAPI.RawCommand import crabCommand
@@ -30,7 +35,7 @@ if __name__ == '__main__':
     config = config()
     
     for dataset in datasets:
-        name = 'HLT_Ntuple_Hbb_Signal_v0p6'
+        name = 'HLT_Ntuple_Hbb_Signal_v0p97'
         config.section_("General")
         config.General.workArea = 'crab_'+name
         config.General.transferLogs=True
@@ -38,6 +43,8 @@ if __name__ == '__main__':
         config.General.requestName = name+"_"+dataset.split('/')[1]
 
         config.section_("JobType")
+#        config.JobType.numCores = 4
+        config.JobType.numCores = 4
         config.JobType.pluginName = 'Analysis'
         config.JobType.psetName = 'crab_fake_pset.py'
         config.JobType.scriptExe = 'crab_script.sh'
@@ -45,6 +52,7 @@ if __name__ == '__main__':
         os.system("tar czf python.tar.gz --dereference --directory $CMSSW_BASE python")
         os.system("voms-proxy-info -path | xargs -i  cp {}  .")
         config.JobType.inputFiles = [
+                                     'hltForNtuples3_dump.py',
                                      'fwlite_config.py',
                                      'script.py',
                                      'python.tar.gz',

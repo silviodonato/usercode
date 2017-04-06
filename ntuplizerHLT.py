@@ -16,11 +16,6 @@ maxJets         = 50
 bunchCrossing   = 0
 pt_min          = 20
 
-#filesInput = ["root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/80000/F8161EEB-9810-E711-A85C-FA163E0B564E.root"]
-filesInput = ["root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/80000/EAACC9D6-0F11-E711-A9B1-FA163EDAFEAB.root"]
-fileOutput = "tree.root"
-maxEvents = 10
-
 def FillVector(source,variables,minPt=pt_min):
     variables.num[0] = 0
     for obj in source.productWithCheck():
@@ -122,10 +117,14 @@ def BookVector(tree,name="vector",listMembers=[]):
 
     ##########################################################################
 
-def launchNtupleFromHLT(fileOutput,filesInput,maxEvents,preProcessing=True, firstEvent=0):
+def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProcessing=True, firstEvent=0):
     bunchCrossing   = 12
     print "filesInput: ",filesInput
     print "fileOutput: ",fileOutput
+    print "secondaryFiles: ",secondaryFiles
+    print "maxEvents: ",maxEvents
+    print "preProcessing: ",preProcessing
+    print "firstEvent: ",firstEvent
     
     Signal = True
     if len(filesInput)>0 and ('QCD' in filesInput[0]):
@@ -137,7 +136,7 @@ def launchNtupleFromHLT(fileOutput,filesInput,maxEvents,preProcessing=True, firs
         from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
         from PhysicsTools.HeppyCore.framework.config import MCComponent
         preprocessor = CmsswPreprocessor("hltForNtuples3_dump.py")
-        cfg = MCComponent("OutputHLT",filesInput)
+        cfg = MCComponent("OutputHLT",filesInput, secondaryfiles=secondaryFiles)
         print "Run!"
         preprocessor.run(cfg,".",firstEvent,maxEvents)
     
@@ -396,4 +395,9 @@ def launchNtupleFromHLT(fileOutput,filesInput,maxEvents,preProcessing=True, firs
     f.Close()
 
 if __name__ == "__main__":
-    launchNtupleFromHLT(fileOutput,filesInput,maxEvents)
+    #filesInput = ["root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/80000/F8161EEB-9810-E711-A85C-FA163E0B564E.root"]
+    filesInput = ["root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/80000/EAACC9D6-0F11-E711-A9B1-FA163EDAFEAB.root"]
+    secondaryFiles = []
+    fileOutput = "tree.root"
+    maxEvents = 100
+    launchNtupleFromHLT(fileOutput,filesInput,secondaryFiles,maxEvents)

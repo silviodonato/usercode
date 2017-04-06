@@ -11,6 +11,7 @@ config.General.transferLogs=True
 config.General.requestName = name+"_"+dataset.split('/')[1]
 
 config.section_("JobType")
+config.JobType.numCores = 4
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'crab_fake_pset.py'
 config.JobType.scriptExe = 'crab_script.sh'

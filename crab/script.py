@@ -3,7 +3,6 @@ import os
 #import PhysicsTools.HeppyCore.framework.config as cfg
 #cfg.Analyzer.nosubdir=True
 
-import PSet
 import sys
 import re
 
@@ -17,14 +16,28 @@ def launch(cmd):
 
 print "ARGV:",sys.argv
 JobNumber=sys.argv[1]
-crabFiles=PSet.process.source.fileNames
-maxEvents=int(PSet.process.maxEvents.input.value())
+try:
+    ##CRAB
+    import PSet
+    crabFiles=PSet.process.source.fileNames
+    crabSecondaryFiles=PSet.process.source.secondaryNames
+    maxEvents=int(PSet.process.maxEvents.input.value())
+except:
+    ##local test
+    print "=================== I'm using local parameters ==================="
+    crabFiles=[
+         "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/AODSIM/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/50A3E67E-0C16-E711-B11E-FA163E7F0F39.root",
+    ]
+    crabSecondaryFiles=[
+        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/0C864433-8E15-E711-A069-FA163E93AE87.root",
+        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/2400ADDE-A115-E711-A70E-FA163ED7355A.root",
+        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/349E255D-9815-E711-9A66-FA163EC6E392.root",
+        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/A0C32FFF-F015-E711-A185-FA163EE82B97.root",
+        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/DA3F1A6A-0316-E711-B548-002590494C44.root",
+    ]
+    maxEvents=10
 if maxEvents<0:
     maxEvents = 1000000000
-if len(crabFiles)==0:
-    crabFiles=[
-         "root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/80000/EAACC9D6-0F11-E711-A9B1-FA163EDAFEAB.root",
-    ]
 print "crabFiles before: ",crabFiles
 print "--------------- using edmFileUtil to convert PFN to LFN -------------------------"
 sequence = range(0,len(crabFiles))
@@ -82,7 +95,7 @@ handle.close()
 ##replace files with crab ones
 #config.components[0].files=crabFiles
 
-launchNtupleFromHLT("tree.root",crabFiles,maxEvents)
+launchNtupleFromHLT("tree.root",crabFiles,crabSecondaryFiles,maxEvents)
 
 #from PhysicsTools.HeppyCore.framework.looper import Looper
 #looper = Looper( 'Output', config, nPrint = 1)

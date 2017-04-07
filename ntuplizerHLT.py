@@ -137,9 +137,22 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
         from PhysicsTools.HeppyCore.framework.config import MCComponent
         preprocessor = CmsswPreprocessor("hltForNtuples3_dump.py")
         cfg = MCComponent("OutputHLT",filesInput, secondaryfiles=secondaryFiles)
-        print "Run!"
-        preprocessor.run(cfg,".",firstEvent,maxEvents)
-    
+        print "Run cmsswPreProcessing using:"
+        print cfg.name
+        print cfg.files
+        print cfg.secondaryfiles
+        print
+        try:
+            preprocessor.run(cfg,".",firstEvent,maxEvents)
+        except:
+            print "cmsswPreProcessing failed!"
+            print "cat cmsRun.log"
+            log = file("cmsRun.log")
+            print log.read()
+            print "cat cmsRun_config.py"
+            config = file("cmsRun_config.py")
+            print config.read()
+            raise Exception("CMSSW preprocessor failed!")
     
     f = ROOT.TFile(fileOutput,"recreate")
     tree = ROOT.TTree("tree","tree")

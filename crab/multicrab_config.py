@@ -25,7 +25,7 @@ signals=[
 #datasets = ['/QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW']
 
 #datasets = ['/GluGluToRSGravitonToHHTo4B_M-260_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM']
-datasets = ['/GluGluToRSGravitonToHHTo4B_M-260_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW']
+#datasets = ['/GluGluToRSGravitonToHHTo4B_M-260_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW']
 
 datasets = QCD+signals
 
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     config = config()
     
     for dataset in datasets:
-        name = 'HLT_Ntuple_Hbb_Signal_v0p97'
+        name = 'HLT_Ntuple_Hbb_Signal_v1p4'
         config.section_("General")
         config.General.workArea = 'crab_'+name
         config.General.transferLogs=True
@@ -45,6 +45,7 @@ if __name__ == '__main__':
         config.section_("JobType")
 #        config.JobType.numCores = 4
         config.JobType.numCores = 4
+        config.JobType.maxMemoryMB = 16000
         config.JobType.pluginName = 'Analysis'
         config.JobType.psetName = 'crab_fake_pset.py'
         config.JobType.scriptExe = 'crab_script.sh'
@@ -55,22 +56,22 @@ if __name__ == '__main__':
                                      'hltForNtuples3_dump.py',
                                      'fwlite_config.py',
                                      'script.py',
-                                     'python.tar.gz',
                                      'utils.py',
-                                     '.x509up_u636',
+                                     'python.tar.gz',
         ]
         
         config.section_("Data")
         config.Data.inputDBS = 'global'
         config.Data.splitting = 'FileBased'
-        config.Data.unitsPerJob = 1 ##FIXME: use 20
+        config.Data.unitsPerJob = 10 ##FIXME: use 20
 
 #        config.Data.totalUnits = -1
-        config.Data.totalUnits = 1
+#        config.Data.totalUnits = 10*config.Data.unitsPerJob
+#        config.Data.totalUnits = 1*config.Data.unitsPerJob
 
 #        config.Data.totalUnits = 100*config.Data.unitsPerJob ##FIXME: use -1
 #        config.Data.unitsPerJob = 1 #FIXME: use 20
-#        config.Data.totalUnits = 1 #FIXME: use -1
+        config.Data.totalUnits = 1 #FIXME: use -1
         config.Data.outLFNDirBase = '/store/user/sdonato/' + name
         config.Data.publication = True
 #        config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'

@@ -20,33 +20,28 @@ try:
     ##CRAB
     import PSet
     crabFiles=PSet.process.source.fileNames
-    crabSecondaryFiles=PSet.process.source.secondaryNames
+    crabSecondaryFiles=PSet.process.source.secondaryFileNames
     maxEvents=int(PSet.process.maxEvents.input.value())
 except:
     ##local test
     print "=================== I'm using local parameters ==================="
-    crabFiles=[
-         "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/AODSIM/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/50A3E67E-0C16-E711-B11E-FA163E7F0F39.root",
-    ]
-    crabSecondaryFiles=[
-        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/0C864433-8E15-E711-A069-FA163E93AE87.root",
-        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/2400ADDE-A115-E711-A70E-FA163ED7355A.root",
-        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/349E255D-9815-E711-9A66-FA163EC6E392.root",
-        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/A0C32FFF-F015-E711-A185-FA163EE82B97.root",
-        "root://cms-xrd-global.cern.ch//store/mc/PhaseIFall16DR/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_HIG088_90X_upgrade2017_realistic_v6_C1-v1/60000/DA3F1A6A-0316-E711-B548-002590494C44.root",
-    ]
-    maxEvents=10
+    import PSet_localTest as PSet
+    crabFiles=PSet.process.source.fileNames
+    crabSecondaryFiles=PSet.process.source.secondaryFileNames
+    maxEvents=int(PSet.process.maxEvents.input.value())
 if maxEvents<0:
     maxEvents = 1000000000
 print "crabFiles before: ",crabFiles
+print "crabSecondaryFiles before: ",crabSecondaryFiles
 print "--------------- using edmFileUtil to convert PFN to LFN -------------------------"
 sequence = range(0,len(crabFiles))
 sequence.reverse()
 for i in sequence :
-     if os.getenv("GLIDECLIENT_Group","") != "overflow" :
+     pfn=os.popen("edmFileUtil -d %s"%(crabFiles[i])).read() 
+     pfn=re.sub("\n","",pfn)
+     exit_code = launch("edmFileUtil "+pfn)
+     if exit_code == 0 :
        print "Data is local"
-       pfn=os.popen("edmFileUtil -d %s"%(crabFiles[i])).read() 
-       pfn=re.sub("\n","",pfn)
        print crabFiles[i],"->",pfn
        crabFiles[i]=pfn
      else:
@@ -57,7 +52,43 @@ for i in sequence :
        if exit_code != 0:
             print "REMOVED"
             del crabFiles[i]
-       
+
+
+sequence = range(0,len(crabSecondaryFiles))
+sequence.reverse()
+for i in sequence :
+     pfn=os.popen("edmFileUtil -d %s"%(crabSecondaryFiles[i])).read() 
+     pfn=re.sub("\n","",pfn)
+     exit_code = launch("edmFileUtil "+pfn)
+     if exit_code == 0 :
+       print "Data is local"
+       print crabSecondaryFiles[i],"->",pfn
+       crabSecondaryFiles[i]=pfn
+     else:
+       print "Data is not local, using AAA/xrootd"
+       crabSecondaryFiles[i]="root://cms-xrd-global.cern.ch/"+crabSecondaryFiles[i]
+       print crabSecondaryFiles[i],
+       exit_code = launch("edmFileUtil "+crabSecondaryFiles[i])
+       if exit_code != 0:
+            print "REMOVED"
+            del crabSecondaryFiles[i]
+
+#for i in sequence :
+#     if os.getenv("GLIDECLIENT_Group","") != "overflow" :
+#       print "Data is local"
+#       pfn=os.popen("edmFileUtil -d %s"%(crabSecondaryFiles[i])).read() 
+#       pfn=re.sub("\n","",pfn)
+#       print crabSecondaryFiles[i],"->",pfn
+#       crabSecondaryFiles[i]=pfn
+#     else:
+#       print "Data is not local, using AAA/xrootd"
+#       crabSecondaryFiles[i]="root://cms-xrd-global.cern.ch/"+crabSecondaryFiles[i]
+#       print crabSecondaryFiles[i],
+#       exit_code = launch("edmFileUtil "+crabSecondaryFiles[i])
+#       if exit_code != 0:
+#            print "REMOVED"
+#            del crabSecondaryFiles[i]
+
 #for i in sequence :
 #     pfn=os.popen("edmFileUtil -d %s"%(crabFiles[i])).read() 
 #     pfn=re.sub("\n","",pfn)
@@ -84,6 +115,8 @@ if len(crabFiles)>0:
 else:
     firstInput = "emptyFile"
 print "crabFiles after: ",crabFiles
+print "crabSecondaryFiles after: ",crabSecondaryFiles
+
 
 from fwlite_config import *
 import imp

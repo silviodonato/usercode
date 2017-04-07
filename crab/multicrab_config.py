@@ -35,7 +35,7 @@ if __name__ == '__main__':
     config = config()
     
     for dataset in datasets:
-        name = 'HLT_Ntuple_Hbb_Signal_v1p4'
+        name = 'HLT_Ntuple_Hbb_Signal_v1p5'
         config.section_("General")
         config.General.workArea = 'crab_'+name
         config.General.transferLogs=True

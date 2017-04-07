@@ -146,12 +146,12 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
             preprocessor.run(cfg,".",firstEvent,maxEvents)
         except:
             print "cmsswPreProcessing failed!"
-            print "cat cmsRun.log"
-            log = file("cmsRun.log")
-            print log.read()
             print "cat cmsRun_config.py"
             config = file("cmsRun_config.py")
             print config.read()
+            print "cat cmsRun.log"
+            log = file("cmsRun.log")
+            print log.read()
             raise Exception("CMSSW preprocessor failed!")
     
     f = ROOT.TFile(fileOutput,"recreate")

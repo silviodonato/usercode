@@ -10,17 +10,28 @@ QCD = [
 ]
 
 signals=[
-    '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/AODSIM',
-    '/GluGluToRSGravitonToHHTo4B_M-260_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
-    '/GluGluToRSGravitonToHHTo4B_M-300_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
-    '/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
-    '/GluGluToRSGravitonToHHTo4B_M-600_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
-    '/GluGluToRSGravitonToHHTo4B_M-750_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
-    '/GluGluToRSGravitonToHHTo4B_M-900_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
-    '/VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_HIG092_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
-    '/ZH_HToBB_ZToNuNu_M125_13TeV_powheg_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_HIG087_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
-    
+    '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/GEN-SIM-RAW',
+    '/GluGluToRSGravitonToHHTo4B_M-260_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW',
+    '/GluGluToRSGravitonToHHTo4B_M-300_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW',
+    '/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW',
+    '/GluGluToRSGravitonToHHTo4B_M-600_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW',
+    '/GluGluToRSGravitonToHHTo4B_M-750_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW',
+    '/GluGluToRSGravitonToHHTo4B_M-900_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW',
+    '/VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_HIG092_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW',
+    '/ZH_HToBB_ZToNuNu_M125_13TeV_powheg_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_HIG087_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW',
 ]
+
+#signals=[
+#    '/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/AODSIM',
+#    '/GluGluToRSGravitonToHHTo4B_M-260_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+#    '/GluGluToRSGravitonToHHTo4B_M-300_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+#    '/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+#    '/GluGluToRSGravitonToHHTo4B_M-600_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+#    '/GluGluToRSGravitonToHHTo4B_M-750_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+#    '/GluGluToRSGravitonToHHTo4B_M-900_narrow_13TeV-madgraph/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+#    '/VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_HIG092_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+#    '/ZH_HToBB_ZToNuNu_M125_13TeV_powheg_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_HIG087_90X_upgrade2017_realistic_v6_C1-v1/AODSIM',
+#]
 
 #datasets = ['/QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/PhaseIFall16DR-FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/GEN-SIM-RAW']
 
@@ -35,12 +46,12 @@ if __name__ == '__main__':
     config = config()
     
     for dataset in datasets:
-        name = 'HLT_Ntuple_Hbb_Signal_v1p6'
+        name = 'HLT_Ntuple_Hbb_Signal_v3_noAODSIM'
         config.section_("General")
         config.General.workArea = 'crab_'+name
         config.General.transferLogs=True
 #        config.General.requestName = name+"_"+dataset.replace('/',"_")
-        config.General.requestName = name+"_"+dataset.split('/')[1]
+        config.General.requestName = name + dataset.split('/')[1]
 
         config.section_("JobType")
 #        config.JobType.numCores = 4
@@ -63,7 +74,7 @@ if __name__ == '__main__':
         config.section_("Data")
         config.Data.inputDBS = 'global'
         config.Data.splitting = 'FileBased'
-        config.Data.unitsPerJob = 10 ##FIXME: use 20
+        config.Data.unitsPerJob = 20 ##FIXME: use 20
 
 #        config.Data.totalUnits = -1
 #        config.Data.totalUnits = 10*config.Data.unitsPerJob
@@ -71,7 +82,8 @@ if __name__ == '__main__':
 
 #        config.Data.totalUnits = 100*config.Data.unitsPerJob ##FIXME: use -1
 #        config.Data.unitsPerJob = 1 #FIXME: use 20
-        config.Data.totalUnits = 1 #FIXME: use -1
+        config.Data.totalUnits = 100*config.Data.unitsPerJob #FIXME: use -1
+#        config.Data.outLFNDirBase = '/store/user/sdonato/' + name
         config.Data.outLFNDirBase = '/store/user/sdonato/' + name
         config.Data.publication = True
 #        config.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions15/13TeV/Cert_246908-251883_13TeV_PromptReco_Collisions15_JSON_v2.txt'
@@ -82,7 +94,7 @@ if __name__ == '__main__':
             config.Data.secondaryInputDataset = dataset.replace("AODSIM","GEN-SIM-RAW")
             print "using secondaryInputDataset: ",config.Data.secondaryInputDataset
 #        config.Data.publishDataName = config.General.requestName
-        config.Data.outputDatasetTag = config.General.requestName
+        config.Data.outputDatasetTag = name
         config.Data.allowNonValidInputDataset = True
         config.Site.blacklist = ['T0_*']
         

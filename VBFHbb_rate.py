@@ -1,9 +1,9 @@
 import ROOT
 from VBFutils import Sort,GetVariablesToFill
 
+PU_max = 60.
+PU_min = 50.
 lumi = 2.E34
-
-puRange = "pu>50"
 
 class Jet:
     def __init__(self, pt, eta, phi, mass, csv):
@@ -35,6 +35,7 @@ def getNum(tree):
     tree.SetBranchStatus("pfJets_csv[pfJets_num]",1)
     tree.SetBranchStatus("pfJets_num",1)
     for ev in tree:
+        if not (ev.pu>PU_min and ev.pu<PU_max): continue
         if not (ev.caloJets_num>3 and ev.caloJets_pt[0]>80 and ev.caloJets_pt[1]>65 and ev.caloJets_pt[2]>50 and ev.caloJets_pt[3]>15): continue
         if not (max(ev.caloJets_csv)>0.8): continue
         if not (ev.pfJets_num>3 and ev.pfJets_pt[0]>92 and ev.pfJets_pt[1]>76 and ev.pfJets_pt[2]>64 and ev.pfJets_pt[3]>15): continue
@@ -62,16 +63,16 @@ def getNum(tree):
         (b1,b2,q1,q2) = Sort(pfjetswithcsv,'2BTagAndPt')
         (Detaqq_2b,Dphibb_2b,Mqq_2b,Mbb_2b) = GetVariablesToFill(b1,b2,q1,q2)
         
-        if not(Detaqq_eta<1.5 and Mqq_eta<150): continue
+        if not(Detaqq_eta>1.5 and Mqq_eta>150): continue
         
         
         pfCSV = [csv for csv in ev.pfJets_csv]
         pfCSV.sort(reverse=True)
-#        if not (pfCSV[0]>0.82): continue
-#        if not(Detaqq_1b<4.1 or Mqq_1b<500 or Dphibb_1b<1.6): continue
-
-        if not (pfCSV[0]>0.82 and pfCSV[1]>0.47): continue
-        if not(Detaqq_2b<2.3 or Mqq_2b<240 or Dphibb_2b<2.1): continue
+        if not (pfCSV[0]>0.82): continue
+        if not(Detaqq_1b>4.1 and Mqq_1b>500 and Dphibb_1b<1.6): continue
+        
+#        if not (pfCSV[0]>0.82 and pfCSV[1]>0.47): continue
+#        if not(Detaqq_2b>2.3 and Mqq_2b>240 and Dphibb_2b<2.1): continue
         num += 1
     
     return num
@@ -80,10 +81,11 @@ def getFraction(fileName):
     file_ = ROOT.TFile(fileName)
     tree = file_.Get("tree")
     den = file_.Get("Count").GetBinContent(1)
+    den *= (PU_max-PU_min)/(63-28)
     num = getNum(tree)
-    fraction = num/den
     if num<=0: return (0.,0.)
     file_.Close()
+    fraction = num/den
     return (fraction , (fraction*(1-fraction)/den)**0.5)
 
 def getRate(fileName, xsection, lumi):
@@ -114,7 +116,7 @@ for (fileName,xsection) in bkgCrossSection:
 
 print "totalRate\t",totalRate," +/- ",totalRateError
 
-#for signal in ["VBFHbb.root","ttHbb.root","ggHbb.root","ggHH4b.root"]:
-#    (fraction, errFraction) = getFraction(signal)
-#    print signal,"\t",fraction," +/- ",errFraction
+for signal in ["VBFHbb.root"]:
+    (fraction, errFraction) = getFraction(signal)
+    print signal,"\t",fraction," +/- ",errFraction
 

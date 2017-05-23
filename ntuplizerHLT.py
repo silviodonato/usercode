@@ -135,7 +135,8 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
     if preProcessing:
         from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
         from PhysicsTools.HeppyCore.framework.config import MCComponent
-        preprocessor = CmsswPreprocessor("hltForNtuples3_dump.py")
+        cmsRun_config = "hltDump2.py"
+        preprocessor = CmsswPreprocessor(cmsRun_config)
         cfg = MCComponent("OutputHLT",filesInput, secondaryfiles=secondaryFiles)
         print "Run cmsswPreProcessing using:"
         print cfg.name
@@ -147,11 +148,12 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
         except:
             print "cmsswPreProcessing failed!"
             print "cat cmsRun_config.py"
-            config = file("cmsRun_config.py")
+            config = file(cmsRun_config)
             print config.read()
             print "cat cmsRun.log"
             log = file("cmsRun.log")
             print log.read()
+            preprocessor.run(cfg,".",firstEvent,maxEvents)
             raise Exception("CMSSW preprocessor failed!")
     
     f = ROOT.TFile(fileOutput,"recreate")
@@ -224,7 +226,7 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
     l1Mht       = SetVariable(tree,'l1Mht')
     l1Mht_phi   = SetVariable(tree,'l1Mht')
     if Signal:
-        genJets  = BookVector(tree,"genJets",['pt','eta','phi','mass','mcFlavour'])
+        genJets  = BookVector(tree,"genJets",['pt','eta','phi','mass','mcFlavour','mcPt'])
         offJets  = BookVector(tree,"offJets",['pt','eta','phi','mass','csv','matchGen'])
         offMet  = BookVector(tree,"offMet",['pt','phi'])
         genMet  = BookVector(tree,"genMet",['pt','phi'])
@@ -353,27 +355,63 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
             for i in range(offJets.num[0]):
                 offJets.matchGen[i] = Matching(offJets.phi[i],offJets.eta[i],genJets)
             
-            for genParticle in genParticles_source.productWithCheck():
-                if genParticle.pt()<10: continue
-                if abs(genParticle.pdgId())>6 and genParticle.pdgId()!=21: continue
-                if genParticle.pdgId()==0: continue
-                for i in range(genJets.num[0]):
-                    if deltaR(genParticle.eta(),genParticle.phi(),genJets.eta[i],genJets.phi[i])<0.4:
-                        if abs(genParticle.pdgId())==6:
-                            genJets.mcFlavour[i] = genParticle.pdgId()
-                        elif abs(genParticle.pdgId())==5 and not abs(genJets.mcFlavour[i]) in [6]:
-                            genJets.mcFlavour[i] = genParticle.pdgId()
-                        elif abs(genParticle.pdgId())==4 and not abs(genJets.mcFlavour[i]) in [6,5]:
-                            genJets.mcFlavour[i] = genParticle.pdgId()
-                        elif abs(genParticle.pdgId())==3 and not abs(genJets.mcFlavour[i]) in [6,5,4]:
-                            genJets.mcFlavour[i] = genParticle.pdgId()
-                        elif abs(genParticle.pdgId())==2 and not abs(genJets.mcFlavour[i]) in [6,5,4,3]:
-                            genJets.mcFlavour[i] = genParticle.pdgId()
-                        elif abs(genParticle.pdgId())==1 and not abs(genJets.mcFlavour[i]) in [6,5,4,3,2]:
-                            genJets.mcFlavour[i] = genParticle.pdgId()
-                        elif abs(genParticle.pdgId())==21 and not abs(genJets.mcFlavour[i]) in [6,5,4,3,2,1]:
-                            genJets.mcFlavour[i] = genParticle.pdgId()
+            for i in range(genJets.num[0]):
+                genJets.mcFlavour[i] = -100
+                genJets.mcPt[i] = -100
             
+            for genParticle in genParticles_source.productWithCheck():
+                if genParticle.pt()<5: continue
+                if not (abs(genParticle.pdgId()) in [21,1,2,3,4,5,11,13,15]): continue
+                if genParticle.mother().pt()>5 and (abs(genParticle.mother().pdgId()) in [21,1,2,3,4,5,11,13]): continue
+                if evt[0]==7826939:
+                    print "genParticle:"
+                    print genParticle.pt(),genParticle.eta(),genParticle.phi(),genParticle.pdgId()
+                    print "genJets:"
+                for i in range(genJets.num[0]):
+                    if genParticle.pt()<0.2*genJets.pt[i]: continue
+                    if deltaR(genParticle.eta(),genParticle.phi(),genJets.eta[i],genJets.phi[i])<0.4:
+                        if evt[0]==7826939:
+                            print genJets.pt[i],genJets.eta[i],genJets.eta[i],genJets.mcFlavour[i]
+                            print "not (int(abs(genJets.mcFlavour[i])) in [5,4,3,2,1]):",not (int(abs(genJets.mcFlavour[i])) in [5,4,3,2,1])
+                        if abs(genParticle.pdgId())==5:
+                            if genJets.mcFlavour[i]!=5 or genParticle.pt()>genJets.mcPt[i]:
+                                genJets.mcFlavour[i] = genParticle.pdgId()
+                                genJets.mcPt[i]      = genParticle.pt()
+                        elif abs(genParticle.pdgId())==4 and not int(abs(genJets.mcFlavour[i])) in [5]:
+                            if genJets.mcFlavour[i]!=4 or genParticle.pt()>genJets.mcPt[i]:
+                                genJets.mcFlavour[i] = genParticle.pdgId()
+                                genJets.mcPt[i]      = genParticle.pt()
+                        elif abs(genParticle.pdgId())==3 and not int(abs(genJets.mcFlavour[i])) in [5,4]:
+                            if genJets.mcFlavour[i]!=3 or genParticle.pt()>genJets.mcPt[i]:
+                                genJets.mcFlavour[i] = genParticle.pdgId()
+                                genJets.mcPt[i]      = genParticle.pt()
+                        elif abs(genParticle.pdgId())==2 and not int(abs(genJets.mcFlavour[i])) in [5,4,3]:
+                            if genJets.mcFlavour[i]!=2 or genParticle.pt()>genJets.mcPt[i]:
+                                genJets.mcFlavour[i] = genParticle.pdgId()
+                                genJets.mcPt[i]      = genParticle.pt()
+                        elif abs(genParticle.pdgId())==1 and not int(abs(genJets.mcFlavour[i])) in [5,4,3,2]:
+                            if genJets.mcFlavour[i]!=1 or genParticle.pt()>genJets.mcPt[i]:
+                                genJets.mcFlavour[i] = genParticle.pdgId()
+                                genJets.mcPt[i]      = genParticle.pt()
+                        elif abs(genParticle.pdgId())==21 and not (int(abs(genJets.mcFlavour[i])) in [5,4,3,2,1]):
+                            if genJets.mcFlavour[i]!=21 or genParticle.pt()>genJets.mcPt[i]:
+                                genJets.mcFlavour[i] = genParticle.pdgId()
+                                genJets.mcPt[i]      = genParticle.pt()
+                        elif abs(genParticle.pdgId()) in [11,13] and not int(abs(genJets.mcFlavour[i])) in [5,4,3,2,1,21]:
+                            if not (genJets.mcFlavour[i] in [11,13]) or genParticle.pt()>genJets.mcPt[i]:
+                                genJets.mcFlavour[i] = genParticle.pdgId()
+                                genJets.mcPt[i]      = genParticle.pt()
+                        elif abs(genParticle.pdgId()) in [15] and not int(abs(genJets.mcFlavour[i])) in [5,4,3,2,1,21,11,13]:
+                            if not (genJets.mcFlavour[i] in [15]) or genParticle.pt()>genJets.mcPt[i]:
+                                genJets.mcFlavour[i] = genParticle.pdgId()
+                                genJets.mcPt[i]      = genParticle.pt()
+                        elif abs(genParticle.pdgId()) in [22] and not int(abs(genJets.mcFlavour[i])) in [5,4,3,2,1,21,11,13,15]:
+                            if not (genJets.mcFlavour[i] in [22]) or genParticle.pt()>genJets.mcPt[i]:
+                                genJets.mcFlavour[i] = genParticle.pdgId()
+                                genJets.mcPt[i]      = genParticle.pt()
+                        if evt[0]==7826939:
+                            print "newFlav:",genJets.mcFlavour[i]
+                        
         ptHat[0]    = generator_source.product().qScale()
         
         if bunchCrossing>=pileUp_source.productWithCheck().size() or pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing()!=0:
@@ -410,7 +448,8 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
 if __name__ == "__main__":
     #filesInput = ["root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/80000/F8161EEB-9810-E711-A85C-FA163E0B564E.root"]
     filesInput = ["root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/80000/EAACC9D6-0F11-E711-A9B1-FA163EDAFEAB.root"]
+#    filesInput = ["file:/mnt/t3nfs01/data01/shome/sdonato/QCD470_GEN-SIM-RAW_PhaseI_83X_FlatPU28to62.root"]
     secondaryFiles = []
     fileOutput = "tree.root"
     maxEvents = 100
-    launchNtupleFromHLT(fileOutput,filesInput,secondaryFiles,maxEvents)
+    launchNtupleFromHLT(fileOutput,filesInput,secondaryFiles,maxEvents, preProcessing=False)

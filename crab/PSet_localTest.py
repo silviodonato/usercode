@@ -28,6 +28,13 @@ process.source = cms.Source("PoolSource",
 )
 
 
+
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring('root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v2/130000/BE521173-FD10-E711-A3FE-02163E0176C2.root'),
+    secondaryFileNames = cms.untracked.vstring()
+)
+
+
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(100)
 )

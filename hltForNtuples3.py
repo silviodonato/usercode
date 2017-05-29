@@ -9052,9 +9052,6 @@ process.source = cms.Source( "PoolSource",
     )
 )
 
-# run the Full L1T emulator, then repack the data into a new RAW collection, to be used by the HLT
-from HLTrigger.Configuration.CustomConfigs import L1REPACK
-process = L1REPACK(process,"FullSimHcalTP")
 
 # adapt HLT modules to the correct process name
 if 'hltTrigReport' in process.__dict__:
@@ -9172,3 +9169,7 @@ process = customizeHLTforCMSSW(process,"GRun")
 from HLTrigger.Configuration.Eras import modifyHLTforEras
 modifyHLTforEras(process)
 
+
+# run the Full L1T emulator, then repack the data into a new RAW collection, to be used by the HLT
+from HLTrigger.Configuration.CustomConfigs import L1REPACK
+process = L1REPACK(process,"FullSimHcalTP")

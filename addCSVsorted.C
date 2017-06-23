@@ -32,7 +32,7 @@ void addCSV(string fileName){
     float jets_dRave[20]={};
     int jets_btagCSVsorted[20]={};
     int jets_btagCSVindex[20]={};
-    double btagCorr = 0;
+    float btagCorr = 0;
     float deta1,deta2,dphi1,dphi2,dR1,dR2;
     
     

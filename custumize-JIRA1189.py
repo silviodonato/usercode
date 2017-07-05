@@ -181,8 +181,8 @@ def customize(process):
             )
             setattr(process,newLabel,newModule)
     for sequence in process._Process__sequences.itervalues():
-        if "WPTightGsfSequence" in sequence.label():
-            pixelMatchFilter = 0
+        if "WPTightGsf" in sequence.label():
+            pixelMatchfilter_ = 0
             for mod in sequence.moduleNames():
                 if "WPTightPixelMatchFilter" in mod:
                     pixelMatchfilter_ = getattr(process,mod)
@@ -211,8 +211,8 @@ def customize(process):
                     setattr(process,mod.replace("WPTightPixelMatchFilter","WPTightPMS2Filter"),newModule)
                 if "WPTightGsfChi2Filter" in mod:
                     sequence.remove(getattr(process,mod))
-            if not pixelMatchFilter is 0:
-                sequence.insert(sequence.index(pixelMatchFilter)+1,newModule)
+            if not pixelMatchfilter_ is 0:
+                sequence.insert(sequence.index(pixelMatchfilter_)+1,newModule)
         
     for producer in producers_by_type(process, "EgammaHLTElectronTrackIsolationProducers"):
         producer.egTrkIsoStripEndcap = cms.double(0.01)

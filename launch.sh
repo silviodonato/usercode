@@ -49,4 +49,4 @@ echo "process.hltOutput.fileName = cms.untracked.string( 'trigRes_"$index".root'
 
 cmsRun hltData.py
 
-mv 'trigRes_"$index".root' $CMSSW_FOLDER
+mv 'trigRes_'$index'.root' $CMSSW_FOLDER

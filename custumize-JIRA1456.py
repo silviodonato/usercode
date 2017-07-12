@@ -4,7 +4,6 @@ for line in file_:
     if "HLTMuonL2FromL1TPreFilter" in line:
         module = line
         module = module.replace("\n","")
-        module = module.replace("process.","")
         module = module.replace(' = cms.EDFilter("HLTMuonL2FromL1TPreFilter",',"")
         modules.append(module)
 
@@ -15,12 +14,11 @@ newTxt = ""
 file_.seek(0)
 for line in file_.readlines():
     if "cms.Sequence" in line or "cms.Path" in line:
-        for module in modules:
-            if module in line and not "cms.ignore(proces
-            s.%s"%module in line:
-                print module
+        for el in line.split("+"):
+            if el in modules:
+                print el
                 print line
-                line = line.replace("process."+module,"cms.ignore(process.%s)"%module)
+                line = line.replace(el,"cms.ignore(%s)"%el)
                 print line
     newTxt += line
 

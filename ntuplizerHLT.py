@@ -135,7 +135,7 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
     if preProcessing:
         from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
         from PhysicsTools.HeppyCore.framework.config import MCComponent
-        cmsRun_config = "hltDump2.py"
+        cmsRun_config = "hlt_dump.py"
         preprocessor = CmsswPreprocessor(cmsRun_config)
         cfg = MCComponent("OutputHLT",filesInput, secondaryfiles=secondaryFiles)
         print "Run cmsswPreProcessing using:"
@@ -168,7 +168,7 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
 
     ### list of input variables ###
 
-    triggerBits, triggerBitLabel = Handle("edm::TriggerResults"), ("TriggerResults::TEST")
+    triggerBits, triggerBitLabel = Handle("edm::TriggerResults"), ("TriggerResults::MYHLT")
 
     pileUp_source, pileUp_label = Handle("vector<PileupSummaryInfo>"), ("addPileupInfo")
 

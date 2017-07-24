@@ -86,7 +86,7 @@ if __name__ == '__main__':
         os.system("tar czf python.tar.gz --dereference --directory $CMSSW_BASE python")
         os.system("voms-proxy-info -path | xargs -i  cp {}  .")
         config.JobType.inputFiles = [
-                                     'hltDump2.py',
+                                     'hlt_dump.py',
                                      'fwlite_config.py',
                                      'script.py',
                                      'utils.py',
@@ -112,8 +112,11 @@ if __name__ == '__main__':
 #        config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/DCSOnly/json_DCSONLY.txt' 
 #'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions16/13TeV/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt'
         config.Data.inputDataset = dataset
-        if "AODSIM" in dataset:
-            config.Data.secondaryInputDataset = dataset.replace("AODSIM","GEN-SIM-RAW")
+        if "/AODSIM" in dataset:
+            config.Data.secondaryInputDataset = dataset.replace("/AODSIM","/GEN-SIM-RAW")
+            print "using secondaryInputDataset: ",config.Data.secondaryInputDataset
+        if "/AOD" in dataset:
+            config.Data.secondaryInputDataset = dataset.replace("/AOD","/GEN-SIM-RAW")
             print "using secondaryInputDataset: ",config.Data.secondaryInputDataset
 #        config.Data.publishDataName = config.General.requestName
         config.Data.outputDatasetTag = name

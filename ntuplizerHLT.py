@@ -126,8 +126,13 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
     print "preProcessing: ",preProcessing
     print "firstEvent: ",firstEvent
     
+    isMC = True
     Signal = True
     if len(filesInput)>0 and ('QCD' in filesInput[0]):
+        isMC = True
+        Signal = False
+    if len(filesInput)>0 and not('SIM' in filesInput[0]):
+        isMC = False
         Signal = False
     print "Signal=",Signal
     
@@ -196,18 +201,17 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
     pfJets_source, pfJets_label               = Handle("vector<reco::PFJet>"), ("hltAK4PFJetsLooseIDCorrected")
     pfbtag_source, pfbtag_label             = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("hltCombinedSecondaryVertexBJetTagsPF")
 
-    if Signal:
-        genJets_source, genJets_label         = Handle("vector<reco::GenJet>"), ("ak4GenJetsNoNu")
-        offJets_source, offJets_label         = Handle("vector<reco::PFJet>"), ("ak4PFJets")
-        offbtag_source, offbtag_label         = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("pfCombinedInclusiveSecondaryVertexV2BJetTags")
-        
-        FastPrimaryVertex_source, FastPrimaryVertex_label   = Handle("vector<reco::Vertex>"), ("hltFastPrimaryVertex")
-        FPVPixelVertices_source, FPVPixelVertices_label     = Handle("vector<reco::Vertex>"), ("hltFastPVPixelVertices")
-        PixelVertices_source, PixelVertices_label           = Handle("vector<reco::Vertex>"), ("hltPixelVertices")
-        VerticesPF_source, VerticesPF_label                 = Handle("vector<reco::Vertex>"), ("hltVerticesPF")
-        VerticesL3_source, VerticesL3_label                 = Handle("vector<reco::Vertex>"), ("hltVerticesL3")
-        
-        genParticles_source, genParticles_label             = Handle("vector<reco::GenParticle>"), ("genParticles")
+    genJets_source, genJets_label         = Handle("vector<reco::GenJet>"), ("ak4GenJetsNoNu")
+    offJets_source, offJets_label         = Handle("vector<reco::PFJet>"), ("ak4PFJets")
+    offbtag_source, offbtag_label         = Handle("edm::AssociationVector<edm::RefToBaseProd<reco::Jet>,vector<float>,edm::RefToBase<reco::Jet>,unsigned int,edm::helper::AssociationIdenticalKeyReference>"), ("pfCombinedInclusiveSecondaryVertexV2BJetTags")
+    
+    FastPrimaryVertex_source, FastPrimaryVertex_label   = Handle("vector<reco::Vertex>"), ("hltFastPrimaryVertex")
+    FPVPixelVertices_source, FPVPixelVertices_label     = Handle("vector<reco::Vertex>"), ("hltFastPVPixelVertices")
+    PixelVertices_source, PixelVertices_label           = Handle("vector<reco::Vertex>"), ("hltPixelVertices")
+    VerticesPF_source, VerticesPF_label                 = Handle("vector<reco::Vertex>"), ("hltVerticesPF")
+    VerticesL3_source, VerticesL3_label                 = Handle("vector<reco::Vertex>"), ("hltVerticesL3")
+    
+    genParticles_source, genParticles_label             = Handle("vector<reco::GenParticle>"), ("genParticles")
     
     ### create output variables ###
     
@@ -241,9 +245,10 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
     lumi        = SetVariable(tree,'lumi')
     run         = SetVariable(tree,'run')
     
-    pu          = SetVariable(tree,'pu')
-    ptHat       = SetVariable(tree,'ptHat')
-    maxPUptHat  = SetVariable(tree,'maxPUptHat')
+    if isMC:
+        pu          = SetVariable(tree,'pu')
+        ptHat       = SetVariable(tree,'ptHat')
+        maxPUptHat  = SetVariable(tree,'maxPUptHat')
     
     f.cd()
     
@@ -264,8 +269,6 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
     for iev,event in enumerate(events):
         if iev>maxEvents and maxEvents>=0: break
         event.getByLabel(triggerBitLabel, triggerBits)
-        event.getByLabel(generator_label, generator_source)
-        event.getByLabel(pileUp_label, pileUp_source)
         event.getByLabel(caloJets_label, caloJets_source)
         event.getByLabel(calobtag_label, calobtag_source)
         event.getByLabel(caloPUid_label, caloPUid_source)
@@ -278,6 +281,9 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
         event.getByLabel(pfbtag_label, pfbtag_source)
         event.getByLabel(l1Jets_label, l1Jets_source)
         event.getByLabel(l1HT_label, l1HT_source)
+        if isMC:
+            event.getByLabel(generator_label, generator_source)
+            event.getByLabel(pileUp_label, pileUp_source)
         
         ####################################################
         
@@ -412,22 +418,22 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
                         if evt[0]==7826939:
                             print "newFlav:",genJets.mcFlavour[i]
                         
-        ptHat[0]    = generator_source.product().qScale()
-        
-        if bunchCrossing>=pileUp_source.productWithCheck().size() or pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing()!=0:
-            found=False
-            for bunchCrossing in range(pileUp_source.productWithCheck().size()):
-                if pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing() == 0 :
-                    found=True;
-                    break
-            if not found:
-                Exception("Check pileupSummaryInfos!")
-            print "I'm using bunchCrossing=",bunchCrossing
-        pu[0] = pileUp_source.productWithCheck().at(bunchCrossing).getTrueNumInteractions()
-        
-        maxPUptHat[0] = -1
-        for ptHat_ in pileUp_source.productWithCheck().at(bunchCrossing).getPU_pT_hats():
-            maxPUptHat[0] = max(maxPUptHat[0],ptHat_)
+        if isMC:
+            if bunchCrossing>=pileUp_source.productWithCheck().size() or pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing()!=0:
+                found=False
+                for bunchCrossing in range(pileUp_source.productWithCheck().size()):
+                    if pileUp_source.productWithCheck().at(bunchCrossing).getBunchCrossing() == 0 :
+                        found=True;
+                        break
+                if not found:
+                    Exception("Check pileupSummaryInfos!")
+                print "I'm using bunchCrossing=",bunchCrossing
+            pu[0] = pileUp_source.productWithCheck().at(bunchCrossing).getTrueNumInteractions()
+            ptHat[0]    = generator_source.product().qScale()
+            
+            maxPUptHat[0] = -1
+            for ptHat_ in pileUp_source.productWithCheck().at(bunchCrossing).getPU_pT_hats():
+                maxPUptHat[0] = max(maxPUptHat[0],ptHat_)
         
         names = event.object().triggerNames(triggerBits.product())
         for i,triggerName in enumerate(triggerNames):
@@ -448,6 +454,7 @@ def launchNtupleFromHLT(fileOutput,filesInput, secondaryFiles, maxEvents,preProc
 if __name__ == "__main__":
     #filesInput = ["root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/80000/F8161EEB-9810-E711-A85C-FA163E0B564E.root"]
     filesInput = ["root://eoscms.cern.ch//eos/cms/store/mc/PhaseIFall16DR/GluGluToRSGravitonToHHTo4B_M-450_narrow_13TeV-madgraph/GEN-SIM-RAW/FlatPU28to62HcalNZSRAW_90X_upgrade2017_realistic_v6_C1-v1/80000/EAACC9D6-0F11-E711-A9B1-FA163EDAFEAB.root"]
+    filesInput = ["root://eoscms.cern.ch//eos/cms/store/data/Run2017C/HLTPhysics8/RAW/v1/000/301/959/00000/70AA2AD0-C08B-E711-9723-02163E011C82.root"]
 #    filesInput = ["file:/mnt/t3nfs01/data01/shome/sdonato/QCD470_GEN-SIM-RAW_PhaseI_83X_FlatPU28to62.root"]
     secondaryFiles = []
     fileOutput = "tree.root"

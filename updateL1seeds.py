@@ -47,13 +47,23 @@ process = cms.Process( "MYHLT" )
 
 fakeSequence = "process.HLT_FakePath_v1 = cms.Path(" 
 for filter_ in filters_by_type(process, "HLTL1TSeed"):
-    fakeSequence += ("process."+str(filter_) + " + ")
     L1seeds = str(filter_.L1SeedsLogicalExpression.value())
+    L1seedsOriginal = L1seeds
     for (oldSeed,newSeed) in seedChanges.items():
         L1seeds = L1seeds.replace(oldSeed,newSeed)
+        changed = True
+        while changed:
+            L1seedsOld = L1seeds
+            L1seeds = L1seeds.replace("OR  OR","OR")
+            if L1seeds[:3] == " OR":  L1seeds = L1seeds[3:]
+            if L1seeds[-3:] == "OR ":  L1seeds = L1seeds[:-3]
+            L1seeds = L1seeds.replace("OR  OR","OR")
+            changed = not (L1seedsOld == L1seeds)
         
     filter_.L1SeedsLogicalExpression = L1seeds
-    output += ("process.%s = "%filter_ + filter_.dumpPython())
+    if L1seedsOriginal!=L1seeds:
+        output += ("process.%s = "%filter_ + filter_.dumpPython())
+        fakeSequence += ("process."+str(filter_) + " + ")
 
 fakeSequence =  fakeSequence[:-2] + ")\n"
 

@@ -1,14 +1,66 @@
+import os
+
+CMSSW_base = "/cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/"
+
+def confDb(menu,release):
+    confDbAdd = os.popen('head /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/%s/python/HLTrigger/Configuration/HLT_%s_cff.py  | grep tableName '%(release,menu))
+    confDbAdd = confDbAdd.readlines()[0].split("'")[1]
+#    print(menu,confDbAdd)
+    return confDbAdd
+
+def getMenus(release):
+    menus = os.popen('ls '+CMSSW_base+'%s/python/HLTrigger/Configuration/  | grep HLT_ | grep -v ".pyc" | grep _cff '%release)
+    menus = menus.readlines()
+    for i in range(len(menus)):
+        menus[i] = menus[i].replace("HLT_","")
+        menus[i] = menus[i].replace("_cff.py\n","")
+#    print(menus)
+    return menus
+
 ### This code is used to generate the TWiki such as https://twiki.cern.ch/twiki/bin/view/CMS/HLTinCMSSW80X
+
 releases = [
-    "CMSSW_8_0_23",
-    "CMSSW_8_0_23_patch1",
-    "CMSSW_8_0_23_patch2",
-    "CMSSW_8_0_24",
-    "CMSSW_8_0_24_patch1",
-    "CMSSW_8_0_25",
-    "CMSSW_8_0_26",
-    "CMSSW_8_0_26_patch1",
-    "CMSSW_8_0_26_patch2",
+    #"CMSSW_9_4_0_pre1",
+    #"CMSSW_9_4_0_pre2",
+    #"CMSSW_9_4_0_pre3",
+    #"CMSSW_9_4_0",
+    #"CMSSW_9_4_0_patch1",
+    #"CMSSW_9_4_1",
+    #"CMSSW_9_4_2",
+    #"CMSSW_9_4_3",
+    #"CMSSW_9_4_4",
+
+    #"CMSSW_9_3_0_pre1",
+    #"CMSSW_9_3_0_pre2",
+    #"CMSSW_9_3_0_pre3",
+    #"CMSSW_9_3_0_pre4",
+    #"CMSSW_9_3_0_pre5",
+    #"CMSSW_9_3_0",
+    #"CMSSW_9_3_1",
+    #"CMSSW_9_3_2",
+    #"CMSSW_9_3_3",
+    #"CMSSW_9_3_4",
+    #"CMSSW_9_3_5",
+    #"CMSSW_9_3_6",
+    #"CMSSW_9_3_6_patch1",
+
+    "CMSSW_10_0_0_pre1",
+    "CMSSW_10_0_0_pre2",
+    "CMSSW_10_0_0_pre3",
+    "CMSSW_10_0_0_pre1",
+    "CMSSW_10_0_0",
+    "CMSSW_10_0_1",
+    "CMSSW_10_0_2",
+    "CMSSW_10_0_3",
+    "CMSSW_10_0_4",
+    "CMSSW_10_0_5",
+    
+    #"CMSSW_10_1_0_pre1",
+    #"CMSSW_10_1_0_pre2",
+    #"CMSSW_10_1_0_pre3",
+    #"CMSSW_10_1_0_pre4",
+    #"CMSSW_10_1_0_pre5",
+    #"CMSSW_10_1_0",
 ]
 releases.reverse()
 
@@ -60,7 +112,7 @@ for release in releases:
                     if PRtext[i].isupper() and (i==0 or PRtext[i-1]==" "):
                         PRtext = PRtext[:i]+"!"+PRtext[i:]
                 PRs[PRnum] = PRtext
-
+    
 ### print the text to be added to https://twiki.cern.ch/twiki/bin/view/CMS/HLTinCMSSW80X, using the Wiki text format
     twiki +="""
 ---+++ %s
@@ -71,5 +123,15 @@ for release in releases:
 """%(release,release,oldRelease,release,release)
     for pr in sorted(PRs.keys(),reverse=True):
         twiki += "   * [[https://github.com/cms-sw/cmssw/pull/%s][#%s]]: %s\n"%(pr,pr,PRs[pr])
+    twiki +="""
+
+---++++ HLT menus in CMSSW_10_0_4
+
+"""
+    menus = getMenus(release)
+    for menu in menus:
+        if not "Fake" in menu:
+            twiki += "   * [[https://github.com/cms-sw/cmssw/blob/CMSSW_10_0_4/HLTrigger/Configuration/python/HLT_%s_cff.py][%s]]: %s\n"%(menu,menu,confDb(menu,release))
+   
 
 print twiki

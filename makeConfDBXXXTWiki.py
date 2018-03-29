@@ -2,6 +2,8 @@
 
 import sys
 
+print "python makeConfDBXXXTWiki.py /dev/CMSSW_10_0_0/HLT"
+
 condDBbase = sys.argv[1]
 
 from getConfDBdescr import getConfDBdescr

@@ -1,6 +1,20 @@
+### This code is used to generate the TWiki such as https://twiki.cern.ch/twiki/bin/view/CMS/HLTinCMSSW80X
+
 import os
 
+cycle = "CMSSW_9_4_X"
 CMSSW_base = "/cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/"
+#CMSSW_base = "/cvmfs/cms.cern.ch/slc6_amd64_gcc700/cms/cmssw/"
+
+def getReleases(cycle):
+    cycle = cycle.replace("X","")
+    releases = os.popen('scram list | grep %s | grep -v X'%(cycle))
+    releases = releases.readlines()
+    for i in range(len(releases)):
+        releases[i] = cycle + releases[i].split(cycle)[1]
+        releases[i] = releases[i].split(" ")[0]
+        releases[i] = releases[i].split("\n")[0]
+    return releases
 
 def confDb(menu,release):
     confDbAdd = os.popen('head /cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/%s/python/HLTrigger/Configuration/HLT_%s_cff.py  | grep tableName '%(release,menu))
@@ -17,51 +31,8 @@ def getMenus(release):
 #    print(menus)
     return menus
 
-### This code is used to generate the TWiki such as https://twiki.cern.ch/twiki/bin/view/CMS/HLTinCMSSW80X
-
-releases = [
-    #"CMSSW_9_4_0_pre1",
-    #"CMSSW_9_4_0_pre2",
-    #"CMSSW_9_4_0_pre3",
-    #"CMSSW_9_4_0",
-    #"CMSSW_9_4_0_patch1",
-    #"CMSSW_9_4_1",
-    #"CMSSW_9_4_2",
-    #"CMSSW_9_4_3",
-    #"CMSSW_9_4_4",
-
-    #"CMSSW_9_3_0_pre1",
-    #"CMSSW_9_3_0_pre2",
-    #"CMSSW_9_3_0_pre3",
-    #"CMSSW_9_3_0_pre4",
-    #"CMSSW_9_3_0_pre5",
-    #"CMSSW_9_3_0",
-    #"CMSSW_9_3_1",
-    #"CMSSW_9_3_2",
-    #"CMSSW_9_3_3",
-    #"CMSSW_9_3_4",
-    #"CMSSW_9_3_5",
-    #"CMSSW_9_3_6",
-    #"CMSSW_9_3_6_patch1",
-
-    "CMSSW_10_0_0_pre1",
-    "CMSSW_10_0_0_pre2",
-    "CMSSW_10_0_0_pre3",
-    "CMSSW_10_0_0_pre1",
-    "CMSSW_10_0_0",
-    "CMSSW_10_0_1",
-    "CMSSW_10_0_2",
-    "CMSSW_10_0_3",
-    "CMSSW_10_0_4",
-    "CMSSW_10_0_5",
-    
-    #"CMSSW_10_1_0_pre1",
-    #"CMSSW_10_1_0_pre2",
-    #"CMSSW_10_1_0_pre3",
-    #"CMSSW_10_1_0_pre4",
-    #"CMSSW_10_1_0_pre5",
-    #"CMSSW_10_1_0",
-]
+releases = getReleases(cycle)
+print(releases)
 releases.reverse()
 
 ### Define the HTML parser class. We use it to simply transform the html in a string without tags (MyHTMLParser.text)
@@ -125,13 +96,13 @@ for release in releases:
         twiki += "   * [[https://github.com/cms-sw/cmssw/pull/%s][#%s]]: %s\n"%(pr,pr,PRs[pr])
     twiki +="""
 
----++++ HLT menus in CMSSW_10_0_4
+---++++ HLT menus in %s
 
-"""
+"""%release
     menus = getMenus(release)
     for menu in menus:
         if not "Fake" in menu:
-            twiki += "   * [[https://github.com/cms-sw/cmssw/blob/CMSSW_10_0_4/HLTrigger/Configuration/python/HLT_%s_cff.py][%s]]: %s\n"%(menu,menu,confDb(menu,release))
+            twiki += "   * [[https://github.com/cms-sw/cmssw/blob/%s/HLTrigger/Configuration/python/HLT_%s_cff.py][%s]]: %s\n"%(release,menu,menu,confDb(menu,release))
    
 
 print twiki

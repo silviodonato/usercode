@@ -55,6 +55,8 @@ for filter_ in filters_by_type(process, "HLTL1TSeed"):
         oldSeed = " "+oldSeed+" "
         if not newSeed in L1seeds:
             L1seeds = L1seeds.replace(oldSeed,newSeed)
+        else:
+            L1seeds = L1seeds.replace(oldSeed,"")
         changed = True
         while changed:
             L1seedsOld = L1seeds

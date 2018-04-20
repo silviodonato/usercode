@@ -3,7 +3,7 @@
 import cx_Oracle
 import sys
 
-def getConfDBdescr(configBase):
+def getConfDBdescr(configBase, addLink=True, fixCapital=True):
     ## Connect to confDB
     connstr = 'cms_hlt_gdr_r/convertMe!@cmsr'
     conn = cx_Oracle.connect(connstr)
@@ -12,7 +12,7 @@ def getConfDBdescr(configBase):
 
     confDBdescr = []
     ## Loop on HLT versions
-    for version in range(1,300):
+    for version in range(1,1000):
         configuration = configBase + "/V"+str(version)
         query="select a.description from u_confversions a where a.name='"+configuration+"'"
         curs.execute(query)
@@ -26,17 +26,19 @@ def getConfDBdescr(configBase):
                 description =""
             
             ## add link to JIRA tickets
-            posInit = description.find("CMSHLT-")
-            if posInit>=0:
-                posFinal = posInit+7
-                while (posFinal<len(description) and description[posFinal].isdigit()): posFinal+=1
-                cmshlt = description[posInit:posFinal]
-                description = description.replace(cmshlt,"[[https://its.cern.ch/jira/browse/%s][%s]]"%(cmshlt,cmshlt))
+            if addLink:
+                posInit = description.find("CMSHLT-")
+                if posInit>=0:
+                    posFinal = posInit+7
+                    while (posFinal<len(description) and description[posFinal].isdigit()): posFinal+=1
+                    cmshlt = description[posInit:posFinal]
+                    description = description.replace(cmshlt,"[[https://its.cern.ch/jira/browse/%s][%s]]"%(cmshlt,cmshlt))
              
             ## add '!' in front of capital letters
-            for i in range(len(description)):
-                if description[i].isupper() and (i==0 or description[i-1]==" "):
-                    description = description[:i]+"!"+description[i:]
+            if fixCapital:
+                for i in range(len(description)):
+                    if description[i].isupper() and (i==0 or description[i-1]==" "):
+                        description = description[:i]+"!"+description[i:]
             
             ## fill confDBdescr
             confDBdescr.append((configuration,description))

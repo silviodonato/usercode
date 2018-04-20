@@ -1,16 +1,67 @@
 ### This code is used to generate the TWiki such as https://twiki.cern.ch/twiki/bin/view/CMS/HLTinCMSSW80X
-releases = [
-    "CMSSW_8_0_23",
-    "CMSSW_8_0_23_patch1",
-    "CMSSW_8_0_23_patch2",
-    "CMSSW_8_0_24",
-    "CMSSW_8_0_24_patch1",
-    "CMSSW_8_0_25",
-    "CMSSW_8_0_26",
-    "CMSSW_8_0_26_patch1",
-    "CMSSW_8_0_26_patch2",
-]
+
+import os
+
+cycle = "CMSSW_10_2_X"
+
+def getReleases(cycle):
+    cycle = cycle.replace("X","")
+    releases = os.popen('scram list -a | grep %s | grep -v X'%(cycle))
+    releases = releases.readlines()
+    relPaths = []
+    for i in range(len(releases)):
+        cvmfs = "/cvmfs/"
+        if cvmfs in releases[i]:
+            releases[i] = releases[i].replace('\n',"")
+            path = cvmfs + releases[i].split(cvmfs)[1]
+            release = cycle + releases[i].split(cycle)[1]
+            relPaths.append((release, path))
+    return relPaths
+
+def confDb(menu,path):
+    confDbAdd = os.popen('head %s/python/HLTrigger/Configuration/HLT_%s_cff.py  | grep tableName '%(path,menu))
+    confDbAdd = confDbAdd.readlines()[0].split("'")[1]
+#    print(menu,confDbAdd)
+    return confDbAdd
+
+def getMenus(path):
+    menus = os.popen('ls '+path+'/python/HLTrigger/Configuration/  | grep HLT_ | grep -v ".pyc" | grep _cff ')
+    menus = menus.readlines()
+    for i in range(len(menus)):
+        menus[i] = menus[i].replace("HLT_","")
+        menus[i] = menus[i].replace("_cff.py\n","")
+#    print(menus)
+    return menus
+
+releases = getReleases(cycle)
+rels = set()
+for i in reversed(range(len(releases))):
+    if releases[i][0] in rels:
+        releases.remove(releases[i])
+    else:
+        rels.add(releases[i][0])
+        releases[i] = (releases[i][0].replace("_pre","_apre"), releases[i][1])
+        releases[i] = (releases[i][0].replace("_patch","_zpatch"), releases[i][1])
+        if releases[i][0][-2:] == "_0": 
+            releases[i] = (releases[i][0] + "_final",releases[i][1])
+        if len(releases[i][0].split("_")[3]) == 1: 
+            nums = releases[i][0].split("_")
+            nums[3] = "0"+nums[3]
+            releases[i] = ('_'.join(nums) ,releases[i][1])
+
+releases.sort()
 releases.reverse()
+#print(releases)
+
+for i in reversed(range(len(releases))):
+    cycle_ = cycle.replace("X","")
+    releases[i] = (releases[i][0].replace(cycle_+"0",cycle_), releases[i][1])
+    releases[i] = (releases[i][0].replace("_0_final","_0"), releases[i][1])
+    releases[i] = (releases[i][0].replace("final",""), releases[i][1])
+    releases[i] = (releases[i][0].replace("_apre","_pre"), releases[i][1])
+    releases[i] = (releases[i][0].replace("_zpatch","_patch"), releases[i][1])
+
+#print(releases)
 
 ### Define the HTML parser class. We use it to simply transform the html in a string without tags (MyHTMLParser.text)
 import urllib2
@@ -37,9 +88,28 @@ class MyHTMLParser(HTMLParser):
 #        print "Encountered some data  :", data,self.currentTags
 
 ### Loop in releases
-twiki = ""
-for release in releases:
+twiki = """
+---+ !HLT menus in the %s release serie
+
+%%TOC%%
+
+---++ !HLT Developments in !ConfDB
+
+  (See https://twiki.cern.ch/twiki/bin/view/CMS/SoftToolsOnlRelMenus#HLT_menus_in_CMSSW_releases)
+
+---++ !HLT developments in !CMSSW
+
+---+++ !Schedule of %s (pre)-releases
+
+A draft of the official !CMSSW schedule for %s is maintained in
+[[%%SCRIPTURL{"view"}%%auth/CMS/%s][https://twiki.cern.ch/twiki/bin/viewauth/CMS/%s]]
+
+"""%(cycle,cycle,cycle,cycle.replace("_X","_0"),cycle.replace("_X","_0"))
+
+
+for release,path in releases:
     ### download the html and parse it
+    #print(release)
     response = urllib2.urlopen('https://github.com/cms-sw/cmssw/releases/%s'%release)
     mfile = response.read()
 
@@ -60,7 +130,7 @@ for release in releases:
                     if PRtext[i].isupper() and (i==0 or PRtext[i-1]==" "):
                         PRtext = PRtext[:i]+"!"+PRtext[i:]
                 PRs[PRnum] = PRtext
-
+    
 ### print the text to be added to https://twiki.cern.ch/twiki/bin/view/CMS/HLTinCMSSW80X, using the Wiki text format
     twiki +="""
 ---+++ %s
@@ -71,5 +141,15 @@ for release in releases:
 """%(release,release,oldRelease,release,release)
     for pr in sorted(PRs.keys(),reverse=True):
         twiki += "   * [[https://github.com/cms-sw/cmssw/pull/%s][#%s]]: %s\n"%(pr,pr,PRs[pr])
+    twiki +="""
+
+---++++ HLT menus in %s
+
+"""%release
+    menus = getMenus(path)
+    for menu in menus:
+        if not "Fake" in menu:
+            twiki += "   * [[https://github.com/cms-sw/cmssw/blob/%s/HLTrigger/Configuration/python/HLT_%s_cff.py][%s]]: %s\n"%(release,menu,menu,confDb(menu,path))
+   
 
 print twiki

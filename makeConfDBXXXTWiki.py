@@ -2,7 +2,7 @@
 
 import sys
 
-print "python makeConfDBXXXTWiki.py /dev/CMSSW_10_0_0/HLT"
+print "python makeConfDBXXXTWiki.py /dev/CMSSW_10_1_0/HLT"
 
 condDBbase = sys.argv[1]
 

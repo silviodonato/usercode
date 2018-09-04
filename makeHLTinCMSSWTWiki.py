@@ -2,7 +2,7 @@
 
 import os
 
-cycle = "CMSSW_10_2_X"
+cycle = "CMSSW_10_3_X"
 
 def getReleases(cycle):
     cycle = cycle.replace("X","")

@@ -48,5 +48,10 @@ def getConfDBdescr(configBase, addLink=True, fixCapital=True):
 
 if __name__ == "__main__":
     confDBdescr = getConfDBdescr(sys.argv[1])
+    print('''
+---+ !HLT menus in !ConfDB:
+
+---++ !HLT Developments in !ConfDB %s
+'''%(sys.argv[1]))
     for address,description in confDBdescr:
-           print("* =%s=: %s"%(address,description))
+           print("   * =%s=: %s"%(address,description))

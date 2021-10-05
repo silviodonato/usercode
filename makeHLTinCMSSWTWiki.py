@@ -6,7 +6,7 @@ cycle = "CMSSW_10_3_X"
 
 def getReleases(cycle):
     cycle = cycle.replace("X","")
-    releases = os.popen('scram list -a | grep %s | grep -v X'%(cycle))
+    releases = os.popen('scram list --all | grep %s | grep -v X'%(cycle))
     releases = releases.readlines()
     relPaths = []
     for i in range(len(releases)):

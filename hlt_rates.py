@@ -1,5 +1,4 @@
 '''
-HLT rates for first collision (October 2021)
 hltGetConfiguration adg:/cdaq/test/elfontan/CRAFT_TB/Collisions >hlt.py
 (drop hltOnlineBeamMonitorPB from process.DQMHistograms)
 hltDumpStream --csv hlt.py  > hlt.txt
@@ -17,13 +16,16 @@ out = open(outName, 'w')
 L1_ZeroBias_rate = 22000
 L1_Random_rate = 18000
 L1_ETT35_rate = 2000
-L1_Physics_rate = L1_ZeroBias_rate + L1_Random_rate
+L1_FirstCollisionInOrbit_rate = 10
+L1_Physics_rate = L1_ZeroBias_rate + L1_Random_rate + L1_FirstCollisionInOrbit_rate
 
 def getInputRate(line, L1_seed):
     if "L1_ZeroBias" in values[L1_seed_num]:
         return 1.*L1_ZeroBias_rate
     elif "L1_ETT35" in values[L1_seed_num]:
         return 1.*L1_ETT35_rate
+    elif "L1_FirstCollisionInOrbit" in values[L1_seed_num]:
+        return 1.*L1_FirstCollisionInOrbit_rate
     elif "(none)" in values[L1_seed_num]:
         if "random" in values[2].lower():
             return 1.*L1_Random_rate
@@ -37,13 +39,56 @@ def getInputRate(line, L1_seed):
 
 
 def hiddenPrescale(HLTPath):
-    path = HLTPath.split("_v")[0]
-    if path in ["HLT_HcalPhiSym","HLT_HcalNZS"]: return 4096 ## hidden prescale NZS
-    elif path in ["HLT_Physics"]: return 107 # hidden prescale "L1 fat"
-    else: return 1 ## no hidden prescale
+    hiddenPs=0
+    path = HLTPath.split("_v")[0][1:]
+    if path in ["HLT_HcalPhiSym","HLT_HcalNZS"]: hiddenPs=4096 ## hidden prescale NZS
+    elif path in ["HLT_Physics"]: hiddenPs=107 # hidden prescale "L1 fat"
+    else: hiddenPs=1 ## no hidden prescale
+    if hiddenPs!=1:
+        print(path+" applying hidden prescale = "+str(hiddenPs))
+    return hiddenPs
 
 first = True
 for l in dump:
+    if "corresponding EndPath not found" in l:
+        print(l)
+        continue
+    l = l.replace("\n","")
+    if first:
+        first = False
+        labels = l.split(",")
+        try:
+            L1_seed_num = labels.index(" L1 trigger")
+            prescale_num = labels.index(" %s"%prescale_column)
+        except:
+            print(labels)
+            L1_seed_num = labels.index(" L1 trigger")
+            prescale_num = labels.index(" %s"%prescale_column)
+        out.write(",".join(labels[:-1])+",L1Rate(Hz),HLTRate(Hz),%s\n"%(labels[-1]))
+        print(labels)
+        print("L1_seed_num=%d"%L1_seed_num)
+        print("prescale_num=%d"%prescale_num)
+    else:
+        values = l.split(",")
+        HLTPath = values[2]
+        try:
+            inputRate = getInputRate(values, L1_seed_num)
+        except:
+            print("L1_seed_num=%d"%L1_seed_num)
+            print(values)
+            inputRate = getInputRate(values, L1_seed_num)
+        try:
+            prescale = int(values[prescale_num]) * hiddenPrescale(HLTPath)
+        except:
+            print (values, prescale_num)
+            prescale = int(values[prescale_num]) * hiddenPrescale(HLTPath)
+        if prescale>0:
+            outRate = inputRate/prescale  
+        else:
+            outRate=0
+        out.write(",".join(values[:-1])+",%d,%d,%s\n"%(inputRate,outRate,values[-1]))
+    
+
     l = l.replace("\n","")
     if first:
         first = False

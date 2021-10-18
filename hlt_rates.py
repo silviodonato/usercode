@@ -86,30 +86,5 @@ for l in dump:
             outRate = inputRate/prescale  
         else:
             outRate=0
-        out.write(",".join(values[:-1])+",%d,%d,%s\n"%(inputRate,outRate,values[-1]))
-    
-
-    l = l.replace("\n","")
-    if first:
-        first = False
-        labels = l.split(",")
-        try:
-            L1_seed_num = labels.index(" L1 trigger")
-            prescale_num = labels.index(" %s"%prescale_column)
-        except:
-            print(labels)
-            L1_seed_num = labels.index(" L1 trigger")
-            prescale_num = labels.index(" %s"%prescale_column)
-        out.write(",".join(labels[:-1])+",L1Rate(Hz),HLTRate(Hz),%s\n"%(labels[-1]))
-    else:
-        values = l.split(",")
-        HLTPath = l[2]
-        inputRate = getInputRate(values, L1_seed_num)
-        try:
-            prescale = int(values[prescale_num]) * hiddenPrescale(HLTPath)
-        except:
-            print (values, prescale_num)
-            prescale = int(values[prescale_num]) * hiddenPrescale(HLTPath)
-        outRate = inputRate/prescale
-        out.write(",".join(values[:-1])+",%d,%d,%s\n"%(inputRate,outRate,values[-1]))
+        out.write(",".join(values[:-1])+",%d,%.1f,%s\n"%(inputRate,outRate,values[-1]))
     

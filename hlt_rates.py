@@ -20,10 +20,10 @@ L1_FirstCollisionInOrbit_rate = 10
 L1_Physics_rate = L1_ZeroBias_rate + L1_Random_rate + L1_FirstCollisionInOrbit_rate
 
 def getInputRate(line, L1_seed):
-    if "L1_ZeroBias" in values[L1_seed_num]:
-        return 1.*L1_ZeroBias_rate
-    elif "L1_ETT35" in values[L1_seed_num]:
+    if "AND (L1_ETT35)" in values[L1_seed_num]:
         return 1.*L1_ETT35_rate
+    elif "L1_ZeroBias" in values[L1_seed_num]:
+        return 1.*L1_ZeroBias_rate
     elif "L1_FirstCollisionInOrbit" in values[L1_seed_num]:
         return 1.*L1_FirstCollisionInOrbit_rate
     elif "(none)" in values[L1_seed_num]:

@@ -1,6 +1,5 @@
 '''
-hltGetConfiguration adg:/cdaq/test/elfontan/CRAFT_TB/Collisions >hlt.py
-(drop hltOnlineBeamMonitorPB from process.DQMHistograms)
+hltGetConfiguration adg:/cdaq/special/PilotBeamTest2021/Collisions/V25 >hlt.py
 hltDumpStream --csv hlt.py  > hlt.txt
 '''
 
@@ -20,10 +19,12 @@ L1_FirstCollisionInOrbit_rate = 10
 L1_Physics_rate = L1_ZeroBias_rate + L1_Random_rate + L1_FirstCollisionInOrbit_rate
 
 def getInputRate(line, L1_seed):
-    if "AND (L1_ETT35)" in values[L1_seed_num]:
+    if "(L1_ZeroBias OR L1_AlwaysTrue) AND (L1_ETT20 OR L1_ETT35 OR L1_ETT50 OR L1_ETT70)" in values[L1_seed_num]:
         return 1.*L1_ETT35_rate
     elif "L1_ZeroBias" in values[L1_seed_num]:
         return 1.*L1_ZeroBias_rate
+    elif "L1_ETT35" in values[L1_seed_num]:
+        return 1.*L1_ETT35_rate
     elif "L1_FirstCollisionInOrbit" in values[L1_seed_num]:
         return 1.*L1_FirstCollisionInOrbit_rate
     elif "(none)" in values[L1_seed_num]:
@@ -43,6 +44,7 @@ def hiddenPrescale(HLTPath):
     path = HLTPath.split("_v")[0][1:]
     if path in ["HLT_HcalPhiSym","HLT_HcalNZS"]: hiddenPs=4096 ## hidden prescale NZS
     elif path in ["HLT_Physics"]: hiddenPs=107 # hidden prescale "L1 fat"
+    elif path in ["HLT_PixelClusters_WP1_ZeroBias"]: hiddenPs=11 ## we expect a rate of 2kHz (equivalen to ~10 prescale)
     else: hiddenPs=1 ## no hidden prescale
     if hiddenPs!=1:
         print(path+" applying hidden prescale = "+str(hiddenPs))

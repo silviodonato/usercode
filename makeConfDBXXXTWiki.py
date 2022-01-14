@@ -2,7 +2,7 @@
 
 import sys
 
-print "python makeConfDBXXXTWiki.py /dev/CMSSW_10_1_0/HLT"
+print("python makeConfDBXXXTWiki.py /dev/CMSSW_10_1_0/HLT")
 
 condDBbase = sys.argv[1]
 
@@ -20,4 +20,4 @@ for (configuration, description) in confDBdescr:
     ### download the html and parse it
         twiki += "   * =%s=: %s\n"%(configuration,description)
 
-print twiki
+print(twiki)

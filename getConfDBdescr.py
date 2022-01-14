@@ -3,9 +3,12 @@
 import cx_Oracle
 import sys
 
-def getConfDBdescr(configBase, addLink=True, fixCapital=True):
+def getConfDBdescr(configBase, addLink=True, fixCapital=True, run3=True):
     ## Connect to confDB
-    connstr = 'cms_hlt_gdr_r/convertMe!@cmsr'
+    if run3:
+        connstr = 'cms_hlt_v3_r/convertMe!@cmsr'
+    else:
+        connstr = 'cms_hlt_gdr_r/convertMe!@cmsr'
     conn = cx_Oracle.connect(connstr)
     curs = conn.cursor()
     curs.arraysize=50
@@ -14,7 +17,10 @@ def getConfDBdescr(configBase, addLink=True, fixCapital=True):
     ## Loop on HLT versions
     for version in range(1,1000):
         configuration = configBase + "/V"+str(version)
-        query="select a.description from u_confversions a where a.name='"+configuration+"'"
+        ### get only Config description
+        # query="select a.description from u_confversions a where a.name='"+configuration+"'"
+        ### get only Config description and release
+        query="SELECT u_confversions.description, u_softreleases.releaseTag FROM u_confversions, u_softreleases WHERE u_confversions.id_release = u_softreleases.id AND u_confversions.name='%s'"%(configuration)
         curs.execute(query)
         curs_copy=curs
         ## get first row (curs_copy contains only one element here)
@@ -24,6 +30,12 @@ def getConfDBdescr(configBase, addLink=True, fixCapital=True):
                 description = rows[0].read()
             except:
                 description =""
+            
+            ## get release, if it is not empty
+            try:
+                release = rows[1]
+            except:
+                release =""
             
             ## add link to JIRA tickets
             if addLink:
@@ -40,6 +52,8 @@ def getConfDBdescr(configBase, addLink=True, fixCapital=True):
                     if description[i].isupper() and (i==0 or description[i-1]==" "):
                         description = description[:i]+"!"+description[i:]
             
+            # add release in teh configuration description (eg. /dev/CMSSW_12_3_0/HLT/V18 (CMSSW_12_3_0_pre2) )
+            configuration = configuration + " (%s)"%(release)
             ## fill confDBdescr
             confDBdescr.append((configuration,description))
     

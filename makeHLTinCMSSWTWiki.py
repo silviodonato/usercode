@@ -152,4 +152,4 @@ for release,path in releases:
             twiki += "   * [[https://github.com/cms-sw/cmssw/blob/%s/HLTrigger/Configuration/python/HLT_%s_cff.py][%s]]: %s\n"%(release,menu,menu,confDb(menu,path))
    
 
-print twiki
+print(twiki)

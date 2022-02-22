@@ -67,5 +67,3 @@ for iev,event in enumerate(events):
         ETT35 = l1tBits.product().getObjectMap("L1_ETT35")
         ETT20 = l1tBits.product().getObjectMap("L1_ETT20")
         print(ZeroBias.algoGtlResult(), ETT35.algoGtlResult(), ETT20.algoGtlResult())
-
-    

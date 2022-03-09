@@ -1,8 +1,12 @@
 ### This code is used to generate the TWiki such as https://twiki.cern.ch/twiki/bin/view/CMS/HLTinCMSSW80X
 
-import os
+import os,sys
 
-cycle = "CMSSW_10_3_X"
+if len(sys.argv)<=1:
+    print()
+    print("python makeHLTinCMSSWTWiki.py CMSSW_12_3_X")
+    print()
+cycle = sys.argv[1]
 
 def getReleases(cycle):
     cycle = cycle.replace("X","")
@@ -19,8 +23,12 @@ def getReleases(cycle):
     return relPaths
 
 def confDb(menu,path):
-    confDbAdd = os.popen('head %s/python/HLTrigger/Configuration/HLT_%s_cff.py  | grep tableName '%(path,menu))
-    confDbAdd = confDbAdd.readlines()[0].split("'")[1]
+    print('head %s/python/HLTrigger/Configuration/HLT_%s_cff.py -n20 | grep tableName '%(path,menu))
+    confDbAdd = os.popen('head %s/python/HLTrigger/Configuration/HLT_%s_cff.py  -n20 | grep tableName '%(path,menu))
+    try:
+        confDbAdd = confDbAdd.readlines()[0].split("'")[1]
+    except:
+        confDbAdd = "none"
 #    print(menu,confDbAdd)
     return confDbAdd
 
@@ -35,7 +43,7 @@ def getMenus(path):
 
 releases = getReleases(cycle)
 rels = set()
-for i in reversed(range(len(releases))):
+for i in reversed(list(range(len(releases)))):
     if releases[i][0] in rels:
         releases.remove(releases[i])
     else:
@@ -53,7 +61,7 @@ releases.sort()
 releases.reverse()
 #print(releases)
 
-for i in reversed(range(len(releases))):
+for i in reversed(list(range(len(releases)))):
     cycle_ = cycle.replace("X","")
     releases[i] = (releases[i][0].replace(cycle_+"0",cycle_), releases[i][1])
     releases[i] = (releases[i][0].replace("_0_final","_0"), releases[i][1])
@@ -64,8 +72,8 @@ for i in reversed(range(len(releases))):
 #print(releases)
 
 ### Define the HTML parser class. We use it to simply transform the html in a string without tags (MyHTMLParser.text)
-import urllib2
-from HTMLParser import HTMLParser
+import urllib.request, urllib.error, urllib.parse
+from html.parser import HTMLParser
 class MyHTMLParser(HTMLParser):
     HTMLParser.text = ""
     HTMLParser.currentTags = []
@@ -107,19 +115,20 @@ A draft of the official !CMSSW schedule for %s is maintained in
 """%(cycle,cycle,cycle,cycle.replace("_X","_0"),cycle.replace("_X","_0"))
 
 
-for release,path in releases:
+for release,path in releases[:]:
     ### download the html and parse it
     #print(release)
-    response = urllib2.urlopen('https://github.com/cms-sw/cmssw/releases/%s'%release)
+    response = urllib.request.urlopen('https://github.com/cms-sw/cmssw/releases/%s'%release)
     mfile = response.read()
 
     parser = MyHTMLParser()
-    parser.feed(mfile)
+    parser.feed(str(mfile))
     PRs = {}
     ### parse the text to get: 1) the old relase 2) the PR number 3) the PR description of the PR related to the trigger
-    for line in parser.text.split("\n"):
+    for line in parser.text.split("\\n"):
+#        print("deb", line)
         if "Changes since " in line:
-            oldRelease = line.split("Changes since ")[1][:-1]
+            oldRelease = line.split("Changes since ")[1][:-1].split(":")[0]
         if len(line)>0 and line[0] is "#":
             line_ = line.lower()
             if "hlt" in line or "trigger" in line or "l1" in line:
@@ -139,7 +148,7 @@ for release,path in releases:
 
 [[https://github.com/cms-sw/cmssw/releases/%s][Release notes]] for !%s
 """%(release,release,oldRelease,release,release)
-    for pr in sorted(PRs.keys(),reverse=True):
+    for pr in sorted(list(PRs.keys()),reverse=True):
         twiki += "   * [[https://github.com/cms-sw/cmssw/pull/%s][#%s]]: %s\n"%(pr,pr,PRs[pr])
     twiki +="""
 

@@ -2,12 +2,12 @@
 
 import sys
 
-print("python makeConfDBXXXTWiki.py /dev/CMSSW_10_1_0/HLT")
-
+print("python makeConfDBXXXTWiki.py /dev/CMSSW_12_3_0/HLT")
+run3=True
 condDBbase = sys.argv[1]
 
 from getConfDBdescr import getConfDBdescr
-confDBdescr = getConfDBdescr(condDBbase)
+confDBdescr = getConfDBdescr(condDBbase, run3=run3)
 
 ### Loop in releases
 twiki ="""

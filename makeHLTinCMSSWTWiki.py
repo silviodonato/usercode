@@ -23,7 +23,7 @@ def getReleases(cycle):
     return relPaths
 
 def confDb(menu,path):
-    print('head %s/python/HLTrigger/Configuration/HLT_%s_cff.py -n20 | grep tableName '%(path,menu))
+#    print('head %s/python/HLTrigger/Configuration/HLT_%s_cff.py -n20 | grep tableName '%(path,menu))
     confDbAdd = os.popen('head %s/python/HLTrigger/Configuration/HLT_%s_cff.py  -n20 | grep tableName '%(path,menu))
     try:
         confDbAdd = confDbAdd.readlines()[0].split("'")[1]

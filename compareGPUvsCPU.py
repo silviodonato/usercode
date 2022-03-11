@@ -6,7 +6,7 @@ from DataFormats.FWLite import Handle, Events
 
 events = Events (file_)
 for ievt,event in enumerate(events): 
-    if ievt==2:
+    if ievt>=1:
         break
 
 pixelTracksLabel_GPU = ("hltPixelTracks::HLTGPU")
@@ -89,6 +89,7 @@ def roundVect(vect):
     return [round(el, 2) for el in vect]
 
 def compare (tracks_CPU, tracks_GPU, funcNames):
+    print("i", "distance", "diff", 'CPU', 'GPU')
     for i in range(min(len(tracks_CPU),len(tracks_GPU))):
         diff = [tracks_CPU[i][p]-tracks_GPU[i][p] for p in range(len(tracks_GPU[i]))]
         d = distance(tracks_CPU[i],tracks_GPU[i], npar)

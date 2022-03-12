@@ -6,7 +6,7 @@ from DataFormats.FWLite import Handle, Events
 
 events = Events (file_)
 for ievt,event in enumerate(events): 
-    if ievt>=1:
+    if ievt>=2:
         break
 
 vecPixelHitsLabel_GPU = ("hltSiPixelRecHits::HLTGPU")
@@ -76,7 +76,7 @@ def sorthits(hits1, hits2, npar):
     i_matched = set()
     hits2_index = [-1]*min(len(hits1),len(hits2))
     for dist, i, j in dists:
-        if not (i in i_matched) and not (j in hits2_index):
+        if not (i in i_matched) and not (j in hits2_index) and i<len(hits2_index):
             hits2_index[i] = j
 #            print(dist, i, j)
             i_matched.add(i)
@@ -107,6 +107,7 @@ def sorthits(hits1, hits2, npar):
 
 def compare (hits_CPU, hits_GPU, funcNames, detId):
 #    print("i", "distance", "diff", 'CPU', 'GPU')
+    debugCl = []
     for i in range(max(len(hits_CPU),len(hits_GPU))):
         if i>=len(hits_CPU): 
             print(i, "Missing CPU hit")
@@ -119,11 +120,15 @@ def compare (hits_CPU, hits_GPU, funcNames, detId):
             print("cpu:", roundVect(hits_CPU[i]))
             print("gpu:", roundVect(hits_GPU[i]))
             print("dif:", roundVect(diff))
+            debugCl.append(i)
+    return debugCl
 
 def roundVect(vect):
     return [round(el, 2) for el in vect]
 
 first = True
+
+clusterDebug = {}
 for pixelHits_CPU, pixelHits_GPU in zip(vecPixelHits_CPU.product(), vecPixelHits_GPU.product()):
 #    print(pixelHits_CPU.detId(),pixelHits_CPU.size())
     if (pixelHits_CPU.detId()!=pixelHits_GPU.detId()):
@@ -143,13 +148,18 @@ for pixelHits_CPU, pixelHits_GPU in zip(vecPixelHits_CPU.product(), vecPixelHits
         for p in range(len(hits_CPU[0])): print(p, funcNames[p], hits_CPU[0][p])
         first = False
     
-    compare(hits_CPU,hits_GPU, funcNames, pixelHits_CPU.detId())
-### DEBUG ###
+    debugCl = compare(hits_CPU,hits_GPU, funcNames, pixelHits_CPU.detId())
+    if len(debugCl)>0: clusterDebug[pixelHits_CPU.detId()] = debugCl
 
-clusterDebug = { #DetId ClusterNumber
-    303054852: [35, 39],
-    303067152: [36],
-}
+### DEBUG pixel-by-pixel###
+
+print("clusterDebug=",clusterDebug)
+# filled automatically
+#clusterDebug = { #DetId ClusterNumber
+#    303054852: [35, 39],
+#    303067152: [36],
+#}
+
 
 for pixelHits_CPU, pixelHits_GPU in zip(vecPixelHits_CPU.product(), vecPixelHits_GPU.product()):
     if pixelHits_CPU.detId() in clusterDebug:

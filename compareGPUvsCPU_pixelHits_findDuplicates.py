@@ -43,7 +43,9 @@ for ievt,event in enumerate(events):
                         if arch == "gpu": 
                             pixels_dup += 1
                             if first: cluster_dup += 1
-#                        print("Duplicate %s in detId=%d cl=%d x=%d y=%d"%(arch, detId,i,xy[0],xy[1]))
+                        else:
+                            Exception("There is a duplicate in CPU!")
+                        print("Duplicate %s in detId=%d cl=%d x=%d y=%d"%(arch, detId,i,xy[0],xy[1]))
     #            print(arch,detId,i)
     
     print("event =",event.eventAuxiliary().event(), " duplicates =",pixels_dup)

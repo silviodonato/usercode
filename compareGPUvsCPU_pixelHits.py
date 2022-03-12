@@ -74,15 +74,22 @@ def sorthits(hits1, hits2, npar):
             dists.append((distance(hits1[i], hits2[j],npar), i, j))
     dists = sorted(dists) #,reverse=True
     i_matched = set()
-    j_matched = set()
-    hits2_index = [-1]*max(len(hits1),len(hits2))
+    hits2_index = [-1]*min(len(hits1),len(hits2))
     for dist, i, j in dists:
         if not (i in i_matched) and not (j in hits2_index):
             hits2_index[i] = j
 #            print(dist, i, j)
             i_matched.add(i)
     
-    hits2_sorted = [hits2[j] if j>=0 and j<len(hits2) else hitMissing for j in hits2_index ]
+    hits2_sorted = [hits2[j] for j in hits2_index ]
+    if len(hits1)>len(hits2):
+        for i in range(len(hits1)-len(hits2)):
+            hits2_sorted.append([-2000]*len(hits2[0]))
+    elif len(hits2)>len(hits1):
+        for j in range(len(hits2)):
+            if not (j in hits2_index):
+                hits2_sorted.append(hits2[j])
+    
     dist, i, j = dists[0]
 #    print(dists[0])
 #    print(hits1[i])
@@ -137,6 +144,30 @@ for pixelHits_CPU, pixelHits_GPU in zip(vecPixelHits_CPU.product(), vecPixelHits
         first = False
     
     compare(hits_CPU,hits_GPU, funcNames, pixelHits_CPU.detId())
+### DEBUG ###
 
-print("")
+clusterDebug = { #DetId ClusterNumber
+    303054852: [35, 39],
+    303067152: [36],
+}
+
+for pixelHits_CPU, pixelHits_GPU in zip(vecPixelHits_CPU.product(), vecPixelHits_GPU.product()):
+    if pixelHits_CPU.detId() in clusterDebug:
+        for clNum in clusterDebug[pixelHits_CPU.detId()]:
+            print()
+            print("DetId:",pixelHits_CPU.detId()," clNum:",clNum)
+            cluster_CPU = pixelHits_CPU[clNum].cluster().get()
+            cluster_GPU = pixelHits_GPU[clNum].cluster().get()
+            
+            pixels_CPU = [[p.x,p.y,p.adc] for p in cluster_CPU.pixels()]
+            pixels_GPU = [[p.x,p.y,p.adc] for p in cluster_GPU.pixels()]
+            pixels_CPU = sorthits(pixels_GPU, pixels_CPU,2)
+            
+            print("    "," x"," y"," adc",)
+            
+            for i in range(max(len(pixels_CPU),len(pixels_GPU))):
+                cpu = pixels_CPU[i] if i<len(pixels_CPU) else [-200]*3 
+                gpu = pixels_GPU[i] if i<len(pixels_GPU) else [-300]*3 
+                diff = [cpu[p] - gpu[p] for p in range(len(cpu))]
+                print("diff: ",diff," cpu: ",cpu," gpu: ",gpu)
 

@@ -84,14 +84,3 @@ for L1_seed in L1_triggers:
         eff[L1_seed].Draw("same")
 
 leg.Draw()
-
-#    if i>10000:
-#        break
-
-first = True
-for L1_seed in L1_triggers:
-    if first:
-        eff[L1_seed].Draw("")
-        first = False
-    else:
-        eff[L1_seed].Draw("same")

@@ -24,6 +24,7 @@ cmsDriver.py harvesting -s HARVESTING:@hlt --conditions auto:run3_hlt_relval --d
 '''
 
 import FWCore.ParameterSet.Config as cms
+from HeterogeneousCore.CUDACore.SwitchProducerCUDA import SwitchProducerCUDA
 
 def resetFEVTDEBUGHLToutput(process):
     process.FEVTDEBUGHLToutput = process.FEVTDEBUGHLToutput.clone(
@@ -95,41 +96,80 @@ def addLegacyGPUtracks(process):
         process.FEVTDEBUGHLToutput.outputCommands.append("keep *_hltCPUPixelVertices_*_*")
         process.FEVTDEBUGHLToutput.outputCommands.append("keep *_hltGPUPixelVertices_*_*")
 
-def addLegacySoArechits(process): #does not work!
-    process.hltSiPixelRecHitSoAFromGPU = cms.EDProducer( "SiPixelRecHitSoAFromCUDA",
-        pixelRecHitSrc = cms.InputTag( "hltSiPixelRecHitsFromGPU" )
+def addSoArechits(process): #does not work!
+    process.hltSiPixelRecHitsSoAFromGPU = cms.EDProducer( "SiPixelRecHitSoAFromCUDA",
+    pixelRecHitSrc = cms.InputTag( "hltSiPixelRecHitsGPU" )
+)
+    
+    process.hltSiPixelRecHitsSoA = SwitchProducerCUDA(
+    cpu = cms.EDAlias(
+        hltSiPixelRecHitsFromLegacy = cms.VPSet( 
+            cms.PSet(  type = cms.string( "cmscudacompatCPUTraitsTrackingRecHit2DHeterogeneous" )         ),
+            cms.PSet(  type = cms.string( "uintAsHostProduct" )         )
+        )
+    ),
+    cuda = cms.EDAlias(
+        hltSiPixelRecHitsSoAFromGPU = cms.VPSet( 
+            cms.PSet(  type = cms.string( "*" )         )
+        )
     )
-    process.DQM_PixelReconstruction_v1.insert(-2, process.hltSiPixelRecHitSoAFromGPU)
+)
+    
+    process.HLTDoLocalPixelTask = cms.Task( process.hltOnlineBeamSpotToGPU , process.hltSiPixelDigiErrorsSoA , process.hltSiPixelDigisLegacy , process.hltSiPixelDigisSoA , process.hltSiPixelDigisFromSoA , process.hltSiPixelDigis , process.hltSiPixelClustersLegacy , process.hltSiPixelClustersGPU , process.hltSiPixelClustersFromSoA , process.hltSiPixelClusters , process.hltSiPixelClustersCache , process.hltSiPixelRecHitsFromLegacy , process.hltSiPixelRecHitsGPU , process.hltSiPixelRecHitsFromGPU , process.hltSiPixelRecHits , process.hltSiPixelRecHitsSoAFromGPU , process.hltSiPixelRecHitsSoA )
     if hasattr(process,"FEVTDEBUGHLToutput"):
+        process.hltPixelConsumerCPU.eventProducts.append("hltSiPixelRecHitsSoA@cpu")
+        process.hltPixelConsumerGPU.eventProducts.append("hltSiPixelRecHitsSoA@cuda")
+        process.FEVTDEBUGHLToutput.outputCommands.append("keep *_hltSiPixelRecHitsSoAFromGPU_*_*")
         process.FEVTDEBUGHLToutput.outputCommands.append("keep *_hltCPUPixelTracks_*_*")
         process.FEVTDEBUGHLToutput.outputCommands.append("keep *_hltGPUPixelTracks_*_*")
         process.FEVTDEBUGHLToutput.outputCommands.append("keep *_hltCPUPixelVertices_*_*")
         process.FEVTDEBUGHLToutput.outputCommands.append("keep *_hltGPUPixelVertices_*_*")
 
-def addGPUrechitsDQM(process): #require 37969 and addLegacySoArechits
-    from DQM.SiPixelPhase1Heterogeneous.siPixelPhase1CompareRecHitsSoA_cfi import siPixelPhase1CompareRecHitsSoA
-    process.hltGPUsiPixelPhase1CompareRecHitsSoA = siPixelPhase1CompareRecHitsSoA.clone(
-        pixelHitsSrcCPU = ("hltSiPixelRecHitsLegacy"), #ie. hltSiPixelRecHits@cpu
-        pixelHitsSrcGPU = ("hltSiPixelRecHitSoAFromGPU"), #ie. hltSiPixelRecHits@cuda
-        topFolderName = 'SiPixelHeterogeneous/HLTPixelRecHitsCompareGPUvsCPU'
+def updateGPUpixelrecoDQM(process):
+    process.hltSiPixelRecHitsSoAMonitorGPUvsCPU = cms.EDProducer('SiPixelPhase1CompareRecHitsSoA', #require #37969 and addSoArechits
+      pixelHitsSrcCPU = cms.InputTag('hltSiPixelRecHitsSoA@cpu'),
+      pixelHitsSrcGPU = cms.InputTag('hltSiPixelRecHitsSoA@cuda'),
+      topFolderName = cms.string('SiPixelHeterogeneous/PixelRecHitsCompareGPUvsCPU'),
+      minD2cut = cms.double(0.0001)
     )
-    process.DQM_PixelReconstruction_v1.insert(-2, process.hltGPUsiPixelPhase1CompareRecHitsSoA)
-
-def addGPUtrackDQM(process):
-    from DQM.SiPixelPhase1Heterogeneous.siPixelPhase1CompareTrackSoA_cfi import siPixelPhase1CompareTrackSoA
-    process.hltGPUsiPixelPhase1CompareTrackSoA = siPixelPhase1CompareTrackSoA.clone(
-        pixelTrackSrcCPU = ("hltPixelTracksCPU"), #ie. hltPixelTracksSoA@cpu
-        pixelTrackSrcGPU = ("hltPixelTracksFromGPU"), #ie. hltPixelTracksSoA@cuda
-        topFolderName = 'SiPixelHeterogeneous/HLTPixelTrackCompareGPUvsCPU',
+    process.hltPixelTracksSoAMonitorCPU = cms.EDProducer('SiPixelPhase1MonitorTrackSoA',
+      pixelTrackSrc = cms.InputTag('hltPixelTracksSoA@cpu'),
+      topFolderName = cms.string('SiPixelHeterogeneous/PixelTrackCPU'),
+      useQualityCut = cms.bool(True),
+      minQuality = cms.string('loose')
     )
-    from DQM.SiPixelPhase1Heterogeneous.siPixelPhase1CompareVertexSoA_cfi import siPixelPhase1CompareVertexSoA
-    process.hltGPUsiPixelPhase1CompareVertexSoA = siPixelPhase1CompareVertexSoA.clone(
-        pixelVertexSrcCPU = ("hltPixelVerticesCPU"), #ie. hltPixelVerticesSoA@cpu
-        pixelVertexSrcGPU = ("hltPixelVerticesFromGPU"), #ie. hltPixelVerticesSoA@cuda
-        topFolderName = 'SiPixelHeterogeneous/HLTPixelTrackCompareGPUvsCPU',
+    process.hltPixelTracksSoAMonitorGPU = cms.EDProducer('SiPixelPhase1MonitorTrackSoA',
+      pixelTrackSrc = cms.InputTag('hltPixelTracksSoA@cuda'),
+      topFolderName = cms.string('SiPixelHeterogeneous/PixelTrackGPU'),
+      useQualityCut = cms.bool(True),
+      minQuality = cms.string('loose')
     )
-    process.DQM_PixelReconstruction_v1.insert(-2, process.hltGPUsiPixelPhase1CompareTrackSoA)
-    process.DQM_PixelReconstruction_v1.insert(-2, process.hltGPUsiPixelPhase1CompareVertexSoA)
+    process.hltPixelTracksSoAMonitorGPUvsCPU = cms.EDProducer('SiPixelPhase1CompareTrackSoA',
+      pixelTrackSrcCPU = cms.InputTag('hltPixelTracksSoA@cpu'),
+      pixelTrackSrcGPU = cms.InputTag('hltPixelTracksSoA@cuda'),
+      topFolderName = cms.string('SiPixelHeterogeneous/PixelTrackGPUvsCPU'),
+      useQualityCut = cms.bool(True),
+      minQuality = cms.string('loose'),
+      deltaR2cut = cms.double(0.04)
+    )
+    process.hltPixelVertexMonitorCPU = cms.EDProducer('SiPixelPhase1MonitorVertexSoA',
+      beamSpotSrc = cms.InputTag('hltOnlineBeamSpot'),
+      pixelVertexSrc = cms.InputTag('hltPixelVerticesSoA@cpu'),
+      topFolderName = cms.string('SiPixelHeterogeneous/PixelVertexCPU'),
+    )
+    process.hltPixelVertexMonitorGPU = cms.EDProducer('SiPixelPhase1MonitorVertexSoA',
+      beamSpotSrc = cms.InputTag('hltOnlineBeamSpot'),
+      pixelVertexSrc = cms.InputTag('hltPixelVerticesSoA@cuda'),
+      topFolderName = cms.string('SiPixelHeterogeneous/PixelVertexGPU'),
+    )
+    process.hltPixelVertexMonitorGPUvsCPU = cms.EDProducer('SiPixelPhase1CompareVertexSoA',
+      beamSpotSrc = cms.InputTag('hltOnlineBeamSpot'),
+      pixelVertexSrcCPU = cms.InputTag('hltPixelVerticesSoA@cpu'),
+      pixelVertexSrcGPU = cms.InputTag('hltPixelVerticesSoA@cuda'),
+      topFolderName = cms.string('SiPixelHeterogeneous/PixelVertexGPUvsCPU'),
+      dzCut = cms.double(1)
+    )
+    process.DQM_PixelReconstruction_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sDQMPixelReconstruction + process.hltPreDQMPixelReconstruction + process.statusOnGPU + process.statusOnGPUFilter + process.HLTDoLocalPixelSequence + process.HLTRecopixelvertexingSequence + process.hltPixelConsumerCPU + process.hltPixelConsumerGPU + process.hltSiPixelRecHitsSoAMonitorGPUvsCPU + process.hltPixelTracksSoAMonitorCPU + process.hltPixelTracksSoAMonitorGPU + process.hltPixelTracksSoAMonitorGPUvsCPU + process.hltPixelVertexMonitorCPU + process.hltPixelVertexMonitorGPU + process.hltPixelVertexMonitorGPUvsCPU + process.HLTEndSequence )
 
 def addGPUecalDQM(process):
     ###### ECAL #####################
@@ -196,8 +236,7 @@ def customizeHLTforGPUvsCPU(process):
     enableDQM(process)
     addGPUhcalDQM(process)
     addGPUecalDQM(process)
-    addGPUtrackDQM(process)
-#    addGPUrechitsDQM(process)
-#    addLegacySoArechits(process)
+    addSoArechits(process)
+    updateGPUpixelrecoDQM(process)
     addLegacyGPUtracks(process)
     

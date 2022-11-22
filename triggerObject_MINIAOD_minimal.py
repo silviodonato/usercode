@@ -1,16 +1,8 @@
 #trigger="HLT_Ele27_eta2p1_WPLoose_Gsf_v1"
-fileName = "/eos/cms/store/data/Run2022F/EphemeralHLTPhysics5/MINIAOD/PromptReco-v1/000/361/468/00000/42bcb3ce-5a3c-4868-a196-53e3bde4664b.root"
+fileName = "root://eoscms.cern.ch//eos/cms/store/data/Run2022F/EphemeralHLTPhysics5/MINIAOD/PromptReco-v1/000/361/468/00000/42bcb3ce-5a3c-4868-a196-53e3bde4664b.root"
 triggerFilter="hltPFJetForBtagSelector"
 
 import ROOT
-ROOT.gROOT.SetBatch(True)
-ROOT.gStyle.SetOptStat(0)
-
-# load FWLite C++ libraries
-ROOT.gSystem.Load("libFWCoreFWLite.so");
-ROOT.gSystem.Load("libDataFormatsFWLite.so");
-ROOT.AutoLibraryLoader.enable()
-
 # load FWlite python libraries
 from DataFormats.FWLite import Handle, Events
 

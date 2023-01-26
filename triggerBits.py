@@ -1,7 +1,7 @@
 from ROOT import *
 from DataFormats.FWLite import Handle, Events
 
-fileName = "root://eoscms.cern.ch//store/data/Run2022F/ParkingSingleMuon0/AOD/PromptReco-v1/000/362/064/00000/767f3644-6bca-4fa4-ba4a-98f77ea3a3bb.root"
+fileName = "root://eoscms.cern.ch//store/data/Run2022F/ParkingDoubleMuonLowMass6/AOD/PromptReco-v1/000/360/486/00000/3799b9b5-e9d4-4a0e-946d-876115a9a716.root"
 filesInput = [fileName]
 events = Events (filesInput)
 ## get the first event

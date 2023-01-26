@@ -55,7 +55,7 @@ for key in collectionKeysL2muons:
 for i in range(triggerEvent.product().sizeFilters()):
     print(triggerEvent.product().filterLabel(i),triggerEvent.product().filterKeys(i).size())
 
-muonTriggerFilter = ROOT.edm.InputTag("hltL2fL1sMu5EG20orMu20EG15L1f5L2NoVtxFiltered16","","HLT")
+muonTriggerFilter = ROOT.edm.InputTag("hltL3fL1sDoubleMu0SQL1f0L2PreFilteres0L3Filtered0","","HLT")
 filterIndex = triggerEvent.product().filterIndex(muonTriggerFilter)
 filterKeys = triggerEvent.product().filterKeys(filterIndex)
 

@@ -10,6 +10,8 @@ python3 queryJIRA.py STEAM
 # JIRA username and password
 username = "sdonato"
 password = "XXXXX"
+ps = open("/afs/cern.ch/user/s/sdonato/private/jira.txt")
+password = ps.read()[:-1]
 
 maxResults = 100000 # max results in JIRA query
 dateLimit = "2020-01-01" # get JIRA tickets created after dateLimit

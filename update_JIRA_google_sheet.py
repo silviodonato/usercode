@@ -8,10 +8,9 @@ python3 queryJIRA.py STEAM
 '''
 
 # JIRA username and password
-username = "sdonato"
-password = "XXXXX"
-ps = open("/afs/cern.ch/user/s/sdonato/private/jira.txt")
-password = ps.read()[:-1]
+token = "XXXXX"
+tokenFile = open("/afs/cern.ch/user/s/sdonato/private/jira.txt")
+token = tokenFile.read()[:-1]
 
 maxResults = 100000 # max results in JIRA query
 dateLimit = "2020-01-01" # get JIRA tickets created after dateLimit
@@ -56,7 +55,8 @@ excludeComponents = ["FOG Completed"]
 
 # Run JIRA Ticket API query
 print("Query: %s"%url)
-response = requests.get(url, auth=(username, password))
+response = requests.get(url, headers={"Authorization": "Bearer " + token})
+#response.headers.update({"Authorization", "Bearer " + token})
 
 # Check the response
 if response.status_code != 200:

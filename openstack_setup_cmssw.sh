@@ -30,6 +30,8 @@ cvmfs_config reload
  
 printf "DONE" #clear screen
 
+yum -y install perl
+
 exit 0
 
 ### Login as user, copy missing files

@@ -16,7 +16,7 @@ locmap --enable all
 locmap --list
 locmap --configure all
 
-yum -y install voms-clients-java krb5-devel perl python3-devel rpm-build
+yum -y install voms-clients-java krb5-devel perl python3-devel rpm-build pip
 
 yum -y install git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel
 

@@ -41,6 +41,8 @@ sudo scp -r sdonato@lxplus.cern.ch:/etc/vomses /etc/vomses
 ln -s /afs/cern.ch/user/s/sdonato afs
 ln -s /afs/cern.ch/user/s/sdonato/.globus .
 
+pip install omsapi --index-url https://gitlab.cern.ch/api/v4/projects/45046/packages/pypi/simple
+
 voms-proxy-init
 
 ### Test CMSSW
@@ -50,3 +52,5 @@ cd CMSSW_13_0_0_pre4
 cmsenv
 
 runTheMatrix.py -l 140.115
+
+

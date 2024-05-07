@@ -30,7 +30,7 @@ cvmfs_config reload
  
 printf "DONE" #clear screen
 
-yum -y install perl
+yum -y install perl 
 
 exit 0
 
@@ -41,6 +41,7 @@ sudo scp -r sdonato@lxplus.cern.ch:/etc/vomses /etc/vomses
 ln -s /afs/cern.ch/user/s/sdonato afs
 ln -s /afs/cern.ch/user/s/sdonato/.globus .
 
+pip install oauth2client gspread
 pip install omsapi --index-url https://gitlab.cern.ch/api/v4/projects/45046/packages/pypi/simple
 
 voms-proxy-init

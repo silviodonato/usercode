@@ -57,5 +57,7 @@ export ALL_PROXY=socks5://localhost:12345
 # test
 wget https://ubuntu.mirror.garr.it/releases/24.04/ubuntu-24.04-desktop-amd64.iso
 
+# kinit
+python3 /afs/cern.ch/user/s/sdonato/SilvioCronJob2/renewticket.py
 
 

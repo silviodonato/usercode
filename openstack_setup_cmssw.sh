@@ -44,4 +44,8 @@ cmsenv
 
 runTheMatrix.py -l 140.115
 
+### PROXY all
 
+
+ssh -f -N -D 12345 lxtunnel.cern.ch 
+export ALL_PROXY=socks5://localhost:12345

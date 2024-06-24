@@ -49,3 +49,13 @@ runTheMatrix.py -l 140.115
 
 ssh -f -N -D 12345 lxtunnel.cern.ch 
 export ALL_PROXY=socks5://localhost:12345
+#OR
+#use_proxy=yes
+#http_proxy=localhost:12345
+#https_proxy=localhost:12345
+
+# test
+wget https://ubuntu.mirror.garr.it/releases/24.04/ubuntu-24.04-desktop-amd64.iso
+
+
+

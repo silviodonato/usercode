@@ -44,7 +44,8 @@ cmsenv
 
 voms-proxy-init
 
-runTheMatrix.py -l 140.115
+runTheMatrix.py --show | grep HLTPhysics202
+runTheMatrix.py -l 141.111 --ibeos
 
 ### PROXY all
 

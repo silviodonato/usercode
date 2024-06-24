@@ -42,6 +42,8 @@ cmsrel CMSSW_13_0_0_pre4
 cd CMSSW_13_0_0_pre4
 cmsenv
 
+voms-proxy-init
+
 runTheMatrix.py -l 140.115
 
 ### PROXY all

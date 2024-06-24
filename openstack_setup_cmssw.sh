@@ -6,19 +6,11 @@ printf "TEST SILVIO" #clear screen
 
 mkdir ~/testSilvio
 
-yum -y install git
-yum -y install puppet-agent
-yum -y install locmap-release
-yum -y install locmap
-#yum -y install rpm-build
+yum -y install git puppet-agent locmap-release locmap rpm-build voms-clients-java krb5-devel perl python3-devel rpm-build pip git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel perl screen wget 
 
 locmap --enable all
 locmap --list
 locmap --configure all
-
-yum -y install voms-clients-java krb5-devel perl python3-devel rpm-build pip
-
-yum -y install git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel
 
 echo "export CMS_LOCAL_SITE=T2_CH_CERN" > /etc/cvmfs/config.d/cms.cern.ch.local
 echo "CVMFS_HTTP_PROXY='http://cmsmeyproxy.cern.ch:3128;http://ca-proxy.cern.ch:3128'" >> /etc/cvmfs/config.d/cms.cern.ch.local
@@ -29,8 +21,6 @@ cvmfs_config reload
 #locmap --configure all
  
 printf "DONE" #clear screen
-
-yum -y install perl 
 
 exit 0
 

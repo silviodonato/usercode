@@ -24,7 +24,7 @@ printf "DONE" #clear screen
 
 exit 0
 
-### Login as user, copy missing files
+### Login as user (!!!), copy missing files
 sudo scp -r sdonato@lxplus.cern.ch:/etc/grid-security /etc/grid-security
 sudo scp -r sdonato@lxplus.cern.ch:/etc/vomses /etc/vomses
 

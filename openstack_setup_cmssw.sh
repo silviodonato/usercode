@@ -6,7 +6,7 @@ printf "TEST SILVIO" #clear screen
 
 mkdir ~/testSilvio
 
-yum -y install git puppet-agent locmap-release locmap rpm-build voms-clients-java krb5-devel perl python3-devel rpm-build pip git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel perl screen wget 
+yum -y install git puppet-agent locmap-release locmap rpm-build voms-clients-java krb5-devel perl python3-devel rpm-build pip git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel perl screen wget  x2goserver
 
 locmap --enable all
 locmap --list

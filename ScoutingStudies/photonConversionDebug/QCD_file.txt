@@ -1,0 +1,1 @@
+root://cms-xrd-global.cern.ch//store/mc/Run3Summer23BPixDR/QCD_PT-15to7000_TuneCP5_13p6TeV_pythia8/GEN-SIM-RAW/EpsilonPU_castor_130X_mcRun3_2023_realistic_postBPix_v2-v2/2550000/0068b3ec-85dc-409f-8db1-a46b0601c889.root

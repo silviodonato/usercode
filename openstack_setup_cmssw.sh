@@ -65,6 +65,7 @@ wget https://ubuntu.mirror.garr.it/releases/24.04/ubuntu-24.04-desktop-amd64.iso
 python3 /afs/cern.ch/user/s/sdonato/SilvioCronJob2/renewticket.py
 
 
+#### To make a new disk partition
 ###### CREATE PARTITION ################
 ```
 [root@sdonato-openstack /]# lsblk
@@ -115,8 +116,12 @@ Calling ioctl() to re-read partition table.
 Syncing disks.                                                                                                                                                                                               
                       ```
 
+### CREAT FILESYSTEM (XFS or EXT4)
+mkfs.xfs -K /dev/vdb1
 
-#### To make a new disk partition
+### MOUNT 
+mkdir /scratch
+mount /dev/vdb1 /scratch/
 
 
 

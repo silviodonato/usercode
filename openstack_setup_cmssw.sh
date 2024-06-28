@@ -64,6 +64,8 @@ wget https://ubuntu.mirror.garr.it/releases/24.04/ubuntu-24.04-desktop-amd64.iso
 # kinit
 python3 /afs/cern.ch/user/s/sdonato/SilvioCronJob2/renewticket.py
 
+
+###### CREATE PARTITION ################
 ```
 [root@sdonato-openstack /]# lsblk
 NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT

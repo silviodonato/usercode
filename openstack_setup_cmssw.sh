@@ -76,8 +76,42 @@ vdb     252:16   0  240G  0 disk
 ```
 
 ```
-fdisk /dev/vdb
-```
+fdisk /dev/vdb       
+                                                                                                                                                                                                             
+Welcome to fdisk (util-linux 2.32.1).            
+Changes will remain in memory only, until you decide to write them.                                                                                                                                          
+Be careful before using the write command.       
+                                                                                                                                                                                                             
+The old ext4 signature will be removed by a write command.
+                                                                                                                                                                                                             
+Device does not contain a recognized partition table.
+Created a new DOS disklabel with disk identifier 0x4b129eef.                                                                                                                                                 
+                                                 
+Command (m for help): F                          
+Unpartitioned space /dev/vdb: 240 GiB, 257696989184 bytes, 503314432 sectors                                                                                                                                 
+Units: sectors of 1 * 512 = 512 bytes            
+Sector size (logical/physical): 512 bytes / 4096 bytes                                                                                                                                                       
+                                                 
+Start       End   Sectors  Size                                                                                                                                                                              
+ 2048 503316479 503314432  240G                  
+                                                                                                                                                                                                             
+Command (m for help): n                          
+Partition type                                                                                                                                                                                               
+   p   primary (0 primary, 0 extended, 4 free)   
+   e   extended (container for logical partitions)                                                                                                                                                           
+Select (default p): p                            
+Partition number (1-4, default 1):                                                                                                                                                                           
+First sector (2048-503316479, default 2048):     
+Last sector, +sectors or +size{K,M,G,T,P} (2048-503316479, default 503316479):                                                                                                                               
+                                                 
+Created a new partition 1 of type 'Linux' and of size 240 GiB.                                                                                                                                               
+                                                 
+Command (m for help): w                                                                                                                                                                                      
+                                                 
+The partition table has been altered.                                                                                                                                                                        
+Calling ioctl() to re-read partition table.      
+Syncing disks.                                                                                                                                                                                               
+                      ```
 
 
 #### To make a new disk partition

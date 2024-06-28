@@ -64,4 +64,23 @@ wget https://ubuntu.mirror.garr.it/releases/24.04/ubuntu-24.04-desktop-amd64.iso
 # kinit
 python3 /afs/cern.ch/user/s/sdonato/SilvioCronJob2/renewticket.py
 
+```
+[root@sdonato-openstack /]# lsblk
+NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+vda     252:0    0   40G  0 disk 
+|-vda1  252:1    0 39.5G  0 part /
+|-vda14 252:14   0    4M  0 part 
+`-vda15 252:15   0  545M  0 part /boot/efi
+vdb     252:16   0  240G  0 disk 
+`-vdb1  252:17   0  240G  0 part 
+```
+
+```
+fdisk /dev/vdb
+```
+
+
+#### To make a new disk partition
+
+
 

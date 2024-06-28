@@ -66,6 +66,9 @@ python3 /afs/cern.ch/user/s/sdonato/SilvioCronJob2/renewticket.py
 
 
 #### To make a new disk partition
+###### Remember to attach Volume to Instance from OpenStack! ################
+
+
 ###### CREATE PARTITION ################
 ```
 [root@sdonato-openstack /]# lsblk

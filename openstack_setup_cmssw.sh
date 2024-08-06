@@ -28,6 +28,7 @@ exit 0
 ### Login as user (!!!), copy missing files
 sudo scp -r sdonato@lxplus.cern.ch:/etc/grid-security /etc/grid-security
 sudo scp -r sdonato@lxplus.cern.ch:/etc/vomses /etc/vomses
+sudo scp -r sdonato@lxplus.cern.ch:/etc/grid-security/certificates/* /etc/grid-security/certificates
 
 ln -s /afs/cern.ch/user/s/sdonato afs
 ln -s /afs/cern.ch/user/s/sdonato/.globus .

@@ -35,7 +35,7 @@ ln -s /afs/cern.ch/user/s/sdonato/.globus .
 
 pip install omsapi --index-url https://gitlab.cern.ch/api/v4/projects/45046/packages/pypi/simple
 
-voms-proxy-init
+voms-proxy-init --voms cms
 
 ### Test CMSSW
 source /cvmfs/cms.cern.ch/cmsset_default.sh

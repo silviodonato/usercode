@@ -6,8 +6,8 @@ printf "TEST SILVIO" #clear screen
 
 mkdir ~/testSilvio
 
-yum -y install git puppet-agent locmap-release locmap rpm-build voms-clients-java krb5-devel perl python3-devel rpm-build pip git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel perl screen wget  x2goserver xterm mesa-libGLU mesa-libGLU-devel ant javaws
-### yum install xfdesktop
+yum -y install git puppet-agent locmap-release locmap rpm-build voms-clients-java krb5-devel perl python3-devel rpm-build pip git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel perl screen wget  x2goserver xterm mesa-libGLU mesa-libGLU-devel ant javaws pciutils
+### yum install xfdesktop 
 
 locmap --enable all
 locmap --list

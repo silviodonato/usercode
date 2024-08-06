@@ -6,7 +6,7 @@ printf "TEST SILVIO" #clear screen
 
 mkdir ~/testSilvio
 
-yum -y install git puppet-agent locmap-release locmap rpm-build voms-clients-java krb5-devel perl python3-devel rpm-build pip git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel perl screen wget  x2goserver xterm mesa-libGLU mesa-libGLU-devel ant javaws pciutils
+yum -y install git puppet-agent locmap-release locmap rpm-build voms-clients-java krb5-devel perl python3-devel rpm-build pip git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel perl screen wget  x2goserver xterm mesa-libGLU mesa-libGLU-devel ant javaws pciutils nano vim wget
 ### yum install xfdesktop 
 
 locmap --enable all
@@ -130,5 +130,11 @@ mkfs.xfs -K /dev/vdb1
 mkdir /scratch
 mount /dev/vdb1 /scratch/
 
+
+############# Install CUDA Drivers ##################################
+wget https://developer.download.nvidia.com/compute/cuda/12.6.0/local_installers/cuda_12.6.0_560.28.03_linux.run ## (see https://developer.nvidia.com/cuda-downloads for the latest version )
+## Disable Nouveau: follow https://docs.nvidia.com/ai-enterprise/deployment-guide-vmware/0.1.0/nouveau.html
+sudo dnf install kernel-devel
+sudo sh ./cuda_12.6.0_560.28.03_linux.run
 
 

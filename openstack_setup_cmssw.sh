@@ -33,7 +33,6 @@ sudo scp -r sdonato@lxplus.cern.ch:/etc/grid-security/certificates/* /etc/grid-s
 ln -s /afs/cern.ch/user/s/sdonato afs
 ln -s /afs/cern.ch/user/s/sdonato/.globus .
 
-pip install oauth2client gspread
 pip install omsapi --index-url https://gitlab.cern.ch/api/v4/projects/45046/packages/pypi/simple
 
 voms-proxy-init
@@ -54,6 +53,10 @@ runTheMatrix.py -l 141.111 --ibeos
 
 ssh -f -N -D 12345 lxtunnel.cern.ch 
 export ALL_PROXY=socks5://localhost:12345
+
+pip install oauth2client gspread --proxy socks5://localhost:12345
+
+
 #OR
 #use_proxy=yes
 #http_proxy=localhost:12345

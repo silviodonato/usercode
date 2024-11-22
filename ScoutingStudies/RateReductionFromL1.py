@@ -17,6 +17,36 @@ from ROOT import *
 from DataFormats.FWLite import Handle, Events
 
 verbose = False
+
+evMax = -1
+evMax = 100000
+evReportEvery = 1000
+
+filterNames = {
+    "DST_PFScouting_DoubleMuon_v5": ["hltL1sDSTRun3DoubleMuonPFScoutingPixelTracking"],
+    "DST_PFScouting_DoubleEG_v5":  ["hltL1sDSTRun3DoubleEGPFScoutingPixelTracking"],
+    "DST_PFScouting_JetHT_v5":  ["hltL1sDSTRun3JetHTPFScoutingPixelTracking"],
+    # "DST_PFScouting_DatasetMuon_v5": ["hltMuonTriggerResultsFilter"],
+    "DST_PFScouting_AXOVLoose_v3":  ["hltL1sDSTRun3AXOVLoosePFScoutingTracking"],
+    "DST_PFScouting_AXOLoose_v3":  ["hltL1sDSTRun3AXOLoosePFScoutingTracking"],
+    "DST_PFScouting_AXONominal_v5":  ["hltL1sDSTRun3AXONominalPFScoutingTracking"],
+    "DST_PFScouting_AXOTight_v5":  ["hltL1sDSTRun3AXOTightPFScoutingTracking"],
+    "DST_PFScouting_AXOVTight_v3":  ["hltL1sDSTRun3AXOVTightPFScoutingTracking"],
+    "DST_PFScouting_CICADAVLoose_v1":  ["hltL1sDSTRun3CICADAVLoosePFScoutingTracking"],
+    "DST_PFScouting_CICADALoose_v1":  ["hltL1sDSTRun3CICADALoosePFScoutingTracking"],
+    "DST_PFScouting_CICADAMedium_v1":  ["hltL1sDSTRun3CICADAMediumPFScoutingTracking"],
+    "DST_PFScouting_CICADATight_v1":  ["hltL1sDSTRun3CICADATightPFScoutingTracking"],
+    "DST_PFScouting_CICADAVTight_v1":  ["hltL1sDSTRun3CICADAVTightPFScoutingTracking"],
+    "DST_PFScouting_SingleMuon_v5":  ["hltL1sSingleMuScouting"],
+    "DST_PFScouting_SinglePhotonEB_v2":  ["hltL1sSingleEGor"],
+    "DST_PFScouting_ZeroBias_v3":  ["hltL1sZeroBias"],
+}
+
+triggerNames = filterNames.keys()
+
+## Add process name to filters
+processName = "HLT"
+
 filesInput = [
 	"/eos/cms/store/data/Run2024I/EphemeralHLTPhysics0/RAW/v1/000/386/813/00000/2204f9f0-a26c-4447-89ab-67e45b3b61d4.root",
 	"/eos/cms/store/data/Run2024I/EphemeralHLTPhysics0/RAW/v1/000/386/813/00000/273075a0-4385-49a4-995a-e8a5ad29c6bd.root",
@@ -116,34 +146,6 @@ filesInput = [
 	"/eos/cms/store/data/Run2024I/EphemeralHLTPhysics7/RAW/v1/000/386/813/00000/e89eddff-cb65-4450-8346-04d0691f0b22.root",
     ]
 
-evMax = -1
-evMax = 100000
-evReportEvery = 1000
-
-filterNames = {
-    "DST_PFScouting_DoubleMuon_v5": ["hltL1sDSTRun3DoubleMuonPFScoutingPixelTracking"],
-    "DST_PFScouting_DoubleEG_v5":  ["hltL1sDSTRun3DoubleEGPFScoutingPixelTracking"],
-    "DST_PFScouting_JetHT_v5":  ["hltL1sDSTRun3JetHTPFScoutingPixelTracking"],
-    # "DST_PFScouting_DatasetMuon_v5": ["hltMuonTriggerResultsFilter"],
-    "DST_PFScouting_AXOVLoose_v3":  ["hltL1sDSTRun3AXOVLoosePFScoutingTracking"],
-    "DST_PFScouting_AXOLoose_v3":  ["hltL1sDSTRun3AXOLoosePFScoutingTracking"],
-    "DST_PFScouting_AXONominal_v5":  ["hltL1sDSTRun3AXONominalPFScoutingTracking"],
-    "DST_PFScouting_AXOTight_v5":  ["hltL1sDSTRun3AXOTightPFScoutingTracking"],
-    "DST_PFScouting_AXOVTight_v3":  ["hltL1sDSTRun3AXOVTightPFScoutingTracking"],
-    "DST_PFScouting_CICADAVLoose_v1":  ["hltL1sDSTRun3CICADAVLoosePFScoutingTracking"],
-    "DST_PFScouting_CICADALoose_v1":  ["hltL1sDSTRun3CICADALoosePFScoutingTracking"],
-    "DST_PFScouting_CICADAMedium_v1":  ["hltL1sDSTRun3CICADAMediumPFScoutingTracking"],
-    "DST_PFScouting_CICADATight_v1":  ["hltL1sDSTRun3CICADATightPFScoutingTracking"],
-    "DST_PFScouting_CICADAVTight_v1":  ["hltL1sDSTRun3CICADAVTightPFScoutingTracking"],
-    "DST_PFScouting_SingleMuon_v5":  ["hltL1sSingleMuScouting"],
-    "DST_PFScouting_SinglePhotonEB_v2":  ["hltL1sSingleEGor"],
-    "DST_PFScouting_ZeroBias_v3":  ["hltL1sZeroBias"],
-}
-
-triggerNames = filterNames.keys()
-
-## Add process name to filters
-processName = "HLT"
 for triggerName in filterNames:
     for i in range(len(filterNames[triggerName])):
         filterNames[triggerName][i] = filterNames[triggerName][i] + "::" + processName
@@ -211,16 +213,23 @@ for iev,event in enumerate(events):
                 if verbose: print("Event %d passes %s."%(iev,filterName))
 
 print("Total number of events: %d"%count_total)
+if verbose or True:
+    for triggerName in triggerNames:
+        print ()
+        print("################# %s #################"%triggerName)
+        print("Number of events passing %s: %d"%(triggerName,counts_passing_HLTpaths[triggerName]))
+        for filterName in filterNames[triggerName]:
+            print("Number of events passing %s: %d"%(filterName,counts_passing_L1filters[filterName]))
+            if counts_passing_L1filters[filterName]>0:
+                print("Fraction of events passing trigger %s after filter %s: %.2f %% +/- %.2f %% "%(triggerName,filterName,float(counts_passing_HLTpaths[triggerName])/counts_passing_L1filters[filterName]*100, 1.96*sqrt(float(counts_passing_HLTpaths[triggerName])*(1-float(counts_passing_HLTpaths[triggerName])/counts_passing_L1filters[filterName]))/counts_passing_L1filters[filterName]*100))
+            else:
+                print("Fraction of events passing trigger %s after filter %s: 0.0"%(triggerName,filterName))
+
+print("Total number of events: %d"%count_total)
+
 for triggerName in triggerNames:
-    print ()
-    print("################# %s #################"%triggerName)
-    print("Number of events passing %s: %d"%(triggerName,counts_passing_HLTpaths[triggerName]))
-    for filterName in filterNames[triggerName]:
-        print("Number of events passing %s: %d"%(filterName,counts_passing_L1filters[filterName]))
-        if counts_passing_L1filters[filterName]>0:
-            print("Fraction of events passing trigger %s after filter %s: %.2f %% +/- %.2f %% "%(triggerName,filterName,float(counts_passing_HLTpaths[triggerName])/counts_passing_L1filters[filterName]*100, 1.96*sqrt(float(counts_passing_HLTpaths[triggerName])*(1-float(counts_passing_HLTpaths[triggerName])/counts_passing_L1filters[filterName]))/counts_passing_L1filters[filterName]*100))
-        else:
-            print("Fraction of events passing trigger %s after filter %s: 0.0"%(triggerName,filterName))
+    print(" %s : %.2f %% +/- %.2f %%"%(triggerName,float(counts_passing_HLTpaths[triggerName])/count_total*100, 1.96*sqrt(float(counts_passing_HLTpaths[triggerName])*(1-float(counts_passing_HLTpaths[triggerName])/count_total))/count_total*100))
+          
 
 
 # print("Number of events passing %s: %d"%(HLTFilter,count_passing_L1sDSTRun3DoubleMuonPFScoutingPixelTracking))

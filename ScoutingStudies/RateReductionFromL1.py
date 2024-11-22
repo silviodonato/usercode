@@ -228,7 +228,12 @@ if verbose or True:
 print("Total number of events: %d"%count_total)
 
 for triggerName in triggerNames:
-    print(" %s : %.2f %% +/- %.2f %%"%(triggerName,float(counts_passing_HLTpaths[triggerName])/count_total*100, 1.96*sqrt(float(counts_passing_HLTpaths[triggerName])*(1-float(counts_passing_HLTpaths[triggerName])/count_total))/count_total*100))
+    for filterName in filterNames[triggerName]:
+        if counts_passing_L1filters[filterName]>0:
+            print(" %s (%d / %d) : %.2f %% +/- %.2f %%"%(triggerName,counts_passing_HLTpaths[triggerName], counts_passing_L1filters[filterName], float(counts_passing_HLTpaths[triggerName])/counts_passing_L1filters[filterName]*100, 1.96*sqrt(float(counts_passing_HLTpaths[triggerName])*(1-float(counts_passing_HLTpaths[triggerName])/counts_passing_L1filters[filterName]))/counts_passing_L1filters[filterName]*100))
+        else:
+            print(" %s (%d / %d) : %.2f %% +/- %.2f %%"%(triggerName,-1, -1))
+
           
 
 

@@ -1,0 +1,428 @@
+# L1T INFO:  L1REPACK:uGT will unpack uGMT and CaloLayer2 outputs, and re-emulate uGT
+%MSG-i AlpakaService:  (NoModuleName) 09-Oct-2025 17:59:14 CEST pre-events
+AlpakaServiceSerialSync succesfully initialised.
+Found 1 device:
+  - AMD EPYC 9554P 64-Core Processor
+%MSG
+09-Oct-2025 17:59:15 CEST  Initiating request to open file file:/scratch/sdonato/data/SaswatiRAW_e1f7f325-4ca8-4fea-8d27-06b33862cf11.root
+09-Oct-2025 17:59:15 CEST  Successfully opened file file:/scratch/sdonato/data/SaswatiRAW_e1f7f325-4ca8-4fea-8d27-06b33862cf11.root
+%MSG-w SiStripRawToDigi:  SiStripRawToDigiModule:hltSiStripRawToDigi  09-Oct-2025 17:59:23 CEST Run: 388350 Event: 13230769
+NULL pointer to FEDRawData for FED: id 122
+Note: further warnings of this type will be suppressed (this can be changed by enabling debugging printout)
+%MSG
+%MSG-w DigiToRaw:  SiStripDigiToRawModule:hltSiStripDigiToZSRaw  09-Oct-2025 17:59:24 CEST Run: 388350 Event: 13230769
+Invalid raw data for FED, skipping: id 122
+Note: further warnings of this type will be suppressed (this can be changed by enabling debugging printout)
+%MSG
+%MSG-w DigiToRaw:  SiStripDigiToRawModule:hltSiStripDigiToZSRaw  09-Oct-2025 17:59:24 CEST Run: 388350 Event: 13230769
+[sistrip::DigiToRaw::createFedBuffers_] Could not construct FEDBuffer for FED 122
+%MSG
+%MSG-w DigiToRaw:  SiStripDigiToRawModule:hltSiStripDigiToZSRaw  09-Oct-2025 17:59:24 CEST Run: 388350 Event: 13230769
+[sistrip::DigiToRaw::createFedBuffers_] Could not construct FEDBuffer for FED 466
+%MSG
+FastReport       CPU time      Real time      Allocated    Deallocated  Transition
+FastReport         0.1 ms         0.1 ms          +0 kB          +0 kB  run 388350, lumisection 11
+
+FastReport ------------------------- run 388350 Summary ------------------------
+FastReport   CPU time avg.      when run  Real time avg.      when run     Alloc. avg.      when run   Dealloc. avg.      when run  Modules
+FastReport        35.6 ms                       35.6 ms                     +14156 kB                      -1209 kB                 source
+FastReport      1137.8 ms                     1138.3 ms                    +200498 kB                    -165526 kB                 process HLTX
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    Dataset_HIPhysicsRawPrime
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    Dataset_HIPhysicsRawSecond
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    HLT_ZeroBias_v15
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    HLTriggerFinalPath
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    HLTriggerFirstPath
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    TriggerResults
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltBoolEnd
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltBoolFalse
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +2 kB          +2 kB          -1 kB          -1 kB    hltDatasetHIPhysicsRawPrime
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +2 kB          +2 kB          -1 kB          -1 kB    hltDatasetHIPhysicsRawSecond
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltGetRaw
+FastReport         0.1 ms         0.1 ms         0.1 ms         0.1 ms         +81 kB         +81 kB         -48 kB         -48 kB    hltGtStage2Digis
+FastReport         0.8 ms         0.8 ms         0.8 ms         0.8 ms        +519 kB        +519 kB        -349 kB        -349 kB    hltGtStage2ObjectMap
+FastReport         0.1 ms         0.1 ms         0.1 ms         0.1 ms          +4 kB          +4 kB          -2 kB          -2 kB    hltL1ZeroBias
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltOnlineBeamSpot
+FastReport         0.1 ms         0.1 ms         0.1 ms         0.1 ms          +1 kB          +1 kB          +0 kB          +0 kB    hltOnlineMetaDataDigis
+FastReport       692.4 ms       692.4 ms       692.7 ms       692.7 ms     +109537 kB     +109537 kB      -94706 kB      -94706 kB    hltOutputPhysicsHIPhysicsRawSecond
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltPSetMap
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltPreDatasetHIPhysicsRawPrime
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltPreDatasetHIPhysicsRawSecond
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltPreZeroBias
+FastReport         8.0 ms         8.0 ms         8.0 ms         8.0 ms      +20121 kB      +20121 kB      -16428 kB      -16428 kB    hltSiStripClusterizerForRawPrime
+FastReport         8.7 ms         8.7 ms         8.7 ms         8.7 ms        +560 kB        +560 kB          +0 kB          +0 kB    hltSiStripClusters2ApproxClusters
+FastReport       133.3 ms       133.3 ms       133.4 ms       133.4 ms        +504 kB        +504 kB        -224 kB        -224 kB    hltSiStripClusters2ApproxClustersv1
+FastReport       118.9 ms       118.9 ms       118.9 ms       118.9 ms       +6988 kB       +6988 kB       -3264 kB       -3264 kB    hltSiStripClustersFromRawPrime
+FastReport       128.0 ms       128.0 ms       128.0 ms       128.0 ms       +7617 kB       +7617 kB       -3892 kB       -3892 kB    hltSiStripClustersFromRawPrimev1
+FastReport        23.5 ms        23.5 ms        23.5 ms        23.5 ms      +29525 kB      +29525 kB      -28686 kB      -28686 kB    hltSiStripDigiToZSRaw
+FastReport         6.3 ms         6.3 ms         6.3 ms         6.3 ms       +7063 kB       +7063 kB       -4651 kB       -4651 kB    hltSiStripRawToDigi
+FastReport        11.9 ms        11.9 ms        12.0 ms        12.0 ms      +10018 kB      +10018 kB       -9112 kB       -9112 kB    hltSiStripZeroSuppression
+FastReport         0.1 ms         0.1 ms         0.1 ms         0.1 ms         +14 kB         +14 kB         -11 kB         -11 kB    hltTriggerSummaryAOD
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +1 kB          +1 kB          +0 kB          +0 kB    hltTriggerSummaryRAW
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltTriggerType
+FastReport         0.4 ms         0.4 ms         0.4 ms         0.4 ms        +301 kB        +301 kB        -186 kB        -186 kB    packGtStage2
+FastReport         2.0 ms         2.0 ms         2.0 ms         2.0 ms       +3023 kB       +3023 kB       -1511 kB       -1511 kB    rawDataCollector
+FastReport         1.0 ms         1.0 ms         1.0 ms         1.0 ms       +2684 kB       +2684 kB       -1342 kB       -1342 kB    rawDataRepacker
+FastReport         0.3 ms         0.3 ms         0.3 ms         0.3 ms       +1232 kB       +1232 kB        -616 kB        -616 kB    rawPrimeDataRepacker
+FastReport         1.1 ms         1.1 ms         1.2 ms         1.2 ms        +519 kB        +519 kB        -349 kB        -349 kB    simGtStage2Digis
+FastReport         0.7 ms         0.7 ms         0.7 ms         0.7 ms        +170 kB        +170 kB        -135 kB        -135 kB    unpackGtStage2
+FastReport      1173.4 ms                     1173.9 ms                    +214655 kB                    -166736 kB                 total
+FastReport      2641.0 ms                     4664.1 ms                   +1122520 kB                    -971407 kB                 eventsetup
+FastReport         0.8 ms                        0.8 ms                        +26 kB                        -25 kB                 other
+FastReport         0.0 ms                        0.0 ms                         +0 kB                         +0 kB                 idle
+
+FastReport     CPU time sched. / depend.    Real time sched. / depend.       Alloc. sched. / depend.     Dealloc. sched. / depend.  Processes and Paths
+FastReport        35.6 ms                       35.6 ms                     +14156 kB                      -1209 kB                 source
+FastReport      1137.8 ms                     1138.3 ms                    +200498 kB                    -165526 kB                 process HLTX
+FastReport         0.0 ms         4.2 ms         0.0 ms         4.2 ms          +0 kB       +4015 kB          +0 kB       -2183 kB    HLTriggerFirstPath
+FastReport       473.8 ms       445.3 ms       474.0 ms       445.4 ms     +140487 kB      +90939 kB     -115694 kB      -70804 kB    HLT_ZeroBias_v15
+FastReport         0.1 ms         5.2 ms         0.1 ms         5.3 ms         +98 kB       +4637 kB         -59 kB       -2595 kB    HLTriggerFinalPath
+FastReport         0.1 ms         4.3 ms         0.1 ms         4.3 ms         +84 kB       +4099 kB         -50 kB       -2233 kB    Dataset_HIPhysicsRawPrime
+FastReport         0.1 ms         4.3 ms         0.1 ms         4.3 ms         +84 kB       +4099 kB         -50 kB       -2233 kB    Dataset_HIPhysicsRawSecond
+FastReport       692.4 ms      1113.1 ms       692.7 ms      1113.6 ms     +109537 kB     +168280 kB      -94706 kB     -135492 kB    PhysicsHIPhysicsRawSecondOutput
+FastReport      1173.4 ms                     1173.9 ms                    +214655 kB                    -166736 kB                 total
+FastReport      2641.0 ms                     4664.1 ms                   +1122520 kB                    -971407 kB                 eventsetup
+FastReport         0.8 ms                        0.8 ms                        +26 kB                        -25 kB                 other
+FastReport         0.0 ms                        0.0 ms                         +0 kB                         +0 kB                 idle
+
+FastReport       CPU time      Real time      Allocated    Deallocated  Transition
+FastReport        27.5 ms        28.5 ms     +180911 kB     -174573 kB  run 388350
+
+09-Oct-2025 17:59:24 CEST  Closed file file:/scratch/sdonato/data/SaswatiRAW_e1f7f325-4ca8-4fea-8d27-06b33862cf11.root
+%MSG-w DigiToRaw:  SiStripDigiToRawModule:hltSiStripDigiToZSRaw@endStream  09-Oct-2025 17:59:24 CEST PostEndProcessBlock
+[sistrip::DigiToRaw::createFedBuffers_] warnings:
+Invalid raw data for FED, skipping (2)
+%MSG
+%MSG-w SiStripRawToDigi:  SiStripRawToDigiModule:hltSiStripRawToDigi@endStream  09-Oct-2025 17:59:24 CEST PostEndProcessBlock
+[sistrip::RawToDigiUnpacker::createDigis] warnings:
+NULL pointer to FEDRawData for FED (2)
+%MSG
+
+TriggerSummaryProducerAOD::globalEndJob - accumulated tags:
+ Overall number of Collections/Filters: 7/1
+ The collections: 7
+  0 hltGtStage2Digis:EGamma:HLTX
+  1 hltGtStage2Digis:EtSum:HLTX
+  2 hltGtStage2Digis:EtSumZDC:HLTX
+  3 hltGtStage2Digis:Jet:HLTX
+  4 hltGtStage2Digis:Muon:HLTX
+  5 hltGtStage2Digis:MuonShower:HLTX
+  6 hltGtStage2Digis:Tau:HLTX
+ The filters:1
+  0 hltL1ZeroBias::HLTX
+TriggerSummaryProducerAOD::endJob.
+
+FastReport ---------------------------- Job Summary ----------------------------
+FastReport   CPU time avg.      when run  Real time avg.      when run     Alloc. avg.      when run   Dealloc. avg.      when run  Modules
+FastReport        35.6 ms                       35.6 ms                     +14156 kB                      -1209 kB                 source
+FastReport      1137.8 ms                     1138.3 ms                    +200498 kB                    -165526 kB                 process HLTX
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    Dataset_HIPhysicsRawPrime
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    Dataset_HIPhysicsRawSecond
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    HLT_ZeroBias_v15
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    HLTriggerFinalPath
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    HLTriggerFirstPath
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    TriggerResults
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltBoolEnd
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltBoolFalse
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +2 kB          +2 kB          -1 kB          -1 kB    hltDatasetHIPhysicsRawPrime
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +2 kB          +2 kB          -1 kB          -1 kB    hltDatasetHIPhysicsRawSecond
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltGetRaw
+FastReport         0.1 ms         0.1 ms         0.1 ms         0.1 ms         +81 kB         +81 kB         -48 kB         -48 kB    hltGtStage2Digis
+FastReport         0.8 ms         0.8 ms         0.8 ms         0.8 ms        +519 kB        +519 kB        -349 kB        -349 kB    hltGtStage2ObjectMap
+FastReport         0.1 ms         0.1 ms         0.1 ms         0.1 ms          +4 kB          +4 kB          -2 kB          -2 kB    hltL1ZeroBias
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltOnlineBeamSpot
+FastReport         0.1 ms         0.1 ms         0.1 ms         0.1 ms          +1 kB          +1 kB          +0 kB          +0 kB    hltOnlineMetaDataDigis
+FastReport       692.4 ms       692.4 ms       692.7 ms       692.7 ms     +109537 kB     +109537 kB      -94706 kB      -94706 kB    hltOutputPhysicsHIPhysicsRawSecond
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltPSetMap
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltPreDatasetHIPhysicsRawPrime
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltPreDatasetHIPhysicsRawSecond
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltPreZeroBias
+FastReport         8.0 ms         8.0 ms         8.0 ms         8.0 ms      +20121 kB      +20121 kB      -16428 kB      -16428 kB    hltSiStripClusterizerForRawPrime
+FastReport         8.7 ms         8.7 ms         8.7 ms         8.7 ms        +560 kB        +560 kB          +0 kB          +0 kB    hltSiStripClusters2ApproxClusters
+FastReport       133.3 ms       133.3 ms       133.4 ms       133.4 ms        +504 kB        +504 kB        -224 kB        -224 kB    hltSiStripClusters2ApproxClustersv1
+FastReport       118.9 ms       118.9 ms       118.9 ms       118.9 ms       +6988 kB       +6988 kB       -3264 kB       -3264 kB    hltSiStripClustersFromRawPrime
+FastReport       128.0 ms       128.0 ms       128.0 ms       128.0 ms       +7617 kB       +7617 kB       -3892 kB       -3892 kB    hltSiStripClustersFromRawPrimev1
+FastReport        23.5 ms        23.5 ms        23.5 ms        23.5 ms      +29525 kB      +29525 kB      -28686 kB      -28686 kB    hltSiStripDigiToZSRaw
+FastReport         6.3 ms         6.3 ms         6.3 ms         6.3 ms       +7063 kB       +7063 kB       -4651 kB       -4651 kB    hltSiStripRawToDigi
+FastReport        11.9 ms        11.9 ms        12.0 ms        12.0 ms      +10018 kB      +10018 kB       -9112 kB       -9112 kB    hltSiStripZeroSuppression
+FastReport         0.1 ms         0.1 ms         0.1 ms         0.1 ms         +14 kB         +14 kB         -11 kB         -11 kB    hltTriggerSummaryAOD
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +1 kB          +1 kB          +0 kB          +0 kB    hltTriggerSummaryRAW
+FastReport         0.0 ms         0.0 ms         0.0 ms         0.0 ms          +0 kB          +0 kB          +0 kB          +0 kB    hltTriggerType
+FastReport         0.4 ms         0.4 ms         0.4 ms         0.4 ms        +301 kB        +301 kB        -186 kB        -186 kB    packGtStage2
+FastReport         2.0 ms         2.0 ms         2.0 ms         2.0 ms       +3023 kB       +3023 kB       -1511 kB       -1511 kB    rawDataCollector
+FastReport         1.0 ms         1.0 ms         1.0 ms         1.0 ms       +2684 kB       +2684 kB       -1342 kB       -1342 kB    rawDataRepacker
+FastReport         0.3 ms         0.3 ms         0.3 ms         0.3 ms       +1232 kB       +1232 kB        -616 kB        -616 kB    rawPrimeDataRepacker
+FastReport         1.1 ms         1.1 ms         1.2 ms         1.2 ms        +519 kB        +519 kB        -349 kB        -349 kB    simGtStage2Digis
+FastReport         0.7 ms         0.7 ms         0.7 ms         0.7 ms        +170 kB        +170 kB        -135 kB        -135 kB    unpackGtStage2
+FastReport      1173.4 ms                     1173.9 ms                    +214655 kB                    -166736 kB                 total
+FastReport      2641.0 ms                     4664.1 ms                   +1122520 kB                    -971407 kB                 eventsetup
+FastReport      2846.7 ms                     4800.2 ms                    +962889 kB                    -731056 kB                 other
+FastReport       175.0 ms                      177.7 ms                    +217416 kB                    -305692 kB                 idle
+
+FastReport     CPU time sched. / depend.    Real time sched. / depend.       Alloc. sched. / depend.     Dealloc. sched. / depend.  Processes and Paths
+FastReport        35.6 ms                       35.6 ms                     +14156 kB                      -1209 kB                 source
+FastReport      1137.8 ms                     1138.3 ms                    +200498 kB                    -165526 kB                 process HLTX
+FastReport         0.0 ms         4.2 ms         0.0 ms         4.2 ms          +0 kB       +4015 kB          +0 kB       -2183 kB    HLTriggerFirstPath
+FastReport       473.8 ms       445.3 ms       474.0 ms       445.4 ms     +140487 kB      +90939 kB     -115694 kB      -70804 kB    HLT_ZeroBias_v15
+FastReport         0.1 ms         5.2 ms         0.1 ms         5.3 ms         +98 kB       +4637 kB         -59 kB       -2595 kB    HLTriggerFinalPath
+FastReport         0.1 ms         4.3 ms         0.1 ms         4.3 ms         +84 kB       +4099 kB         -50 kB       -2233 kB    Dataset_HIPhysicsRawPrime
+FastReport         0.1 ms         4.3 ms         0.1 ms         4.3 ms         +84 kB       +4099 kB         -50 kB       -2233 kB    Dataset_HIPhysicsRawSecond
+FastReport       692.4 ms      1113.1 ms       692.7 ms      1113.6 ms     +109537 kB     +168280 kB      -94706 kB     -135492 kB    PhysicsHIPhysicsRawSecondOutput
+FastReport      1173.4 ms                     1173.9 ms                    +214655 kB                    -166736 kB                 total
+FastReport      2641.0 ms                     4664.1 ms                   +1122520 kB                    -971407 kB                 eventsetup
+FastReport      2846.7 ms                     4800.2 ms                    +962889 kB                    -731056 kB                 other
+FastReport       175.0 ms                      177.7 ms                    +217416 kB                    -305692 kB                 idle
+
+
+%MSG-w ThroughputService:  AfterModEndJob 09-Oct-2025 17:59:24 CEST EndJob
+Not enough events to measure the throughput with a resolution of 1 events
+%MSG
+
+TrigReport ---------- Event  Summary ------------
+TrigReport Events total = 1 passed = 1 failed = 0
+
+TrigReport ---------- Path   Summary ------------
+TrigReport  Trig Bit#   Executed     Passed     Failed      Error Name
+TrigReport     1    0          1          0          1          0 HLTriggerFirstPath
+TrigReport     1    1          1          1          0          0 HLT_ZeroBias_v15
+TrigReport     1    2          1          0          1          0 HLTriggerFinalPath
+TrigReport     1    3          1          1          0          0 Dataset_HIPhysicsRawPrime
+TrigReport     1    4          1          1          0          0 Dataset_HIPhysicsRawSecond
+
+
+TrigReport -------End-Path   Summary ------------
+TrigReport  Trig Bit#   Executed     Passed     Failed      Error Name
+TrigReport     0    0          1          1          0          0 PhysicsHIPhysicsRawSecondOutput
+
+
+TrigReport ---------- Modules in Path: HLTriggerFirstPath ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     1    0          1          1          0          0 hltGetRaw
+TrigReport     1    1          1          1          0          0 hltPSetMap
+TrigReport     1    2          1          0          1          0 hltBoolFalse
+
+
+TrigReport ---------- Modules in Path: HLT_ZeroBias_v15 ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     1    0          1          1          0          0 hltTriggerType
+TrigReport     1    1          1          1          0          0 hltGtStage2Digis
+TrigReport     1    2          1          1          0          0 hltGtStage2ObjectMap
+TrigReport     1    3          1          1          0          0 hltOnlineMetaDataDigis
+TrigReport     1    4          1          1          0          0 hltOnlineBeamSpot
+TrigReport     1    5          1          1          0          0 hltL1ZeroBias
+TrigReport     1    6          1          1          0          0 hltPreZeroBias
+TrigReport     1    7          1          1          0          0 hltSiStripRawToDigi
+TrigReport     1    8          1          1          0          0 hltSiStripZeroSuppression
+TrigReport     1    9          1          1          0          0 hltSiStripDigiToZSRaw
+TrigReport     1   10          1          1          0          0 hltSiStripClusterizerForRawPrime
+TrigReport     1   11          1          1          0          0 hltSiStripClusters2ApproxClusters
+TrigReport     1   12          1          1          0          0 rawDataRepacker
+TrigReport     1   13          1          1          0          0 rawPrimeDataRepacker
+TrigReport     1   14          1          1          0          0 hltSiStripDigiToZSRaw
+TrigReport     1   15          1          1          0          0 hltSiStripClusterizerForRawPrime
+TrigReport     1   16          1          1          0          0 hltSiStripClusters2ApproxClustersv1
+TrigReport     1   17          1          1          0          0 rawDataRepacker
+TrigReport     1   18          1          1          0          0 rawPrimeDataRepacker
+TrigReport     1   19          1          1          0          0 hltSiStripClustersFromRawPrime
+TrigReport     1   20          1          1          0          0 hltSiStripClustersFromRawPrimev1
+TrigReport     1   21          1          1          0          0 hltBoolEnd
+
+
+TrigReport ---------- Modules in Path: HLTriggerFinalPath ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     1    0          1          1          0          0 hltGtStage2Digis
+TrigReport     1    1          1          1          0          0 hltTriggerSummaryAOD
+TrigReport     1    2          1          1          0          0 hltTriggerSummaryRAW
+TrigReport     1    3          1          0          1          0 hltBoolFalse
+
+
+TrigReport ---------- Modules in Path: Dataset_HIPhysicsRawPrime ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     1    0          1          1          0          0 hltGtStage2Digis
+TrigReport     1    1          1          1          0          0 hltDatasetHIPhysicsRawPrime
+TrigReport     1    2          1          1          0          0 hltPreDatasetHIPhysicsRawPrime
+
+
+TrigReport ---------- Modules in Path: Dataset_HIPhysicsRawSecond ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     1    0          1          1          0          0 hltGtStage2Digis
+TrigReport     1    1          1          1          0          0 hltDatasetHIPhysicsRawSecond
+TrigReport     1    2          1          1          0          0 hltPreDatasetHIPhysicsRawSecond
+
+
+TrigReport ------ Modules in End-Path: PhysicsHIPhysicsRawSecondOutput ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     0    0          1          1          0          0 hltOutputPhysicsHIPhysicsRawSecond
+
+
+TrigReport ---------- Module Summary ------------
+TrigReport    Visited   Executed     Passed     Failed      Error Name
+TrigReport          1          1          1          0          0 Dataset_HIPhysicsRawPrime
+TrigReport          1          1          1          0          0 Dataset_HIPhysicsRawSecond
+TrigReport          1          1          1          0          0 HLT_ZeroBias_v15
+TrigReport          1          1          1          0          0 HLTriggerFinalPath
+TrigReport          1          1          1          0          0 HLTriggerFirstPath
+TrigReport          1          1          1          0          0 TriggerResults
+TrigReport          1          1          1          0          0 hltBoolEnd
+TrigReport          2          1          0          1          0 hltBoolFalse
+TrigReport          1          1          1          0          0 hltDatasetHIPhysicsRawPrime
+TrigReport          1          1          1          0          0 hltDatasetHIPhysicsRawSecond
+TrigReport          1          1          1          0          0 hltGetRaw
+TrigReport          4          1          1          0          0 hltGtStage2Digis
+TrigReport          1          1          1          0          0 hltGtStage2ObjectMap
+TrigReport          1          1          1          0          0 hltL1ZeroBias
+TrigReport          1          1          1          0          0 hltOnlineBeamSpot
+TrigReport          1          1          1          0          0 hltOnlineMetaDataDigis
+TrigReport          1          1          1          0          0 hltOutputPhysicsHIPhysicsRawSecond
+TrigReport          1          1          1          0          0 hltPSetMap
+TrigReport          1          1          1          0          0 hltPreDatasetHIPhysicsRawPrime
+TrigReport          1          1          1          0          0 hltPreDatasetHIPhysicsRawSecond
+TrigReport          1          1          1          0          0 hltPreZeroBias
+TrigReport          2          1          1          0          0 hltSiStripClusterizerForRawPrime
+TrigReport          1          1          1          0          0 hltSiStripClusters2ApproxClusters
+TrigReport          1          1          1          0          0 hltSiStripClusters2ApproxClustersv1
+TrigReport          1          1          1          0          0 hltSiStripClustersFromRawPrime
+TrigReport          1          1          1          0          0 hltSiStripClustersFromRawPrimev1
+TrigReport          2          1          1          0          0 hltSiStripDigiToZSRaw
+TrigReport          1          1          1          0          0 hltSiStripRawToDigi
+TrigReport          1          1          1          0          0 hltSiStripZeroSuppression
+TrigReport          1          1          1          0          0 hltTriggerSummaryAOD
+TrigReport          1          1          1          0          0 hltTriggerSummaryRAW
+TrigReport          1          1          1          0          0 hltTriggerType
+TrigReport          1          1          1          0          0 packGtStage2
+TrigReport          1          1          1          0          0 rawDataCollector
+TrigReport          2          1          1          0          0 rawDataRepacker
+TrigReport          2          1          1          0          0 rawPrimeDataRepacker
+TrigReport          1          1          1          0          0 simGtStage2Digis
+TrigReport          9          1          1          0          0 unpackGtStage2
+
+
+TimeReport ---------- Event  Summary ---[sec]----
+TimeReport       event loop CPU/event = 4.122452
+TimeReport      event loop Real/event = 7.652023
+TimeReport     sum Streams Real/event = 5.838808
+TimeReport efficiency CPU/Real/thread = 0.538740
+
+TimeReport ---------- Path   Summary ---[Real sec]----
+TimeReport  per event     per exec  Name
+TimeReport   5.143269     5.143269  HLTriggerFirstPath
+TimeReport   5.143413     5.143413  HLT_ZeroBias_v15
+TimeReport   0.038559     0.038559  HLTriggerFinalPath
+TimeReport   5.143487     5.143487  Dataset_HIPhysicsRawPrime
+TimeReport   5.143487     5.143487  Dataset_HIPhysicsRawSecond
+
+TimeReport  per event     per exec  Name
+
+TimeReport -------End-Path   Summary ---[Real sec]----
+TimeReport  per event     per exec  Name
+TimeReport   5.838436     5.838436  PhysicsHIPhysicsRawSecondOutput
+
+TimeReport  per event     per exec  Name
+
+TimeReport ---------- Modules in Path: HLTriggerFirstPath ---[Real sec]----
+TimeReport  per event    per visit  Name
+TimeReport   0.000004     0.000004  hltGetRaw
+TimeReport   0.000014     0.000014  hltPSetMap
+TimeReport   0.000000     0.000000  hltBoolFalse
+
+
+TimeReport ---------- Modules in Path: HLT_ZeroBias_v15 ---[Real sec]----
+TimeReport  per event    per visit  Name
+TimeReport   0.000001     0.000001  hltTriggerType
+TimeReport   0.000000     0.000000  hltGtStage2Digis
+TimeReport   0.000831     0.000831  hltGtStage2ObjectMap
+TimeReport   0.000134     0.000134  hltOnlineMetaDataDigis
+TimeReport   0.000030     0.000030  hltOnlineBeamSpot
+TimeReport   0.000082     0.000082  hltL1ZeroBias
+TimeReport   0.000001     0.000001  hltPreZeroBias
+TimeReport   0.006307     0.006307  hltSiStripRawToDigi
+TimeReport   0.011950     0.011950  hltSiStripZeroSuppression
+TimeReport   0.000000     0.000000  hltSiStripDigiToZSRaw
+TimeReport   0.000000     0.000000  hltSiStripClusterizerForRawPrime
+TimeReport   0.008715     0.008715  hltSiStripClusters2ApproxClusters
+TimeReport   0.000000     0.000000  rawDataRepacker
+TimeReport   0.000000     0.000000  rawPrimeDataRepacker
+TimeReport   0.023502     0.023502  hltSiStripDigiToZSRaw
+TimeReport   0.007978     0.007978  hltSiStripClusterizerForRawPrime
+TimeReport   0.133410     0.133410  hltSiStripClusters2ApproxClustersv1
+TimeReport   0.000999     0.000999  rawDataRepacker
+TimeReport   0.000271     0.000271  rawPrimeDataRepacker
+TimeReport   0.118941     0.118941  hltSiStripClustersFromRawPrime
+TimeReport   0.128001     0.128001  hltSiStripClustersFromRawPrimev1
+TimeReport   0.000001     0.000001  hltBoolEnd
+
+
+TimeReport ---------- Modules in Path: HLTriggerFinalPath ---[Real sec]----
+TimeReport  per event    per visit  Name
+TimeReport   0.000000     0.000000  hltGtStage2Digis
+TimeReport   0.000059     0.000059  hltTriggerSummaryAOD
+TimeReport   0.000014     0.000014  hltTriggerSummaryRAW
+TimeReport   0.000000     0.000000  hltBoolFalse
+
+
+TimeReport ---------- Modules in Path: Dataset_HIPhysicsRawPrime ---[Real sec]----
+TimeReport  per event    per visit  Name
+TimeReport   0.000000     0.000000  hltGtStage2Digis
+TimeReport   0.000003     0.000003  hltDatasetHIPhysicsRawPrime
+TimeReport   0.000000     0.000000  hltPreDatasetHIPhysicsRawPrime
+
+
+TimeReport ---------- Modules in Path: Dataset_HIPhysicsRawSecond ---[Real sec]----
+TimeReport  per event    per visit  Name
+TimeReport   0.000073     0.000073  hltGtStage2Digis
+TimeReport   0.000041     0.000041  hltDatasetHIPhysicsRawSecond
+TimeReport   0.000001     0.000001  hltPreDatasetHIPhysicsRawSecond
+
+TimeReport  per event    per visit  Name
+
+TimeReport ------ Modules in End-Path: PhysicsHIPhysicsRawSecondOutput ---[Real sec]----
+TimeReport  per event    per visit  Name
+TimeReport   0.692710     0.692710  hltOutputPhysicsHIPhysicsRawSecond
+
+TimeReport  per event    per visit  Name
+
+TimeReport ---------- Module Summary ---[Real sec]----
+TimeReport  per event     per exec    per visit  Name
+TimeReport   0.000001     0.000001     0.000001  Dataset_HIPhysicsRawPrime
+TimeReport   0.000001     0.000001     0.000001  Dataset_HIPhysicsRawSecond
+TimeReport   0.000001     0.000001     0.000001  HLT_ZeroBias_v15
+TimeReport   0.000003     0.000003     0.000003  HLTriggerFinalPath
+TimeReport   0.000002     0.000002     0.000002  HLTriggerFirstPath
+TimeReport   0.000002     0.000002     0.000002  TriggerResults
+TimeReport   0.000001     0.000001     0.000001  hltBoolEnd
+TimeReport   0.000000     0.000000     0.000000  hltBoolFalse
+TimeReport   0.000003     0.000003     0.000003  hltDatasetHIPhysicsRawPrime
+TimeReport   0.000041     0.000041     0.000041  hltDatasetHIPhysicsRawSecond
+TimeReport   0.000004     0.000004     0.000004  hltGetRaw
+TimeReport   0.000073     0.000073     0.000018  hltGtStage2Digis
+TimeReport   0.000831     0.000831     0.000831  hltGtStage2ObjectMap
+TimeReport   0.000082     0.000082     0.000082  hltL1ZeroBias
+TimeReport   0.000030     0.000030     0.000030  hltOnlineBeamSpot
+TimeReport   0.000134     0.000134     0.000134  hltOnlineMetaDataDigis
+TimeReport   0.692710     0.692710     0.692710  hltOutputPhysicsHIPhysicsRawSecond
+TimeReport   0.000014     0.000014     0.000014  hltPSetMap
+TimeReport   0.000000     0.000000     0.000000  hltPreDatasetHIPhysicsRawPrime
+TimeReport   0.000001     0.000001     0.000001  hltPreDatasetHIPhysicsRawSecond
+TimeReport   0.000001     0.000001     0.000001  hltPreZeroBias
+TimeReport   0.007978     0.007978     0.003989  hltSiStripClusterizerForRawPrime
+TimeReport   0.008715     0.008715     0.008715  hltSiStripClusters2ApproxClusters
+TimeReport   0.133410     0.133410     0.133410  hltSiStripClusters2ApproxClustersv1
+TimeReport   0.118941     0.118941     0.118941  hltSiStripClustersFromRawPrime
+TimeReport   0.128001     0.128001     0.128001  hltSiStripClustersFromRawPrimev1
+TimeReport   0.023502     0.023502     0.011751  hltSiStripDigiToZSRaw
+TimeReport   0.006307     0.006307     0.006307  hltSiStripRawToDigi
+TimeReport   0.011950     0.011950     0.011950  hltSiStripZeroSuppression
+TimeReport   0.000059     0.000059     0.000059  hltTriggerSummaryAOD
+TimeReport   0.000014     0.000014     0.000014  hltTriggerSummaryRAW
+TimeReport   0.000001     0.000001     0.000001  hltTriggerType
+TimeReport   0.000382     0.000382     0.000382  packGtStage2
+TimeReport   0.001996     0.001996     0.001996  rawDataCollector
+TimeReport   0.000999     0.000999     0.000499  rawDataRepacker
+TimeReport   0.000271     0.000271     0.000135  rawPrimeDataRepacker
+TimeReport   0.001151     0.001151     0.001151  simGtStage2Digis
+TimeReport   0.000652     0.000652     0.000652  unpackGtStage2
+
+TimeReport  per event     per exec    per visit  Name
+
+T---Report end!
+
+

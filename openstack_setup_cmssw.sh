@@ -6,8 +6,8 @@ printf "TEST SILVIO" #clear screen
 
 mkdir ~/testSilvio
 
-yum -y install git puppet-agent locmap-release locmap rpm-build voms-clients-java krb5-devel perl python3-devel rpm-build pip git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel perl screen wget  x2goserver xterm mesa-libGLU mesa-libGLU-devel ant javaws
-### yum install xfdesktop
+yum -y install git puppet-agent locmap-release locmap rpm-build voms-clients-java krb5-devel perl python3-devel rpm-build pip git make cmake gcc-c++ gcc binutils libX11-devel libXpm-devel libXft-devel libXext-devel python39 openssl-devel perl screen wget  x2goserver xterm mesa-libGLU mesa-libGLU-devel ant javaws pciutils nano vim wget
+### yum install xfdesktop 
 
 locmap --enable all
 locmap --list
@@ -28,14 +28,14 @@ exit 0
 ### Login as user (!!!), copy missing files
 sudo scp -r sdonato@lxplus.cern.ch:/etc/grid-security /etc/grid-security
 sudo scp -r sdonato@lxplus.cern.ch:/etc/vomses /etc/vomses
+sudo scp -r sdonato@lxplus.cern.ch:/etc/grid-security/certificates/* /etc/grid-security/certificates
 
 ln -s /afs/cern.ch/user/s/sdonato afs
 ln -s /afs/cern.ch/user/s/sdonato/.globus .
 
-pip install oauth2client gspread
 pip install omsapi --index-url https://gitlab.cern.ch/api/v4/projects/45046/packages/pypi/simple
 
-voms-proxy-init
+voms-proxy-init --voms cms
 
 ### Test CMSSW
 source /cvmfs/cms.cern.ch/cmsset_default.sh
@@ -53,6 +53,10 @@ runTheMatrix.py -l 141.111 --ibeos
 
 ssh -f -N -D 12345 lxtunnel.cern.ch 
 export ALL_PROXY=socks5://localhost:12345
+
+pip install oauth2client gspread --proxy socks5://localhost:12345
+
+
 #OR
 #use_proxy=yes
 #http_proxy=localhost:12345
@@ -126,5 +130,11 @@ mkfs.xfs -K /dev/vdb1
 mkdir /scratch
 mount /dev/vdb1 /scratch/
 
+
+############# Install CUDA Drivers ##################################
+wget https://developer.download.nvidia.com/compute/cuda/12.6.0/local_installers/cuda_12.6.0_560.28.03_linux.run ## (see https://developer.nvidia.com/cuda-downloads for the latest version )
+## Disable Nouveau: follow https://docs.nvidia.com/ai-enterprise/deployment-guide-vmware/0.1.0/nouveau.html
+sudo dnf install kernel-devel
+sudo sh ./cuda_12.6.0_560.28.03_linux.run
 
 

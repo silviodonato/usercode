@@ -1,3 +1,5 @@
+## Useful command: dasgoclient --query=" file dataset=/ScoutingPFRun3/Run2024H-v1/HLTSCOUT | grep file.name, file.size, file.nevents
+
 datasets_query="dataset dataset=/*ZeroBias9*/*2018*/RAW" 
 second_query="summary dataset=\$item" 
 

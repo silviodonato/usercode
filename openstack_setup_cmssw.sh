@@ -29,6 +29,7 @@ exit 0
 sudo scp -r sdonato@lxplus.cern.ch:/etc/grid-security /etc/grid-security
 sudo scp -r sdonato@lxplus.cern.ch:/etc/vomses /etc/vomses
 sudo scp -r sdonato@lxplus.cern.ch:/etc/grid-security/certificates/* /etc/grid-security/certificates
+sudo scp -r sdonato@lxplus.cern.ch:/etc/grid-security/vomsdir/cms /etc/grid-security/vomsdir/cms
 
 ln -s /afs/cern.ch/user/s/sdonato afs
 ln -s /afs/cern.ch/user/s/sdonato/.globus .

@@ -5,3 +5,10 @@ second_query="summary dataset=\$item"
 
 dasgoclient -query="$datasets_query" > datasets.txt
 while read item; do eval dasgoclient -query=\"$second_query\"; done <  datasets.txt
+
+## To get only the number of events directly: ##
+
+while read item; do
+    echo -n "$item    "
+    dasgoclient -query="$second_query dataset=$item" | jq -r '.[0].num_event'
+done < datasets.txt

@@ -1,0 +1,564 @@
+"""
+Track Comparison Script for CMS ROOT Files
+
+This script compares track collections from two ROOT files (RAWSECOND and RAWPRIME)
+and generates comparison plots showing pt correlations and differences.
+
+Features:
+- Event-by-event matching using (run, lumi, event) identifiers
+- Track matching based on charge separation and eta-based proximity
+- Fallback to eta-phi space matching when needed
+- Filter for tracks with pt > 1 GeV
+- Generation of comparison plots with log10(pt) scale
+- Output in both PNG and PDF formats
+"""
+
+import ROOT
+import numpy as np
+import math
+
+# Configuration
+PT_THRESHOLD = 0.3  # GeV - minimum pt for track selection (300 MeV)
+MAX_EVENTS = 100    # Maximum number of events to process
+MISMATCH_THRESHOLD = 0.001  # 0.1% - minimum relative difference to report
+WARNING_THRESHOLD = 0.01    # 1% - threshold for warning messages
+MAX_DETA = 0.001   # Maximum delta-eta for track matching
+DPHI_FALLBACK = 0.01  # Delta-phi threshold to trigger fallback matching
+REL_DIFF_CUT = 0.10  # 10% - cut for relative difference plots
+
+# ============================================================================
+# File Setup and Initialization
+# ============================================================================
+
+print("=" * 70)
+print("Track Comparison Script")
+print("=" * 70)
+
+# Open ROOT files and get event trees
+file1 = ROOT.TFile.Open("rawSecondSkim.root")
+file2 = ROOT.TFile.Open("rawPrimeSkim.root")
+tree1 = file1.Get("Events")
+tree2 = file2.Get("Events")
+
+# Define branch names for track collections
+branch_name1 = "recoTracks_generalTracksRECO2__RAWSECOND."
+branch_name2 = "recoTracks_generalTracksRECO2__RAWPRIME."
+
+print(f"\nFile 1: rawSecondSkim.root ({tree1.GetEntries()} events)")
+print(f"File 2: rawPrimeSkim.root ({tree2.GetEntries()} events)")
+print(f"Track branch 1: {branch_name1}")
+print(f"Track branch 2: {branch_name2}")
+
+# ============================================================================
+# Build Event Index
+# ============================================================================
+
+print(f"\nBuilding event index for tree2...")
+tree2_index = {}
+for i in range(tree2.GetEntries()):
+    tree2.GetEntry(i)
+    aux = tree2.EventAuxiliary
+    key = (aux.run(), aux.luminosityBlock(), aux.event())
+    tree2_index[key] = i
+
+print(f"Found {len(tree2_index)} events in tree2")
+print(f"Processing up to {MAX_EVENTS} events from tree1...")
+print("=" * 70 + "\n")
+
+# ============================================================================
+# Track Matching Functions
+# ============================================================================
+
+def find_closest_match(pt1, eta1, phi1, vz1, idx1, track_list, matched_set, 
+                       max_deta=MAX_DETA):
+    """
+    Find the closest unmatched track in eta space with fallback to eta-phi space.
+    
+    Primary matching uses minimal |Δη| within max_deta threshold.
+    If the matched track has |Δφ| > DPHI_FALLBACK, switches to full ΔR matching
+    in eta-phi space to handle cases where phi difference is significant.
+    
+    Parameters:
+    -----------
+    pt1, eta1, phi1, vz1 : float
+        Track parameters from collection 1
+    idx1 : int
+        Track index in collection 1
+    track_list : list
+        List of tracks from collection 2 to match against
+    matched_set : set
+        Set of already matched track indices
+    max_deta : float
+        Maximum delta-eta threshold for matching
+        
+    Returns:
+    --------
+    tuple or None : (pt2, eta2, phi2, vz2, idx2, distance)
+        Matched track parameters and distance, or None if no match found
+    """
+    best_match = None
+    best_deta = max_deta
+    
+    # First pass: find closest match in eta
+    for pt2, eta2, phi2, charge2, vz2, idx2 in track_list:
+        if idx2 in matched_set:
+            continue
+        
+        deta = abs(eta1 - eta2)
+        
+        if deta < best_deta:
+            best_deta = deta
+            
+            # Calculate phi difference with proper wrapping
+            dphi = phi1 - phi2
+            while dphi > math.pi:
+                dphi -= 2 * math.pi
+            while dphi < -math.pi:
+                dphi += 2 * math.pi
+            
+            full_distance = math.sqrt(deta**2 + dphi**2)
+            best_match = (pt2, eta2, phi2, vz2, idx2, full_distance, abs(dphi))
+    
+    # Check if we need fallback to eta-phi matching
+    if best_match is not None:
+        pt2, eta2, phi2, vz2, idx2, full_distance, dphi_abs = best_match
+        
+        # If DeltaPhi is large, search in full eta-phi space
+        if dphi_abs > DPHI_FALLBACK:
+            best_dr_match = None
+            best_dr = float('inf')
+            
+            for pt2_new, eta2_new, phi2_new, charge2_new, vz2_new, idx2_new in track_list:
+                if idx2_new in matched_set:
+                    continue
+                
+                deta_new = eta1 - eta2_new
+                dphi_new = phi1 - phi2_new
+                
+                # Handle phi wrapping
+                while dphi_new > math.pi:
+                    dphi_new -= 2 * math.pi
+                while dphi_new < -math.pi:
+                    dphi_new += 2 * math.pi
+                
+                dr = math.sqrt(deta_new**2 + dphi_new**2)
+                
+                if dr < best_dr:
+                    best_dr = dr
+                    best_dr_match = (pt2_new, eta2_new, phi2_new, vz2_new, idx2_new, dr)
+            
+            if best_dr_match is not None:
+                return best_dr_match
+        else:
+            # Return eta-based match
+            return (pt2, eta2, phi2, vz2, idx2, full_distance)
+    
+    return best_match[:6] if best_match is not None else None
+
+
+def match_tracks(track_list1_pos, track_list1_neg, track_list2_pos, track_list2_neg):
+    """
+    Match tracks between two collections separated by charge.
+    
+    Tracks are matched separately for positive and negative charges using
+    eta-based proximity with fallback to full eta-phi space.
+    
+    Parameters:
+    -----------
+    track_list1_pos, track_list1_neg : list
+        Positive and negative tracks from collection 1
+    track_list2_pos, track_list2_neg : list
+        Positive and negative tracks from collection 2
+        
+    Returns:
+    --------
+    tuple : (mismatches, matched_indices2, all_matches)
+        - mismatches: list of track pairs with significant pt differences
+        - matched_indices2: set of matched indices from collection 2
+        - all_matches: list of all matched track pairs for plotting
+    """
+    mismatches = []
+    matched_indices2 = set()
+    all_matches = []
+    
+    # Match positive charge tracks
+    for pt1, eta1, phi1, charge1, vz1, idx1 in track_list1_pos:
+        match = find_closest_match(pt1, eta1, phi1, vz1, idx1, 
+                                   track_list2_pos, matched_indices2)
+        
+        if match is not None:
+            pt2, eta2, phi2, vz2, idx2, distance = match
+            matched_indices2.add(idx2)
+            all_matches.append((pt1, pt2))
+            
+            # Calculate relative difference
+            rel_diff = abs(pt1 - pt2) / max(pt1, pt2) if max(pt1, pt2) > 0 else 0
+            
+            # Record mismatch if difference exceeds threshold
+            if rel_diff > MISMATCH_THRESHOLD:
+                eta_diff = abs(eta1 - eta2)
+                phi_diff = abs(phi1 - phi2)
+                vz_diff = abs(vz1 - vz2)
+                mismatches.append((distance, pt1, pt2, rel_diff, eta1, eta2, 
+                                 eta_diff, phi1, phi2, phi_diff, vz1, vz2, 
+                                 vz_diff, idx1, idx2))
+    
+    # Match negative charge tracks
+    for pt1, eta1, phi1, charge1, vz1, idx1 in track_list1_neg:
+        match = find_closest_match(pt1, eta1, phi1, vz1, idx1, 
+                                   track_list2_neg, matched_indices2)
+        
+        if match is not None:
+            pt2, eta2, phi2, vz2, idx2, distance = match
+            matched_indices2.add(idx2)
+            all_matches.append((pt1, pt2))
+            
+            # Calculate relative difference
+            rel_diff = abs(pt1 - pt2) / max(pt1, pt2) if max(pt1, pt2) > 0 else 0
+            
+            # Record mismatch if difference exceeds threshold
+            if rel_diff > MISMATCH_THRESHOLD:
+                eta_diff = abs(eta1 - eta2)
+                phi_diff = abs(phi1 - phi2)
+                vz_diff = abs(vz1 - vz2)
+                mismatches.append((distance, pt1, pt2, rel_diff, eta1, eta2, 
+                                 eta_diff, phi1, phi2, phi_diff, vz1, vz2, 
+                                 vz_diff, idx1, idx2))
+    
+    return mismatches, matched_indices2, all_matches
+
+# ============================================================================
+# Event Loop
+# ============================================================================
+
+# Storage for results
+matched_events = 0
+summary = []
+all_pt1 = []
+all_pt2 = []
+all_pt_diff = []
+all_pt_rel_diff = []
+
+for i in range(min(MAX_EVENTS, tree1.GetEntries())):
+    tree1.GetEntry(i)
+    aux1 = tree1.EventAuxiliary
+    key = (aux1.run(), aux1.luminosityBlock(), aux1.event())
+    
+    # Check if event exists in tree2
+    if key not in tree2_index:
+        print(f"Event Run:{key[0]} Lumi:{key[1]} Event:{key[2]} not found in tree2")
+        continue
+    
+    # Get corresponding entry from tree2
+    tree2.GetEntry(tree2_index[key])
+    matched_events += 1
+    
+    print(f"Run: {key[0]} Lumi: {key[1]} Event: {key[2]}")
+
+    # Access track collections
+    tracks1 = getattr(tree1, branch_name1)
+    tracks2 = getattr(tree2, branch_name2)
+
+    # Build track lists (pt > threshold only)
+    track_list1 = [(tracks1.at(j).pt(), tracks1.at(j).eta(), tracks1.at(j).phi(), 
+                   tracks1.at(j).charge(), tracks1.at(j).vz(), j) 
+                  for j in range(tracks1.size()) if tracks1.at(j).pt() > PT_THRESHOLD]
+    
+    track_list2 = [(tracks2.at(j).pt(), tracks2.at(j).eta(), tracks2.at(j).phi(), 
+                   tracks2.at(j).charge(), tracks2.at(j).vz(), j) 
+                  for j in range(tracks2.size()) if tracks2.at(j).pt() > PT_THRESHOLD]
+    
+    # Separate by charge
+    track_list1_pos = [t for t in track_list1 if t[3] > 0]  # t[3] is charge
+    track_list1_neg = [t for t in track_list1 if t[3] < 0]
+    track_list2_pos = [t for t in track_list2 if t[3] > 0]
+    track_list2_neg = [t for t in track_list2 if t[3] < 0]
+    
+    # Sort by eta for efficient matching
+    track_list1_pos.sort(key=lambda x: x[1])  # x[1] is eta
+    track_list1_neg.sort(key=lambda x: x[1])
+    track_list2_pos.sort(key=lambda x: x[1])
+    track_list2_neg.sort(key=lambda x: x[1])
+    
+    # Perform track matching
+    mismatches, matched_indices2, event_matches = match_tracks(
+        track_list1_pos, track_list1_neg, 
+        track_list2_pos, track_list2_neg
+    )
+    
+    # Collect data for plotting
+    for pt1, pt2 in event_matches:
+        all_pt1.append(np.log10(pt1))
+        all_pt2.append(np.log10(pt2))
+        all_pt_diff.append(pt1 - pt2)
+        all_pt_rel_diff.append((pt1 - pt2) / pt1 if pt1 != 0 else 0)
+    
+    # Calculate statistics
+    n_tracks1 = len(track_list1)
+    n_tracks2 = len(track_list2)
+    n_matched = len(matched_indices2)
+    match_percentage = (n_matched / max(n_tracks1, n_tracks2) * 100) if max(n_tracks1, n_tracks2) > 0 else 0
+    
+    # Store summary
+    summary.append((key[2], n_matched, n_tracks1, n_tracks2, match_percentage))
+    
+    # Print mismatches
+    if mismatches:
+        print(f"  Found {len(mismatches)} mismatches out of {n_matched} matched tracks:")
+        for dr, pt1, pt2, rel_diff, eta1, eta2, eta_diff, phi1, phi2, phi_diff, vz1, vz2, vz_diff, idx1, idx2 in mismatches[:10]:
+            warning = f" *** WARNING: >{WARNING_THRESHOLD*100:.0f}% difference ***" if rel_diff > WARNING_THRESHOLD else ""
+            print(f"    Track idx1={idx1}, idx2={idx2} (ΔR={dr:.4f}): "
+                  f"pt {pt1:.4f} vs {pt2:.4f} ({rel_diff*100:.3f}%){warning}")
+            print(f"              eta {eta1:.4f} vs {eta2:.4f} (Δ={eta_diff:.4f}), "
+                  f"phi {phi1:.4f} vs {phi2:.4f} (Δ={phi_diff:.4f})")
+            print(f"              vz {vz1:.4f} vs {vz2:.4f} (Δ={vz_diff:.4f})")
+        
+        if len(mismatches) > 10:
+            print(f"    ... and {len(mismatches) - 10} more mismatches")
+
+# ============================================================================
+# Summary Report
+# ============================================================================
+
+print("\n" + "=" * 70)
+print(f"Summary: Matched and compared {matched_events} events")
+print("=" * 70)
+print(f"\n{'Event':<10} {'Matched':<10} {'Tracks1':<10} {'Tracks2':<10} {'Match %':<10}")
+print("-" * 50)
+for event_num, n_matched, n_tracks1, n_tracks2, match_pct in summary:
+    print(f"{event_num:<10} {n_matched:<10} {n_tracks1:<10} {n_tracks2:<10} {match_pct:>6.2f}%")
+
+# ============================================================================
+# Generate Plots
+# ============================================================================
+
+if all_pt1:
+    print("\n" + "=" * 70)
+    print("Generating Comparison Plots with ROOT")
+    print("=" * 70)
+    
+    # Convert to numpy arrays
+    log_pt1_array = np.array(all_pt1)  # Already log10(pt)
+    log_pt2_array = np.array(all_pt2)  # Already log10(pt)
+    pt_rel_diff_array = np.array(all_pt_rel_diff)
+    
+    # Apply cut: keep only relative differences within ±10%
+    cut_mask = np.abs(pt_rel_diff_array) <= REL_DIFF_CUT
+    log_pt1_cut = log_pt1_array[cut_mask]
+    log_pt2_cut = log_pt2_array[cut_mask]
+    pt_rel_diff_cut = pt_rel_diff_array[cut_mask]
+    
+    n_total = len(log_pt1_array)
+    n_cut = len(log_pt1_cut)
+    
+    print(f"\nTotal matched tracks: {n_total}")
+    print(f"Tracks within ±{REL_DIFF_CUT*100:.0f}% cut: {n_cut} ({n_cut/n_total*100:.1f}%)")
+    print(f"pt range: 10^{log_pt1_array.min():.2f} to 10^{log_pt1_array.max():.2f} GeV")
+    
+    # Create ROOT file
+    output_root = ROOT.TFile("track_comparison_plots.root", "RECREATE")
+    
+    # ========================================================================
+    # Plot 1: log10(pt1) vs log10(pt2) - Correlation plot
+    # ========================================================================
+    c1 = ROOT.TCanvas("c1_correlation", "Track pt Correlation", 800, 700)
+    c1.SetRightMargin(0.15)
+    c1.SetLogz()
+    
+    h1 = ROOT.TH2F("h_pt_correlation", 
+                   "Track p_{T} Correlation;log_{10}(p_{T,1}) [GeV];log_{10}(p_{T,2}) [GeV]",
+                   100, -0.6, 2,  # log10(0.3) to log10(100)
+                   100, -0.6, 2)
+    
+    for x, y in zip(log_pt1_array, log_pt2_array):
+        h1.Fill(x, y)
+    
+    h1.Draw("COLZ")
+    h1.SetStats(0)
+    
+    # Draw diagonal line y=x
+    line1 = ROOT.TLine(-0.6, -0.6, 2, 2)
+    line1.SetLineColor(ROOT.kRed)
+    line1.SetLineWidth(2)
+    line1.SetLineStyle(2)
+    line1.Draw("SAME")
+    
+    c1.Update()
+    c1.SaveAs("plot1_pt_correlation.png")
+    c1.SaveAs("plot1_pt_correlation.pdf")
+    c1.Write()
+    h1.Write()
+    
+    # ========================================================================
+    # Plot 2: (pt1-pt2)/pt1 vs log10(pt1) with ±10% cut
+    # ========================================================================
+    c2 = ROOT.TCanvas("c2_rel_diff_2d", "Relative pt Difference 2D", 800, 700)
+    c2.SetRightMargin(0.15)
+    c2.SetLogz()
+    
+    h2 = ROOT.TH2F("h_rel_diff_cut", 
+                   "Relative p_{T} Difference (|#Delta|<10%);log_{10}(p_{T,1}) [GeV];(p_{T,1}-p_{T,2})/p_{T,1}",
+                   100, -0.6, 2,
+                   100, -REL_DIFF_CUT, REL_DIFF_CUT)
+    
+    for x, y in zip(log_pt1_cut, pt_rel_diff_cut):
+        h2.Fill(x, y)
+    
+    h2.Draw("COLZ")
+    h2.SetStats(0)
+    h2.GetYaxis().SetTitleOffset(1.4)
+    
+    # Draw zero line
+    line2 = ROOT.TLine(-0.6, 0, 2, 0)
+    line2.SetLineColor(ROOT.kRed)
+    line2.SetLineWidth(2)
+    line2.SetLineStyle(2)
+    line2.Draw("SAME")
+    
+    c2.Update()
+    c2.SaveAs("plot2_rel_diff_2d.png")
+    c2.SaveAs("plot2_rel_diff_2d.pdf")
+    c2.Write()
+    h2.Write()
+    
+    # ========================================================================
+    # Plot 3: (pt1-pt2)/pt1 vs log10(pt1) profile with ±10% cut
+    # ========================================================================
+    c3 = ROOT.TCanvas("c3_rel_diff_profile", "Relative pt Difference Profile", 800, 700)
+    
+    h3 = ROOT.TProfile("h_rel_diff_profile", 
+                       "Relative p_{T} Difference Profile (|#Delta|<10%);log_{10}(p_{T,1}) [GeV];#LT(p_{T,1}-p_{T,2})/p_{T,1}#GT",
+                       50, -0.6, 2,
+                       -REL_DIFF_CUT, REL_DIFF_CUT)
+    
+    for x, y in zip(log_pt1_cut, pt_rel_diff_cut):
+        h3.Fill(x, y)
+    
+    h3.SetMarkerStyle(20)
+    h3.SetMarkerSize(0.8)
+    h3.SetMarkerColor(ROOT.kBlue)
+    h3.SetLineColor(ROOT.kBlue)
+    h3.SetStats(0)
+    h3.SetErrorOption("s")
+    h3.Draw("E1")
+    
+    # Draw zero line
+    line3 = ROOT.TLine(-0.6, 0, 2, 0)
+    line3.SetLineColor(ROOT.kRed)
+    line3.SetLineWidth(2)
+    line3.SetLineStyle(2)
+    line3.Draw("SAME")
+    
+    c3.Update()
+    c3.SaveAs("plot3_rel_diff_profile.png")
+    c3.SaveAs("plot3_rel_diff_profile.pdf")
+    c3.Write()
+    h3.Write()
+    
+    # ========================================================================
+    # Plot 4: Distribution of (pt1-pt2)/pt1 in range ±2% with overflow
+    # ========================================================================
+    c4 = ROOT.TCanvas("c4_rel_diff_dist", "Relative pt Difference Distribution", 800, 700)
+    c4.SetLogy()
+    
+    # Create histogram with overflow bins
+    n_bins = 100
+    hist_min = -0.02  # -2%
+    hist_max = 0.02   # +2%
+    
+    h4 = ROOT.TH1F("h_rel_diff_distribution", 
+                   "Relative p_{T} Difference Distribution;(p_{T,1}-p_{T,2})/p_{T,1};Entries",
+                   n_bins, hist_min, hist_max)
+    
+    # Fill histogram (ROOT automatically handles overflow)
+    for y in pt_rel_diff_array:
+        h4.Fill(y)
+    
+    h4.SetLineColor(ROOT.kBlue)
+    h4.SetLineWidth(2)
+    h4.SetFillColor(ROOT.kBlue - 10)
+    h4.SetFillStyle(3001)
+    h4.SetStats(0)
+    ROOT.gStyle.SetOptStat(0)
+    h4.Draw("HIST")
+    
+    # Add text with overflow information
+    underflow = h4.GetBinContent(0)
+    overflow = h4.GetBinContent(n_bins + 1)
+    in_range = h4.GetEntries() - underflow - overflow
+    
+    latex = ROOT.TLatex()
+    latex.SetNDC()
+    latex.SetTextSize(0.03)
+    latex.DrawLatex(0.15, 0.85, f"Total entries: {int(h4.GetEntries())}")
+    latex.DrawLatex(0.15, 0.81, f"In range [-2%, +2%]: {int(in_range)} ({in_range/h4.GetEntries()*100:.1f}%)")
+    latex.DrawLatex(0.15, 0.77, f"Underflow (<-2%): {int(underflow)} ({underflow/h4.GetEntries()*100:.1f}%)")
+    latex.DrawLatex(0.15, 0.73, f"Overflow (>+2%): {int(overflow)} ({overflow/h4.GetEntries()*100:.1f}%)")
+    
+    # Draw zero line
+    line4 = ROOT.TLine(0, 0, 0, h4.GetMaximum())
+    line4.SetLineColor(ROOT.kRed)
+    line4.SetLineWidth(2)
+    line4.SetLineStyle(2)
+    line4.Draw("SAME")
+    
+    c4.Update()
+    c4.SaveAs("plot4_rel_diff_distribution.png")
+    c4.SaveAs("plot4_rel_diff_distribution.pdf")
+    c4.Write()
+    h4.Write()
+    
+    # ========================================================================
+    # Combined canvas for overview
+    # ========================================================================
+    c_all = ROOT.TCanvas("c_all", "Track Comparison - All Plots", 1800, 1200)
+    c_all.Divide(2, 2)
+    
+    c_all.cd(1)
+    ROOT.gPad.SetRightMargin(0.15)
+    ROOT.gPad.SetLogz()
+    h1.Draw("COLZ")
+    line1.Draw("SAME")
+    
+    c_all.cd(2)
+    ROOT.gPad.SetRightMargin(0.15)
+    ROOT.gPad.SetLogz()
+    h2.Draw("COLZ")
+    line2.Draw("SAME")
+    
+    c_all.cd(3)
+    h3.Draw("E1")
+    line3.Draw("SAME")
+    
+    c_all.cd(4)
+    ROOT.gPad.SetLogy()
+    h4.Draw("HIST")
+    latex.DrawLatex(0.15, 0.85, f"Total entries: {int(h4.GetEntries())}")
+    latex.DrawLatex(0.15, 0.81, f"In range [-2%, +2%]: {int(in_range)} ({in_range/h4.GetEntries()*100:.1f}%)")
+    latex.DrawLatex(0.15, 0.77, f"Underflow (<-2%): {int(underflow)} ({underflow/h4.GetEntries()*100:.1f}%)")
+    latex.DrawLatex(0.15, 0.73, f"Overflow (>+2%): {int(overflow)} ({overflow/h4.GetEntries()*100:.1f}%)")
+    line4.Draw("SAME")
+    
+    c_all.Update()
+    c_all.SaveAs("track_comparison_plots_all.png")
+    c_all.SaveAs("track_comparison_plots_all.pdf")
+    c_all.Write()
+    
+    output_root.Close()
+    
+    print(f"\nPlots saved:")
+    print(f"  Individual plots:")
+    print(f"    - plot1_pt_correlation.png / .pdf")
+    print(f"    - plot2_rel_diff_2d.png / .pdf")
+    print(f"    - plot3_rel_diff_profile.png / .pdf")
+    print(f"    - plot4_rel_diff_distribution.png / .pdf")
+    print(f"  Combined:")
+    print(f"    - track_comparison_plots_all.png / .pdf")
+    print(f"  ROOT file:")
+    print(f"    - track_comparison_plots.root (contains all histograms)")
+    print("=" * 70)
+    
+else:
+    print("\nNo matched tracks found for plotting.")
+    print("=" * 70)
+
